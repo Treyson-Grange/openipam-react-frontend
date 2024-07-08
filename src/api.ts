@@ -31,7 +31,7 @@ export async function apiCall(url: string, method: string, body: Record<string, 
 
     const response = await fetch(url, options);
     if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error(`${response.status}`);
     }
     return response.json();
 }

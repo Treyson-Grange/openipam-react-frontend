@@ -1,5 +1,5 @@
 // LoginForm.tsx
-import { TextInput, Button } from '@mantine/core';
+import { TextInput, Button, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../../contexts/ConfigContext';
@@ -9,6 +9,7 @@ import { useCsrfToken } from '../../hooks/useCsrfToken';
 const LoginForm = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [error, setError] = useState<string>('');
 
     const navigate = useNavigate();
     const { config } = useConfig();
@@ -20,8 +21,12 @@ const LoginForm = () => {
             const data = await apiCall(url, 'POST', { username, password }, csrftoken);
             console.log('Login successful:', data);
             navigate('/');
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
+        } catch (error: any) {
+            if (error.message === '401') {
+                setError('Invalid credentials');
+            } else if (error.message === '400') {
+                setError('Bad request');
+            }
         }
     };
 
@@ -41,6 +46,7 @@ const LoginForm = () => {
                 value={password}
                 onChange={(event) => setPassword(event.currentTarget.value)}
             />
+            {error && <Text color="red">{error}</Text>}
             <Button
                 variant="light"
                 radius="xl"

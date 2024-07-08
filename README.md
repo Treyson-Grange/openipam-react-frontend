@@ -25,5 +25,5 @@ npm run dev
 - Login with a username, specific to your local OpenIPAM db.
 
 ## Todo For Demo
-- [ ] Error Catching / Incorrect login
+- [x] Error Catching / Incorrect login
 - [ ] Make it pretty
