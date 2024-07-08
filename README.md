@@ -1,30 +1,29 @@
-# OpenIPAM React Frontend
+# OpenIPAM Frontend Login DEMO
+This is a locally hosted demo that shows the setup needed to allow for login through the seperate backend, dealing with CSRF and CORS errors
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Setup
 
-Currently, two official plugins are available:
+- First, copy `example.env` into `.env`
+- You will fill this out in a moment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### OpenIPAM Backend
+- You will need this cloned [GitHub Repo](https://github.com/Treyson-Grange/django-openipam)
+- After cloning, use poetry to install packages, and run it.
+- Note what host and port it is running on, and throw it in your `.env`
+- If you work here you should have a dev db for OpenIPAM lol im not gonna help you there
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### OpenIPAM Frontend
+- Inside of this repository, run the following commands
 ```
+npm install 
+npm run dev
+```
+- Note the host and port, and throw it in your `.env` (You don't actually need this one)
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Finally,
+- Head to the frontend URL.
+- Login with a username, specific to your local OpenIPAM db.
+
+## Todo For Demo
+- [ ] Error Catching / Incorrect login
+- [ ] Make it pretty
