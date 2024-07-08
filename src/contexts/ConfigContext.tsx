@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import AppConfig from './config';
+import AppConfig from '../config';
 
 interface ConfigContextType {
     config: typeof AppConfig;

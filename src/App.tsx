@@ -1,10 +1,10 @@
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Home from "./components/Home/Home";
+import Login from "./components/Auth/Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import config from "./config";
-import { ConfigProvider } from "./ConfigContext";
+import { ConfigProvider } from "./contexts/ConfigContext";
 
 
 function App() {
