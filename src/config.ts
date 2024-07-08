@@ -1,11 +1,11 @@
 export interface AppConfig {
     apiUrl: string;
-    // Add other configuration properties here if needed
+    // Add others
 }
 
 const config: AppConfig = {
     apiUrl: import.meta.env.VITE_API_KEY as string,
-    // Define other properties as needed
+    //Add others
 };
 
 export default config;

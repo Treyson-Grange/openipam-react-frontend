@@ -1,4 +1,3 @@
-// ConfigContext.tsx
 import React, { createContext, useContext, ReactNode } from 'react';
 import AppConfig from './config';
 
@@ -18,7 +17,7 @@ export const useConfig = () => {
 
 interface ConfigProviderProps {
     config: typeof AppConfig;
-    children: ReactNode; // Ensure children prop is defined
+    children: ReactNode;
 }
 
 export const ConfigProvider: React.FC<ConfigProviderProps> = ({ config, children }) => {

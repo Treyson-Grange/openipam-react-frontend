@@ -43,11 +43,14 @@ async function apiCall(url: string, method: string, body: Record<string, any> | 
 }
 
 const Home = (): JSX.Element => {
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+
     const hasFetchedToken = useRef<boolean>(false);
     const [csrftoken, setCsrfToken] = useState<string>('');
+
     const navigate = useNavigate();
     const { config } = useConfig();
-    console.log('Config:', config.apiUrl);
 
     useEffect(() => {
         if (!hasFetchedToken.current) {
@@ -97,18 +100,25 @@ const Home = (): JSX.Element => {
     return (
         <>
             <div>Home</div>
-            <TextInput label="Username" placeholder="John Doe" />
+            <TextInput
+                label="Username"
+                placeholder="John Doe"
+                value={username}
+                onChange={(event) => setUsername(event.currentTarget.value)}
+            />
             <TextInput
                 mt="md"
                 type="password"
                 label="Password"
                 placeholder="Your password"
+                value={password}
+                onChange={(event) => setPassword(event.currentTarget.value)}
             />
             <Button
                 variant="light"
                 radius="xl"
                 size="md"
-                onClick={() => handleLogin('treyson', 'asdf')}
+                onClick={() => handleLogin(username, password)}
                 disabled={!csrftoken}
             >
                 Login
