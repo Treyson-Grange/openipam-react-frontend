@@ -23,7 +23,3 @@ npm run dev
 ### Finally,
 - Head to the frontend URL.
 - Login with a username, specific to your local OpenIPAM db.
-
-## Todo For Demo
-- [x] Error Catching / Incorrect login
-- [ ] Make it pretty

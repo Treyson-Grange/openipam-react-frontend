@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@mantine/core';
+import { TextInput, Button, Text, Group, Container, Paper, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../../contexts/ConfigContext';
 import { apiCall } from '../../api';
@@ -43,27 +43,24 @@ const Home = (): JSX.Element => {
 
     return (
         <>
-            <div>Welcome Home</div>
-            {userName && <div>Hello, {userName}!</div>}
-            <Button
-                variant="light"
-                radius="xl"
-                size="md"
-                onClick={handleLogout}
-                disabled={!csrftoken}
-            >
-                Logout
-            </Button>
-            <Button
-                variant="light"
-                radius="xl"
-                size="md"
-                onClick={handleWhoAmI}
-                disabled={!csrftoken}
-            >
-                Who Am I
-            </Button>
+            <Container size="md" mt="xl">
+                <Paper radius="md" p="xl" withBorder>
+                    <Title order={1} mb="xl" ta="center">Home</Title>
+                    <Text size="xl" ta="center">Welcome, {userName}</Text>
+                    <Group flex="row" justify="space-between" mt="xl">
+                        <Button
+                            onClick={handleLogout}
+                            radius="lg"
+                            size="lg"
+                            fullWidth
+                        >
+                            Logout
+                        </Button>
+                    </Group>
+                </Paper>
+            </Container>
         </>
+
     );
 };
 
