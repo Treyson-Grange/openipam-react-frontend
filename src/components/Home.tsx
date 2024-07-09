@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { TextInput, Button, Text, Group, Container, Paper, Title } from '@mantine/core';
+import { Button, Text, Group, Container, Paper, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../../contexts/ConfigContext';
-import { apiCall } from '../../api';
-import { useCsrfToken } from '../../hooks/useCsrfToken';
+import { useConfig } from '../contexts/ConfigContext';
+import { apiCall } from '../api';
+import { useCsrfToken } from '../hooks/useCsrfToken';
 
 const Home = (): JSX.Element => {
     const navigate = useNavigate();
@@ -30,7 +30,6 @@ const Home = (): JSX.Element => {
                 navigate('/login')
                 return;
             }
-            console.log("Who Am I", data.user.username)
             setUserName(data.user.username);
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);

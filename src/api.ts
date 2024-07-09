@@ -1,6 +1,6 @@
-export async function getCSRFToken(): Promise<string> {
+export async function getCSRFToken(apiUrl: string): Promise<string> {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/v2/get_csrf/', {
+        const response = await fetch(`${apiUrl}/get_csrf/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

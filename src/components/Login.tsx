@@ -1,9 +1,9 @@
 import { TextInput, Button, Text, Group, Container, Paper, Title } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../../contexts/ConfigContext';
-import { apiCall } from '../../api';
-import { useCsrfToken } from '../../hooks/useCsrfToken';
+import { useConfig } from '../contexts/ConfigContext';
+import { apiCall } from '../api';
+import { useCsrfToken } from '../hooks/useCsrfToken';
 
 const LoginForm = () => {
     const [username, setUsername] = useState<string>('');
