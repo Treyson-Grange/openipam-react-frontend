@@ -8,8 +8,9 @@ export const useCsrfToken = () => {
     const { config } = useConfig();
     useEffect(() => {
         if (!hasFetchedToken.current) {
-            getCSRFToken(config.apiUrl).then(token => {
-                setCsrfToken(token);
+            getCSRFToken(config.apiUrl).then(tokens => {
+                setCsrfToken(tokens.csrfToken);
+                // document.cookie = `csrftoken=${tokens.csrfToken}; path=/`;
                 hasFetchedToken.current = true;
             }).catch(error => {
                 console.error('Failed to fetch initial CSRF token:', error);

@@ -1,4 +1,4 @@
-export async function getCSRFToken(apiUrl: string): Promise<string> {
+export async function getCSRFToken(apiUrl: string): Promise<{ csrfToken: string, sessionID: string }> {
     try {
         const response = await fetch(`${apiUrl}/get_csrf/`, {
             method: 'GET',
@@ -11,7 +11,8 @@ export async function getCSRFToken(apiUrl: string): Promise<string> {
             throw new Error('Failed to fetch CSRF token');
         }
         const data = await response.json();
-        return data.csrfToken;
+        console.log(data)
+        return { csrfToken: data.csrfToken, sessionID: data.session_id };
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
         throw error;
