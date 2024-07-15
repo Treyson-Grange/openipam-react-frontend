@@ -524,6 +524,15 @@ export interface LogEntry {
     message: string;
 }
 
+export interface RecentReport {
+    hosts_today: number;
+    hosts_week: number;
+    hosts_month: number;
+    users_today: number;
+    users_week: number;
+    users_month: number;
+}
+
 export interface Interface {
     description: string;
     is_enabled: boolean;

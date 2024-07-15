@@ -12,10 +12,11 @@ const LoginForm = () => {
 
     const navigate = useNavigate();
     const { config } = useConfig();
-    const csrftoken = useCsrfToken();
+    const { csrftoken, fetchCsrfToken } = useCsrfToken();
 
     const handleLogin = async () => {
         try {
+            await fetchCsrfToken();
             const url = `${config.apiUrl}/login/`;
             const data = await apiCall(url, 'POST', { username, password }, csrftoken);
             console.log('Login successful:', data);

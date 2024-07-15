@@ -26,13 +26,27 @@ import { getCookie } from "./getCookie";
 export const getApiEndpointFunctions = <
     StrictTypeChecking extends void | never = never
 >() => ({
+    auth: {
+        logout: requestGenerator<
+            HttpMethod.POST,
+            void,
+            API.GenericResponse | StrictTypeChecking
+        >(HttpMethod.POST, "logout/", { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie("csrftoken") ?? "" } }),
+    },
     logs: {
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, "logs/", { headers: { "Content-Type": "application/json", 'X-CSRFToken': getCookie('csrftoken') ?? "" } }),
+        >(HttpMethod.GET, "logs/", { headers: { "Content-Type": "application/json" } }),
     },
+    reports: {
+        recent: requestGenerator<
+            HttpMethod.GET,
+            Array<any>,
+            API.RecentReport | StrictTypeChecking
+        >(HttpMethod.GET, "report/recent-stats", { headers: { "Content-Type": "application/json" } }),
+    }
 });
 
 declare global {
@@ -274,10 +288,10 @@ function requestGenerator<
                         ...extraHeaders,
                         // Add the CSRF token to the headers, overriding any value that
                         // might have been passed in the extra headers
-                        "X-CSRFToken": token,
                     },
                     signal: controller?.signal,
                     body: form ? (data as FormData) : JSON.stringify(data),
+                    credentials: "include",
                 });
                 if (raw) return response as any;
                 return handleResponse(response, text);

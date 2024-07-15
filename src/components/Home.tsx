@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button, Text, Group, Container, Paper, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
@@ -6,17 +6,18 @@ import { apiCall } from '../api';
 import { useCsrfToken } from '../hooks/useCsrfToken';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import { usePaginatedApi } from '../hooks/useApi';
+import { getCookie, setCookie } from '../utilities/getCookie';
 
 const Home = (): JSX.Element => {
     const [page, setPage] = useState<number>(1);
     const [data, setData] = useState<any>([]);
     const navigate = useNavigate();
     const { config } = useConfig();
-    const csrftoken = useCsrfToken();
+    const { csrftoken, fetchCsrfToken } = useCsrfToken();
     const [userName, setUserName] = useState<string | null>(null);
     const api = getApiEndpointFunctions();
 
-    const { data: paginatedData, loading, reload } = usePaginatedApi(api.logs.get, page, 10);
+    const { data: paginatedData, loading, reload } = usePaginatedApi(api.logs.get, page, 5);
 
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
@@ -28,10 +29,28 @@ const Home = (): JSX.Element => {
         setPage(page + 1);
     };
 
+    function updateCSRFToken(newToken: string) {
+        const csrfCookieName = 'csrftoken';
+        const currentToken = getCookie(csrfCookieName);
+
+        if (currentToken !== newToken) {
+            setCookie(csrfCookieName, newToken);
+            console.log("set new token")
+        }
+    }
+
+    const logout = useCallback(async () => {
+        await fetchCsrfToken();
+        updateCSRFToken(csrftoken);
+        await api.auth.logout();
+        await reload();
+    }, [reload]);
+
 
 
     const handleLogout = async () => {
         try {
+            await fetchCsrfToken();
             const url = `${config.apiUrl}/logout/`;
             const data = await apiCall(url, 'POST', null, csrftoken);
             console.log(data);
@@ -40,6 +59,7 @@ const Home = (): JSX.Element => {
             console.error('There was a problem with the fetch operation:', error);
         }
     };
+
 
     const handleWhoAmI = async () => {
         try {
@@ -58,6 +78,7 @@ const Home = (): JSX.Element => {
     useEffect(() => {
         handleWhoAmI();
     }, []);
+
 
     return (
         <Container size="md" mt="xl">
@@ -82,7 +103,7 @@ const Home = (): JSX.Element => {
                         nextpage
                     </Button>
                     {data && data.map((item: any) => (
-                        <div key={item.id} style={{ marginBottom: '20px' }}>
+                        <div key={item.id}>
                             <Text size="md" ta="center">ID: {item.id}</Text>
                             <Text size="md" ta="center">Content Type: {item.content_type}</Text>
                             <Text size="md" ta="center">Action Flag: {item.action_flag}</Text>

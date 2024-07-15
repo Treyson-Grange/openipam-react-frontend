@@ -97,6 +97,15 @@ export type LogFilter = Partial<{
     stamp__lte: string;
 }>;
 
+export type RecentReportFilter = Partial<{
+    hosts_today: number;
+    hosts_week: number;
+    hosts_month: number;
+    users_today: number;
+    users_week: number;
+    users_month: number;
+}>
+
 export type InterfaceFilter = Partial<{
     /**
      * The ID of the device to filter interfaces by.
