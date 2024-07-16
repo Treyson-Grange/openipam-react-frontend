@@ -1,26 +1,33 @@
 import "@mantine/core/styles.css";
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, Container, ColorSchemeScript } from "@mantine/core";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Demo from "./components/Home"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import config from "./config";
 import { ConfigProvider } from "./contexts/ConfigContext";
-
+import Layout from "./components/Layout";
 
 function App() {
   return (
-    <MantineProvider>
-      <ConfigProvider config={config}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/demo" element={<Demo />} />
-          </Routes>
-        </BrowserRouter>
-      </ConfigProvider>
-    </MantineProvider>
+    <>
+      <ColorSchemeScript defaultColorScheme="auto" />
+      <MantineProvider defaultColorScheme="auto">
+        <ConfigProvider config={config}>
+          <BrowserRouter>
+            <Layout>
+              <Container fluid>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/demo" element={<Demo />} />
+                </Routes>
+              </Container>
+            </Layout>
+          </BrowserRouter>
+        </ConfigProvider>
+      </MantineProvider>
+    </>
   );
 }
 

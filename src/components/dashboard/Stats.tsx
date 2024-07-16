@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useApiData } from '../../hooks/useApi';
-import { Container, Paper, Title } from '@mantine/core';
+import { Paper, Title } from '@mantine/core';
 
 const Stats = () => {
     const [data, setData] = useState<any>([]);
@@ -21,34 +21,32 @@ const Stats = () => {
     }, [apiData]);
 
     return (
-        <Container size="xl" mt="xl">
-            <Paper radius="md" p="lg" withBorder>
-                <Title order={1}>Stats</Title>
+        <Paper radius="md" p="lg" m="lg" withBorder>
+            <Title order={1}>Stats</Title>
 
-                {loading && <p>Loading...</p>}
-                {error && <p>Error: {error.message}</p>}
-                {data && (
-                    <>
-                        <Paper radius="md" p="md" m="md" withBorder>
-                            <Title order={2}>Hosts</Title>
-                            {hostItems.map((item) => (
-                                <p key={item}>
-                                    {itemText(item)}: {data[item]}
-                                </p>
-                            ))}
-                        </Paper>
-                        <Paper radius="md" p="md" m="md" withBorder>
-                            <Title order={2}>Users</Title>
-                            {userItems.map((item) => (
-                                <p key={item}>
-                                    {data[item]} {itemText(item)}
-                                </p>
-                            ))}
-                        </Paper>
-                    </>
-                )}
-            </Paper>
-        </Container>
+            {loading && <p>Loading...</p>}
+            {error && <p>Error: {error.message}</p>}
+            {data && (
+                <>
+                    <Paper radius="md" p="md" m="md" withBorder>
+                        <Title order={2}>Hosts</Title>
+                        {hostItems.map((item) => (
+                            <p key={item}>
+                                {itemText(item)}: {data[item]}
+                            </p>
+                        ))}
+                    </Paper>
+                    <Paper radius="md" p="md" m="md" withBorder>
+                        <Title order={2}>Users</Title>
+                        {userItems.map((item) => (
+                            <p key={item}>
+                                {data[item]} {itemText(item)}
+                            </p>
+                        ))}
+                    </Paper>
+                </>
+            )}
+        </Paper>
     );
 };
 

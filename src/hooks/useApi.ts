@@ -241,7 +241,6 @@ export const useCachingApi = <
 
     useEffect(() => {
         // Clear the cache if the endpoint or query params change, as these will invalidate the cache
-        console.log("Clearing cache");
         dataCache.current = {};
         lastUsed.current = [];
     }, [memoizedEndpoint, memoizedQueryParams, pageSize]);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Text, Group, Container, Paper, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
@@ -6,7 +6,6 @@ import { apiCall } from '../api';
 import { useCsrfToken } from '../hooks/useCsrfToken';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import { usePaginatedApi } from '../hooks/useApi';
-import { getCookie, setCookie } from '../utilities/getCookie';
 
 const Home = (): JSX.Element => {
     const [page, setPage] = useState<number>(1);
@@ -17,7 +16,7 @@ const Home = (): JSX.Element => {
     const [userName, setUserName] = useState<string | null>(null);
     const api = getApiEndpointFunctions();
 
-    const { data: paginatedData, loading, reload } = usePaginatedApi(api.logs.get, page, 5);
+    const { data: paginatedData } = usePaginatedApi(api.logs.get, page, 5);
 
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
@@ -29,22 +28,21 @@ const Home = (): JSX.Element => {
         setPage(page + 1);
     };
 
-    function updateCSRFToken(newToken: string) {
-        const csrfCookieName = 'csrftoken';
-        const currentToken = getCookie(csrfCookieName);
+    // function updateCSRFToken(newToken: string) {
+    //     const csrfCookieName = 'csrftoken';
+    //     const currentToken = getCookie(csrfCookieName);
 
-        if (currentToken !== newToken) {
-            setCookie(csrfCookieName, newToken);
-            console.log("set new token")
-        }
-    }
+    //     if (currentToken !== newToken) {
+    //         setCookie(csrfCookieName, newToken);
+    //     }
+    // }
 
-    const logout = useCallback(async () => {
-        await fetchCsrfToken();
-        updateCSRFToken(csrftoken);
-        await api.auth.logout();
-        await reload();
-    }, [reload]);
+    // const logout = useCallback(async () => {
+    //     await fetchCsrfToken();
+    //     updateCSRFToken(csrftoken);
+    //     await api.auth.logout();
+    //     await reload();
+    // }, [reload]);
 
 
 
@@ -52,14 +50,12 @@ const Home = (): JSX.Element => {
         try {
             await fetchCsrfToken();
             const url = `${config.apiUrl}/logout/`;
-            const data = await apiCall(url, 'POST', null, csrftoken);
-            console.log(data);
+            await apiCall(url, 'POST', null, csrftoken);
             navigate('/login');
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
         }
     };
-
 
     const handleWhoAmI = async () => {
         try {

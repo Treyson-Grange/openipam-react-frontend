@@ -10,7 +10,7 @@ import { Grid } from '@mantine/core';
 const DashBoard = () => {
     return (
         <>
-            <Grid grow>
+            <Grid>
                 <Grid.Col span={6}>
                     <Welcome />
                     <Navigation />

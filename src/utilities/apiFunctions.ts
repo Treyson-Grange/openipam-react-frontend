@@ -32,6 +32,11 @@ export const getApiEndpointFunctions = <
             void,
             API.GenericResponse | StrictTypeChecking
         >(HttpMethod.POST, "logout/", { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie("csrftoken") ?? "" } }),
+        whoammi: requestGenerator<
+            HttpMethod.GET,
+            void,
+            API.GenericResponse | StrictTypeChecking
+        >(HttpMethod.GET, "whoami/", { headers: { 'Content-Type': 'application/json', } }),
     },
     logs: {
         get: requestGenerator<
@@ -46,6 +51,13 @@ export const getApiEndpointFunctions = <
             Array<any>,
             API.RecentReport | StrictTypeChecking
         >(HttpMethod.GET, "report/recent-stats", { headers: { "Content-Type": "application/json" } }),
+    },
+    groups: {
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, "groups/", { headers: { "Content-Type": "application/json" } }),
     }
 });
 
