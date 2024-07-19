@@ -1,25 +1,27 @@
-# OpenIPAM Frontend Login DEMO
-This is a locally hosted demo that shows the setup needed to allow for login through the seperate backend, dealing with CSRF and CORS errors
+# OpenIPAM Frontend
+
+This is a WIP rework of the openIPAM front end at USU. openIPAM is currently setup through Django admin dashboard, this is bringing it to a React based app to remove its connection with the Django REST framework.
 
 ## Setup
 
-- First, copy `example.env` into `.env`
-- You will fill this out in a moment
+1. **Environment Configuration**
+   - Copy `example.env` to `.env`
+   - Fill out the `.env` file as needed.
 
-### OpenIPAM Backend
-- You will need this cloned [GitHub Repo](https://github.com/Treyson-Grange/django-openipam)
-- After cloning, use poetry to install packages, and run it.
-- Note what host and port it is running on, and throw it in your `.env`
-- If you work here you should have a dev db for OpenIPAM lol im not gonna help you there
+2. **OpenIPAM Backend**
+   - Clone the [OpenIPAM Backend Repository](https://github.com/Treyson-Grange/django-openipam).
+   - Use `poetry` to install the packages and start the backend.
+   - Note the host and port the backend is running on and update your `.env` accordingly.
+   - Ensure you have access to the development database for OpenIPAM.
 
-### OpenIPAM Frontend
-- Inside of this repository, run the following commands
-```
-npm install 
-npm run dev
-```
-- Note the host and port, and throw it in your `.env` (You don't actually need this one)
+3. **OpenIPAM Frontend**
+   - Inside this repository, run:
+     ```
+     npm install 
+     npm run dev
+     ```
+   - Note the host and port, and update your `.env` (though this one is not strictly necessary).
 
-### Finally,
-- Head to the frontend URL.
-- Login with a username, specific to your local OpenIPAM db.
+4. **Access the Application**
+   - Navigate to the frontend URL.
+   - Log in with a username specific to your local OpenIPAM database.
