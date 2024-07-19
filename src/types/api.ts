@@ -26,6 +26,19 @@ export type GenericResponse = {
     success: true;
 };
 
+export type AuthResponse = {
+    id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    is_staff: boolean;
+    is_superuser: boolean;
+    is_ipamadmin: boolean;
+    is_active: boolean;
+    last_login: string;
+}
+
 export type PaginatedApiFunction<
     ResponseData,
     Params extends PaginationParams = PaginationParams

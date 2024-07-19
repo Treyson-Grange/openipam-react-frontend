@@ -1,12 +1,16 @@
+import React from "react";
 import "@mantine/core/styles.css";
 import { MantineProvider, Container, ColorSchemeScript } from "@mantine/core";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Demo from "./components/Home"
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, useRoutes } from "react-router-dom";
 import config from "./config";
 import { ConfigProvider } from "./contexts/ConfigContext";
 import Layout from "./components/Layout";
+import routes from "./routes";
+
+function AppRoutes() {
+  const element = useRoutes(routes);
+  return <>{element}</>;
+}
 
 function App() {
   return (
@@ -17,11 +21,9 @@ function App() {
           <BrowserRouter>
             <Layout>
               <Container fluid>
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/demo" element={<Demo />} />
-                </Routes>
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <AppRoutes />
+                </React.Suspense>
               </Container>
             </Layout>
           </BrowserRouter>

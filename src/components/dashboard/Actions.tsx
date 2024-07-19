@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
-import PaginatedTable from './tables/PaginatedTable';
+import PaginatedTable from '../tables/PaginatedTable';
 
 const Actions = (): JSX.Element => {
     const [pageSize] = useState<number>(5);

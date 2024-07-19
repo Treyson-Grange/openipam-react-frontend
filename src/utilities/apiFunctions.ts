@@ -37,6 +37,11 @@ export const getApiEndpointFunctions = <
             void,
             API.GenericResponse | StrictTypeChecking
         >(HttpMethod.GET, "whoami/", { headers: { 'Content-Type': 'application/json', } }),
+        me: requestGenerator<
+            HttpMethod.GET,
+            void,
+            API.AuthResponse | StrictTypeChecking
+        >(HttpMethod.GET, "users/me/", { headers: { 'Content-Type': 'application/json', } }),
     },
     logs: {
         get: requestGenerator<

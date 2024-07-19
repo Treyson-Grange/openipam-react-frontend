@@ -1,7 +1,7 @@
-import { PaginatedData } from '../../../types/api';
-import { usePaginatedApi } from '../../../hooks/useApi';
+import { PaginatedData } from '../../types/api';
+import { usePaginatedApi } from '../../hooks/useApi';
 import { useState, useEffect } from 'react';
-import { QueryRequest } from '../../../utilities/apiFunctions';
+import { QueryRequest } from '../../utilities/apiFunctions';
 import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notification, Dialog } from '@mantine/core';
 import { FaArrowLeft, FaArrowRight, FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
 
@@ -78,7 +78,7 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
         <>
             <Paper radius='md' p='lg' m='lg' withBorder>
                 <Title order={1}>{title}</Title>
-                <Table>
+                <Table style={{ overflowX: "auto" }}>
                     <Table.Thead>
                         <Table.Tr>
                             {editableObj && <Table.Th></Table.Th>}
@@ -129,6 +129,7 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
                         })}
                     </Table.Tbody>
                 </Table>
+
                 <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <Button onClick={prevPage} disabled={page <= 1} color='blue'>
@@ -158,15 +159,13 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
                             onClose={() => setNotification(null)}
                         />
                     </Dialog>
-
                     {editableObj && (
                         <Button onClick={submitChange} color='blue'>
                             Submit
                         </Button>
                     )}
-
                 </Group>
-            </Paper>
+            </Paper >
         </>
     );
 };
