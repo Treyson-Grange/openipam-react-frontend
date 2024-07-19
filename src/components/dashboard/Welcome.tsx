@@ -1,40 +1,9 @@
 import { Paper, Title } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../../contexts/ConfigContext';
-import { apiCall } from '../../api';
-import { useCsrfToken } from '../../hooks/useCsrfToken';
-
-
 
 const Welcome = () => {
-    const { config } = useConfig();
-    const { csrftoken } = useCsrfToken();
-    const navigate = useNavigate();
-    const [userName, setUserName] = useState<string | null>(null);
-
-    const handleWhoAmI = async () => {
-        try {
-            const url = `${config.apiUrl}/whoami/`;
-            const data = await apiCall(url, 'GET', null, csrftoken);
-            if (data.user === null) {
-                navigate('/login');
-                return;
-            }
-            const user = data.user.username;
-            setUserName(user.charAt(0).toUpperCase() + user.slice(1));
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-        }
-    };
-
-    useEffect(() => {
-        handleWhoAmI();
-    }, []);
-
     return (
         <Paper radius="md" p="lg" m="lg" withBorder>
-            <Title order={1} mb="xl">Welcome to openIPAM, {userName}</Title>
+            <Title order={1} mb="xl">Welcome to openIPAM</Title>
             <p>We are now using <a href='https://github.com/openipam/django-openipam/issues/'>Issues on GitHub</a> to help aid us with features and bugs. Please make an issue on GitHub to give us feedback.</p>
             <p>Item to consider when using the new interface:</p>
             <ul>

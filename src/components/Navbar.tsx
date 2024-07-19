@@ -16,7 +16,6 @@ interface DropdownLink {
 
 const links: DropdownLink[] = [
     { link: '/', label: 'Home' },
-    { link: '/demo', label: 'Demo' },//Delete
     { link: '/hosts', label: 'Hosts' },
     { link: '/dns', label: 'DNS' },
 ];
