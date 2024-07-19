@@ -18,7 +18,7 @@ const LoginForm = () => {
         try {
             await fetchCsrfToken();
             const url = `${config.apiUrl}/login/`;
-            const data = await apiCall(url, 'POST', { username, password }, csrftoken);
+            await apiCall(url, 'POST', { username, password }, csrftoken);
             navigate('/');
         } catch (error: any) {
             if (error.message === '401') {

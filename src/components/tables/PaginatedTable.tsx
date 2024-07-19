@@ -6,19 +6,47 @@ import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notificatio
 import { FaArrowLeft, FaArrowRight, FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
+    /**
+     * Function defined in the apiFunctions.ts file that will be used to fetch the data
+     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
+    /**
+     * Default number of items per page
+     */
     defPageSize: number;
+    /**
+     * Title of the table
+    */
     title: string;
+    /**
+     * List of attributes that will be displayed in the table
+     */
     neededAttr: string[];
+    /**
+     * Additional page sizes that will be added to the default page sizes
+    */
     morePageSizes?: string[];
 }
 
+/**
+ * Allows for creation of a paginated table with the ability to select rows, and perform
+ * actions on the selected rows.
+ */
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj: true;
+    /**
+     * List of actions that can be performed on the selected rows
+     */
     actions: string[];
+    /**
+     * Functions that will be called when an action is performed from the actions list
+     */
     actionFunctions: Record<string, (id: number) => void>;
 }
 
+/**
+ * Allows for creation of a paginated table that does not have the ability to select rows
+ */
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj?: false;
 }
