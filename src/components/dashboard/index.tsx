@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 const DashBoard = () => {
     const auth = useAuth();
     const navigate = useNavigate();
-
     if (!auth.results) {
         navigate('/login');
     }
@@ -19,7 +18,9 @@ const DashBoard = () => {
             <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
                 <Welcome />
                 <Navigation />
-                <Admin />
+                {auth.results && auth.results.is_ipamadmin && (
+                    <Admin />
+                )}
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
                 <Stats />
