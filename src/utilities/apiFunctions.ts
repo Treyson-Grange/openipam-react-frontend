@@ -68,7 +68,8 @@ export const getApiEndpointFunctions = <
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'logs/', { headers: { 'Content-Type': 'application/json', } }),
         /**
-         * Gets LogEntry objects from the current user
+         * Gets LogEntry objects from the current user\
+         * Sortable: false
          */
         mylogs: requestGenerator<
             HttpMethod.GET,
@@ -95,6 +96,7 @@ export const getApiEndpointFunctions = <
     groups: {
         /**
          * Gets Group objects
+         * Sortable: true
          */
         get: requestGenerator<
             HttpMethod.GET,

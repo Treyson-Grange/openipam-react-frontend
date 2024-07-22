@@ -14,6 +14,7 @@ const Actions = (): JSX.Element => {
                 title='Recent Actions'
                 neededAttr={['content_type', 'object_repr', 'action_time']}
                 morePageSizes={['1']}
+                sortable={true}
                 actions={['Test', 'For', 'UI']}
             />
             <PaginatedTable
@@ -22,11 +23,11 @@ const Actions = (): JSX.Element => {
                 title='Groups'
                 neededAttr={['name', 'id', 'permissions']}
                 editableObj={true}
-                actions={['Edit', 'Delete']}
+                actions={['Change Source Internal', 'Change Source LDAP']}
                 sortable={true}
                 actionFunctions={{
-                    Edit: (id: number) => console.log(`Editing group ${id}`),
-                    Delete: (id: number) => console.log(`Deleting group ${id}`)
+                    ChangeSourceInternal: (id: number) => console.log(`Editing group ${id}`),
+                    ChangeSourceLDAP: (id: number) => console.log(`Deleting group ${id}`)
                 }}
             />
         </>

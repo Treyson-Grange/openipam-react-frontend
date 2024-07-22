@@ -7,21 +7,51 @@ import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 import { FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
+    /**
+     * Function to get data from the API
+     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
+    /**
+     * Default page size
+     */
     defPageSize: number;
+    /**
+     * Title of the table
+     */
     title: string;
+    /**
+     * List of attributes to display
+     */
     neededAttr: string[];
+    /**
+     * Additional page sizes to display in the page size dropdown
+     */
     morePageSizes?: string[];
-    sortable?: boolean; // Added sortable prop
+    /**
+     * Whether the table has editable objects
+     */
+    sortable?: boolean;
 }
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
+    /**
+     * Whether the table has editable objects
+     */
     editableObj: true;
+    /**
+     * List of actions to display in the action dropdown
+     */
     actions: string[];
+    /**
+     * Object containing functions to call when submitting an action
+     */
     actionFunctions: Record<string, (id: number) => void>;
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
+    /**
+     * Default to false
+     */
     editableObj?: false;
 }
 
@@ -49,12 +79,17 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         pageSizes.push(...Array.from(uniqueSizes).sort((a, b) => parseInt(a) - parseInt(b)));
     }
 
-    const { data: paginatedData } = usePaginatedApi(getFunction, page, pageSize, orderBy ? { "order_by": orderBy, "direction": direction } : {});
-
     const handlePageSizeChange = (value: string | null) => {
         setPage(1);
         setPageSize(parseInt(value || '5'));
     }
+
+    const { data: paginatedData } = usePaginatedApi(
+        getFunction,
+        page,
+        pageSize,
+        orderBy ? { "order_by": orderBy, "direction": direction } : {}
+    );
 
     const handleActionChange = (value: string | null) => {
         if (value) {
@@ -64,23 +99,33 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     }
 
     const handleSort = (key: string, oldDirection: string) => {
-        if (!sortable) return; // Skip sorting if not enabled
-
+        if (!sortable) return;
         let newDirection = 'asc';
         if (key === orderBy) {
             newDirection = oldDirection === 'asc' ? 'desc' : 'asc';
         }
-
         setDirection(newDirection);
         setOrderBy(key);
     }
 
-    const sortedData = () => data;
+    const ridSpaces = (str: string) => str.replace(/\s/g, '');
 
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
+    const handleCheckboxChange = (item: any, checked: boolean) => {
+        setSelectedObjs(prevSelectedObjs => {
+            const updatedSelectedObjs = new Set(prevSelectedObjs);
+            if (checked) {
+                updatedSelectedObjs.add(item.id);
+            } else {
+                updatedSelectedObjs.delete(item.id);
+            }
+            return updatedSelectedObjs;
+        });
+    };
+
     const submitChange = () => {
-        const actionFunction = actionFunctions[action];
+        const actionFunction = actionFunctions[ridSpaces(action)];
         try {
             if (actionFunction) {
                 selectedObjs.forEach(id => actionFunction(id));
@@ -103,123 +148,107 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         }
     }, [paginatedData, pageSize, orderBy, direction]);
 
-    const handleCheckboxChange = (item: any, checked: boolean) => {
-        setSelectedObjs(prevSelectedObjs => {
-            const updatedSelectedObjs = new Set(prevSelectedObjs);
-            if (checked) {
-                updatedSelectedObjs.add(item.id);
-            } else {
-                updatedSelectedObjs.delete(item.id);
-            }
-            return updatedSelectedObjs;
-        });
-    };
-
     return (
-        <>
-            <Paper radius='lg' p='lg' m='lg' withBorder>
-                <Group justify='space-between'>
-                    <Title order={1}>{title}</Title>
-                    <Pagination total={maxPages} value={page} onChange={setPage} />
-                </Group>
-                <Table style={{ overflowX: 'auto' }}>
-                    <Table.Thead>
-                        <Table.Tr>
-                            {editableObj && <Table.Th></Table.Th>}
-                            {neededAttr.map(attr => (
-                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
-                                    <Group>
-                                        <Text>{handleFormatHeader(attr)}</Text>
-                                        {sortable && (
-                                            <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
-                                                {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
-                                            </Button>
-                                        )}
-                                    </Group>
-                                </Table.Th>
-                            ))}
-                            {neededAttr.some(attr => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/.test(attr)) && (
-                                <Table.Th style={{ textAlign: 'right' }}>Date</Table.Th>
-                            )}
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {sortedData().map((item: any) => {
-                            const dateAttrs: string[] = [];
-
-                            return (
-                                <Table.Tr key={item.id}>
-                                    {editableObj && (
-                                        <Table.Td>
-                                            <Checkbox
-                                                checked={selectedObjs.has(item.id)}
-                                                onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
-                                            />
-                                        </Table.Td>
+        <Paper radius='lg' p='lg' m='lg' withBorder>
+            <Group justify='space-between'>
+                <Title>{title}</Title>
+                <Pagination total={maxPages} value={page} onChange={setPage} />
+            </Group>
+            <Table style={{ overflowX: 'auto' }}>
+                <colgroup>
+                    {editableObj && <col style={{ width: '5%' }} />}
+                    {neededAttr.map(attr => (
+                        <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
+                    ))}
+                </colgroup>
+                <Table.Thead>
+                    <Table.Tr>
+                        {editableObj && <Table.Th></Table.Th>}
+                        {neededAttr.map(attr => (
+                            <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                <Group gap="xs">
+                                    <Text>{handleFormatHeader(attr)}</Text>
+                                    {sortable && (
+                                        <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
+                                            {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
+                                        </Button>
                                     )}
-                                    {neededAttr.map(attr => {
-                                        const value = item[attr];
-                                        const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/;
-
-                                        if (isoDateRegex.test(value)) {
-                                            const date = new Date(value);
-                                            const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                                            dateAttrs.push(date.toLocaleDateString('en-US', options));
-                                            return <Table.Td key={attr} style={{ textAlign: 'left' }}>{date.toLocaleDateString('en-US', options)}</Table.Td>;
-                                        } else if (Array.isArray(value)) {
-                                            return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value.join(', ')}</Table.Td>;
-                                        } else {
-                                            return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value || 'N/A'}</Table.Td>;
-                                        }
-                                    })}
-                                    {dateAttrs.length > 0 && (
-                                        <Table.Td style={{ textAlign: 'right' }}>
-                                            <Text>{dateAttrs.join(' ')}</Text>
-                                        </Table.Td>
-                                    )}
-                                </Table.Tr>
-                            );
-                        })}
-                    </Table.Tbody>
-                </Table>
-
-                <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <Select
-                            style={{ maxWidth: '80px', textAlign: 'center' }}
-                            data={pageSizes}
-                            value={pageSize.toString()}
-                            onChange={handlePageSizeChange}
-                        />
-                        {editableObj && (
-                            <Select
-                                data={actions}
-                                value={action}
-                                onChange={handleActionChange}
-                            />
+                                </Group>
+                            </Table.Th>
+                        ))}
+                        {neededAttr.some(attr => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/.test(attr)) && (
+                            <Table.Th style={{ textAlign: 'right' }}>Date</Table.Th>
                         )}
-                    </div>
-                    <Dialog opened={notification != null} size='xl'>
-                        <Notification
-                            title={notification?.[0]}
-                            icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
-                            color='blue'
-                            onClose={() => setNotification(null)}
-                        />
-                    </Dialog>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                    {data.map((item: any) => {
+                        return (
+                            <Table.Tr key={item.id}>
+                                {editableObj && (
+                                    <Table.Td>
+                                        <Checkbox
+                                            checked={selectedObjs.has(item.id)}
+                                            onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
+                                        />
+                                    </Table.Td>
+                                )}
+                                {neededAttr.map(attr => {
+                                    const value = item[attr];
+                                    const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/;
+
+                                    if (isoDateRegex.test(value)) {
+                                        const date = new Date(value);
+                                        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{date.toLocaleDateString('en-US', options)}</Table.Td>;
+                                    } else if (Array.isArray(value)) {
+                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value.join(', ')}</Table.Td>;
+                                    } else {
+                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value || 'N/A'}</Table.Td>;
+                                    }
+                                })}
+
+                            </Table.Tr>
+                        );
+                    })}
+                </Table.Tbody>
+            </Table>
+            <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <Select
+                        style={{ maxWidth: '80px', textAlign: 'center' }}
+                        data={pageSizes}
+                        value={pageSize.toString()}
+                        onChange={handlePageSizeChange}
+                    />
                     {editableObj && (
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='red'>
-                                Clear Selection
-                            </Button>
-                            <Button onClick={submitChange} color='blue'>
-                                Submit
-                            </Button>
-                        </div>
+                        <Select
+                            data={actions}
+                            value={action}
+                            onChange={handleActionChange}
+                        />
                     )}
-                </Group>
-            </Paper>
-        </>
+                </div>
+                <Dialog opened={notification != null} size='xl'>
+                    <Notification
+                        title={notification?.[0]}
+                        icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
+                        color='blue'
+                        onClose={() => setNotification(null)}
+                    />
+                </Dialog>
+                {editableObj && (
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='red'>
+                            Clear Selection
+                        </Button>
+                        <Button onClick={submitChange} color='blue'>
+                            Submit
+                        </Button>
+                    </div>
+                )}
+            </Group>
+        </Paper>
     );
 };
 
