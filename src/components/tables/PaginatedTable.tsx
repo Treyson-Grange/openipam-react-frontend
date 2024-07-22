@@ -3,62 +3,35 @@ import { usePaginatedApi } from '../../hooks/useApi';
 import { useState, useEffect } from 'react';
 import { QueryRequest } from '../../utilities/apiFunctions';
 import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notification, Dialog, Pagination } from '@mantine/core';
+import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 import { FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
-    /**
-     * Function defined in the apiFunctions.ts file that will be used to fetch the data
-     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
-    /**
-     * Default number of items per page
-     */
     defPageSize: number;
-    /**
-     * Title of the table
-    */
     title: string;
-    /**
-     * List of attributes that will be displayed in the table
-     */
     neededAttr: string[];
-    /**
-     * Additional page sizes that will be added to the default page sizes
-    */
     morePageSizes?: string[];
+    sortable?: boolean; // Added sortable prop
 }
 
-/**
- * Allows for creation of a paginated table with the ability to select rows, and perform
- * actions on the selected rows.
- */
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj: true;
-    /**
-     * List of actions that can be performed on the selected rows
-     */
     actions: string[];
-    /**
-     * Functions that will be called when an action is performed from the actions list
-     */
     actionFunctions: Record<string, (id: number) => void>;
 }
 
-/**
- * Allows for creation of a paginated table that does not have the ability to select rows
- */
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj?: false;
 }
 
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
-
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions;
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions;
 
-    const { getFunction, defPageSize, title, neededAttr, morePageSizes, editableObj } = props;
+    const { getFunction, defPageSize, title, neededAttr, morePageSizes, editableObj, sortable } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);
@@ -66,6 +39,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [selectedObjs, setSelectedObjs] = useState<Set<number>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
     const [action, setAction] = useState<string>(actions[0]);
+    const [orderBy, setOrderBy] = useState<string>('');
+    const [direction, setDirection] = useState<string>('asc');
 
     const pageSizes = ['5', '10', '20'];
     if (morePageSizes) {
@@ -74,7 +49,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         pageSizes.push(...Array.from(uniqueSizes).sort((a, b) => parseInt(a) - parseInt(b)));
     }
 
-    const { data: paginatedData } = usePaginatedApi(getFunction, page, pageSize);
+    const { data: paginatedData } = usePaginatedApi(getFunction, page, pageSize, orderBy ? { "order_by": orderBy, "direction": direction } : {});
 
     const handlePageSizeChange = (value: string | null) => {
         setPage(1);
@@ -87,6 +62,20 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             console.log(`Action changed to ${value}`);
         }
     }
+
+    const handleSort = (key: string, oldDirection: string) => {
+        if (!sortable) return; // Skip sorting if not enabled
+
+        let newDirection = 'asc';
+        if (key === orderBy) {
+            newDirection = oldDirection === 'asc' ? 'desc' : 'asc';
+        }
+
+        setDirection(newDirection);
+        setOrderBy(key);
+    }
+
+    const sortedData = () => data;
 
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
@@ -105,8 +94,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             setNotification([`Error submitting changes: ${error}`, 'Error']);
             return;
         }
-
-
     }
 
     useEffect(() => {
@@ -114,7 +101,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             setData(paginatedData.results);
             setMaxPages(Math.ceil(paginatedData.count / pageSize));
         }
-    }, [paginatedData, pageSize]);
+    }, [paginatedData, pageSize, orderBy, direction]);
 
     const handleCheckboxChange = (item: any, checked: boolean) => {
         setSelectedObjs(prevSelectedObjs => {
@@ -140,7 +127,16 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         <Table.Tr>
                             {editableObj && <Table.Th></Table.Th>}
                             {neededAttr.map(attr => (
-                                <Table.Th key={attr} style={{ textAlign: 'left' }}>{handleFormatHeader(attr)}</Table.Th>
+                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                    <Group>
+                                        <Text>{handleFormatHeader(attr)}</Text>
+                                        {sortable && (
+                                            <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
+                                                {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
+                                            </Button>
+                                        )}
+                                    </Group>
+                                </Table.Th>
                             ))}
                             {neededAttr.some(attr => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/.test(attr)) && (
                                 <Table.Th style={{ textAlign: 'right' }}>Date</Table.Th>
@@ -148,7 +144,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
-                        {data && data.map((item: any) => {
+                        {sortedData().map((item: any) => {
                             const dateAttrs: string[] = [];
 
                             return (
@@ -213,8 +209,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                     </Dialog>
                     {editableObj && (
                         <div style={{ display: 'flex', gap: '10px' }}>
-
-                            <Button disabled={selectedObjs.size == 0} onClick={() => setSelectedObjs(new Set())} color='red'>
+                            <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='red'>
                                 Clear Selection
                             </Button>
                             <Button onClick={submitChange} color='blue'>
@@ -223,7 +218,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         </div>
                     )}
                 </Group>
-            </Paper >
+            </Paper>
         </>
     );
 };

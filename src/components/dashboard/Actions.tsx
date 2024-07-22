@@ -23,6 +23,7 @@ const Actions = (): JSX.Element => {
                 neededAttr={['name', 'id', 'permissions']}
                 editableObj={true}
                 actions={['Edit', 'Delete']}
+                sortable={true}
                 actionFunctions={{
                     Edit: (id: number) => console.log(`Editing group ${id}`),
                     Delete: (id: number) => console.log(`Deleting group ${id}`)
