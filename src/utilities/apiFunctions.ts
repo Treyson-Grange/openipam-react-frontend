@@ -1,6 +1,6 @@
-import { API } from "../types";
-import { serializeBoolean } from "../types/apiFilters";
-import { getCookie } from "./getCookie";
+import { API } from '../types';
+import { serializeBoolean } from '../types/apiFilters';
+import { getCookie } from './getCookie';
 
 /**
  * This is a hook that provides a simple interface for making requests to the
@@ -26,48 +26,81 @@ import { getCookie } from "./getCookie";
 export const getApiEndpointFunctions = <
     StrictTypeChecking extends void | never = never
 >() => ({
+    /**
+     * Auth API
+     */
     auth: {
+        /**
+         * Logout the current user
+         */
         logout: requestGenerator<
             HttpMethod.POST,
             void,
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.POST, "logout/", { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie("csrftoken") ?? "" } }),
+        >(HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        /**
+         * Gets the current user for testing purposes only :D
+         */
         whoammi: requestGenerator<
             HttpMethod.GET,
             void,
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.GET, "whoami/", { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'whoami/', { headers: { 'Content-Type': 'application/json', } }),
+        /**
+         * Gets current users information, including permissions
+         */
         me: requestGenerator<
             HttpMethod.GET,
             void,
             API.AuthResponse | StrictTypeChecking
-        >(HttpMethod.GET, "users/me/", { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'users/me/', { headers: { 'Content-Type': 'application/json', } }),
     },
+    /**
+     * Logs API
+     */
     logs: {
+        /**
+         * Gets LogEntry objects
+         */
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, "logs/", { headers: { "Content-Type": "application/json", } }),
+        >(HttpMethod.GET, 'logs/', { headers: { 'Content-Type': 'application/json', } }),
+        /**
+         * Gets LogEntry objects from the current user
+         */
         mylogs: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, "logs/my-logs/", { headers: { "Content-Type": "application/json", } }),
+        >(HttpMethod.GET, 'logs/my-logs/', { headers: { 'Content-Type': 'application/json', } }),
     },
+    /**
+     * Reports API
+     */
     reports: {
+        /**
+         * Gets the recent stats report from the API
+         */
         recent: requestGenerator<
             HttpMethod.GET,
             Array<any>,
             API.RecentReport | StrictTypeChecking
-        >(HttpMethod.GET, "report/recent-stats", { headers: { "Content-Type": "application/json" } }),
+        >(HttpMethod.GET, 'report/recent-stats', { headers: { 'Content-Type': 'application/json' } }),
     },
+    /**
+     * Groups API
+     */
     groups: {
+        /**
+         * Gets Group objects
+         */
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, "groups/", { headers: { "Content-Type": "application/json" } }),
+        >(HttpMethod.GET, 'groups/', { headers: { 'Content-Type': 'application/json' } }),
     }
 });
 
@@ -75,14 +108,14 @@ declare global {
     var api: ReturnType<typeof getApiEndpointFunctions>;
 }
 
-const BASE_URL = "http://127.0.0.1:8000/api/v2";
+const BASE_URL = 'http://127.0.0.1:8000/api/v2';
 
 enum HttpMethod {
-    GET = "GET",
-    POST = "POST",
-    PUT = "PUT",
-    DELETE = "DELETE",
-    PATCH = "PATCH",
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+    PATCH = 'PATCH',
 }
 
 export class ApiError extends Error {
@@ -94,7 +127,7 @@ export class ApiError extends Error {
 export class ApiResponseError extends ApiError {
     constructor(public readonly response: Response) {
         super(
-            "API did not return a valid JSON response. See response property.",
+            'API did not return a valid JSON response. See response property.',
             response.status
         );
     }
@@ -105,7 +138,7 @@ export class ApiResponseError extends ApiError {
  * when attempting to parse an error response. The last field in this list
  * found in the response will be used as the error message.
  */
-const ERROR_DESCRIPTION_FIELDS = ["detail"];
+const ERROR_DESCRIPTION_FIELDS = ['detail'];
 
 /**
  * Handles the response from the API.
@@ -231,7 +264,7 @@ function requestGenerator<
     } = extra;
     url = `${base}/${url}`;
     switch (method) {
-        case "GET":
+        case 'GET':
             // TODO: add params type and update code that uses this
             /**
              * Call this API endpoint with the given query parameters.
@@ -249,11 +282,11 @@ function requestGenerator<
             ) => {
                 const newParams = Object.entries(params ?? {}).reduce(
                     (acc, [key, value]) => {
-                        if (typeof value === "boolean") {
+                        if (typeof value === 'boolean') {
                             acc[key] = serializeBoolean(value);
                         } else {
                             // serialize undefined as None (null in Python)
-                            acc[key] = String(value ?? "None");
+                            acc[key] = String(value ?? 'None');
                         }
                         return acc;
                     },
@@ -267,7 +300,7 @@ function requestGenerator<
                         ...extraHeaders,
                     },
                     signal: controller?.signal,
-                    credentials: "include",
+                    credentials: 'include',
                 });
                 // NOTE: the `any` type here does somewhat break type safety, but it's
                 // necessary to allow the return type to vary based on the passed in
@@ -296,12 +329,12 @@ function requestGenerator<
                 extraHeaders: Record<string, string> = {},
                 controller?: AbortController
             ) => {
-                const token = getCookie("csrftoken");
+                const token = getCookie('csrftoken');
                 if (token === undefined) {
-                    throw new Error("CSRF token not found");
+                    throw new Error('CSRF token not found');
                 }
-                if (!form && !("Content-Type" in headers)) {
-                    headers["Content-Type"] = "application/json";
+                if (!form && !('Content-Type' in headers)) {
+                    headers['Content-Type'] = 'application/json';
                 }
                 const response = await fetch(url, {
                     method,
@@ -313,7 +346,7 @@ function requestGenerator<
                     },
                     signal: controller?.signal,
                     body: form ? (data as FormData) : JSON.stringify(data),
-                    credentials: "include",
+                    credentials: 'include',
                 });
                 if (raw) return response as any;
                 return handleResponse(response, text);

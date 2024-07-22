@@ -1,10 +1,10 @@
 // Filter interfaces for API list endpoints
 
-import { AdvancedFilterParams } from "./api";
+import { AdvancedFilterParams } from './api';
 
 export enum PythonBoolString {
-    true = "True",
-    false = "False",
+    true = 'True',
+    false = 'False',
 }
 
 /**
@@ -43,30 +43,30 @@ export type DiscoverGroupFilter = Partial<{
 }>;
 
 export enum DeviceOrdering {
-    ID = "id",
-    Host = "host",
-    Model = "model",
-    Version = "version",
-    IP = "ip",
-    Vendor = "vendor",
-    Location = "location",
-    PrimaryFlash = "primary_flash",
-    LastUpdateSuccess = "lastupdatesuccess",
-    LastUpdateError = "lastupdateerror",
-    LastUpdate = "lastupdate",
-    DeviceConfig = "device_config",
-    Serial = "serial",
-    SSH = "ssh",
-    SecondaryFlash = "secondary_flash",
+    ID = 'id',
+    Host = 'host',
+    Model = 'model',
+    Version = 'version',
+    IP = 'ip',
+    Vendor = 'vendor',
+    Location = 'location',
+    PrimaryFlash = 'primary_flash',
+    LastUpdateSuccess = 'lastupdatesuccess',
+    LastUpdateError = 'lastupdateerror',
+    LastUpdate = 'lastupdate',
+    DeviceConfig = 'device_config',
+    Serial = 'serial',
+    SSH = 'ssh',
+    SecondaryFlash = 'secondary_flash',
 }
 
 export enum DeviceVendor {
-    Aruba = "Aruba",
-    Brocade = "Brocade/Foundry",
-    HPE = "HPE/Aruba",
-    Juniper = "Juniper Networks",
-    Ubiquiti = "Ubiquiti airOS",
-    Unknown = "unknown (failed discovery)",
+    Aruba = 'Aruba',
+    Brocade = 'Brocade/Foundry',
+    HPE = 'HPE/Aruba',
+    Juniper = 'Juniper Networks',
+    Ubiquiti = 'Ubiquiti airOS',
+    Unknown = 'unknown (failed discovery)',
 }
 
 export type DeviceFilter = AdvancedFilterParams<
@@ -130,10 +130,10 @@ export type InterfaceFilter = Partial<{
 }>;
 
 export enum InterfaceOrdering {
-    SNMPID = "snmpid",
-    Name = "name",
-    Description = "description",
-    Speed = "speed",
-    IsEnabled = "is_enabled",
-    IsOperational = "is_operational",
+    SNMPID = 'snmpid',
+    Name = 'name',
+    Description = 'description',
+    Speed = 'speed',
+    IsEnabled = 'is_enabled',
+    IsOperational = 'is_operational',
 }

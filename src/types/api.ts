@@ -5,9 +5,9 @@
 // PATCH-like requests take partial versions of the StoredObject generic
 // types, and return the full Response type.
 
-import { KeyofStorable } from ".";
-import { ISO8601String } from "../utilities/dateUtils";
-import * as Filters from "./apiFilters";
+import { KeyofStorable } from '.';
+import { ISO8601String } from '../utilities/dateUtils';
+import * as Filters from './apiFilters';
 export { Filters };
 
 interface BaseListParams {
@@ -46,7 +46,7 @@ export type PaginatedApiFunction<
 
 /**
  * Creates a type that represents the filters that can be passed to an advanced filtering endpoint
- * that supports multiple "or" levels, based on the provided filter type indicating which fields are
+ * that supports multiple 'or' levels, based on the provided filter type indicating which fields are
  * available for filtering.
  */
 export type AdvancedFilterParams<
@@ -54,8 +54,8 @@ export type AdvancedFilterParams<
         Record<string & KeyofStorable<FilterType>, string | number | boolean>
     >
 > = {
-        [key in KeyofStorable<FilterType> as `${"~" | ""}${key}${| `{${number}}[${number}]`
-        | ""}`]?: FilterType[key];
+        [key in KeyofStorable<FilterType> as `${'~' | ''}${key}${| `{${number}}[${number}]`
+        | ''}`]?: FilterType[key];
     };
 
 /**
@@ -420,9 +420,9 @@ export interface JobStatus {
 export interface FileList {
     /**
      * A list of files. Each file is a tuple of the filename and the name of the
-     * firmware. Also includes a special value for the "Select a File" option.
+     * firmware. Also includes a special value for the 'Select a File' option.
      */
-    files: ([string, string] | "" | "Select a File")[];
+    files: ([string, string] | '' | 'Select a File')[];
 }
 
 /**

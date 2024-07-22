@@ -5,12 +5,12 @@ import { Paper, Title } from '@mantine/core';
 const Stats = () => {
     const [data, setData] = useState<any>([]);
     const { data: apiData, loading, error } = useApiData(api.reports.recent);
-    const hostItems = ["hosts_today", "hosts_week", "hosts_month"];
-    const userItems = ["users_today", "users_week", "users_month"];
+    const hostItems = ['hosts_today', 'hosts_week', 'hosts_month'];
+    const userItems = ['users_today', 'users_week', 'users_month'];
 
     const itemText = (item: string) =>
-        item.startsWith("hosts") ? item.replace("hosts_", item.includes("today") ? "Hosts changed " : "Hosts changed this ") :
-            item.startsWith("users") ? item.replace("users_", item.includes("today") ? "Users joined " : "Users joined this ") :
+        item.startsWith('hosts') ? item.replace('hosts_', item.includes('today') ? 'Hosts changed ' : 'Hosts changed this ') :
+            item.startsWith('users') ? item.replace('users_', item.includes('today') ? 'Users joined ' : 'Users joined this ') :
                 item;
 
 
@@ -21,14 +21,14 @@ const Stats = () => {
     }, [apiData]);
 
     return (
-        <Paper radius="md" p="lg" m="lg" withBorder>
+        <Paper radius='lg' p='lg' m='lg' withBorder>
             <Title order={1}>Stats</Title>
 
             {loading && <p>Loading...</p>}
             {error && <p>Error: {error.message}</p>}
             {data && (
                 <>
-                    <Paper radius="md" p="md" m="md" withBorder>
+                    <Paper radius='lg' p='md' m='md' withBorder>
                         <Title order={2}>Hosts</Title>
                         {hostItems.map((item) => (
                             <p key={item}>
@@ -36,7 +36,7 @@ const Stats = () => {
                             </p>
                         ))}
                     </Paper>
-                    <Paper radius="md" p="md" m="md" withBorder>
+                    <Paper radius='lg' p='md' m='md' withBorder>
                         <Title order={2}>Users</Title>
                         {userItems.map((item) => (
                             <p key={item}>

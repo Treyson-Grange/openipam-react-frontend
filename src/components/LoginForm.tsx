@@ -30,33 +30,33 @@ const LoginForm = () => {
     };
 
     return (
-        <Container size="md" mt="xl">
-            <Paper radius="md" p="xl" withBorder >
-                <Title order={1} mb="xl" ta="center">Login</Title>
+        <Container size='md' mt='xl'>
+            <Paper radius='md' p='xl' withBorder >
+                <Title order={1} mb='xl' ta='center'>Login</Title>
                 <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
                     <Group>
                         <TextInput
-                            label="Username"
-                            placeholder="John Doe"
+                            label='Username'
+                            placeholder='John Doe'
                             value={username}
                             onChange={(event) => setUsername(event.currentTarget.value)}
                             required
-                            size="lg"
+                            size='lg'
                         />
                         <TextInput
-                            type="password"
-                            label="Password"
-                            placeholder="Your password"
+                            type='password'
+                            label='Password'
+                            placeholder='Your password'
                             value={password}
                             onChange={(event) => setPassword(event.currentTarget.value)}
                             required
-                            size="lg"
+                            size='lg'
                         />
-                        {error && <Text color="red" size="xl" mt="lg">{error}</Text>}
+                        {error && <Text color='red' size='xl' mt='lg'>{error}</Text>}
                         <Button
-                            type="submit"
-                            radius="lg"
-                            size="lg"
+                            type='submit'
+                            radius='lg'
+                            size='lg'
                             fullWidth
                             disabled={!csrftoken}
                         >

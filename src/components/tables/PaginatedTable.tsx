@@ -2,8 +2,8 @@ import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { useState, useEffect } from 'react';
 import { QueryRequest } from '../../utilities/apiFunctions';
-import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notification, Dialog } from '@mantine/core';
-import { FaArrowLeft, FaArrowRight, FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
+import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notification, Dialog, Pagination } from '@mantine/core';
+import { FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
     /**
@@ -54,13 +54,18 @@ interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
 
-const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageSizes, editableObj }: PaginatedTableProps): JSX.Element => {
+const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
+    const actions = (props as EditablePaginatedTableProps).actions;
+    const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions;
+
+    const { getFunction, defPageSize, title, neededAttr, morePageSizes, editableObj } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);
     const [page, setPage] = useState<number>(1);
     const [selectedObjs, setSelectedObjs] = useState<Set<number>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
+    const [action, setAction] = useState<string>(actions[0]);
 
     const pageSizes = ['5', '10', '20'];
     if (morePageSizes) {
@@ -71,16 +76,37 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
 
     const { data: paginatedData } = usePaginatedApi(getFunction, page, pageSize);
 
-    const nextPage = () => setPage(page + 1);
-    const prevPage = () => setPage(page > 1 ? page - 1 : 1);
+    const handlePageSizeChange = (value: string | null) => {
+        setPage(1);
+        setPageSize(parseInt(value || '5'));
+    }
 
-    const handlePageSizeChange = (value: string | null) => setPageSize(parseInt(value || '5'));
+    const handleActionChange = (value: string | null) => {
+        if (value) {
+            setAction(value);
+            console.log(`Action changed to ${value}`);
+        }
+    }
 
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
     const submitChange = () => {
-        setNotification(['Changes submitted successfully', 'Success']);
-        // setNotification(['Error while submitting', 'Failure']);
+        const actionFunction = actionFunctions[action];
+        try {
+            if (actionFunction) {
+                selectedObjs.forEach(id => actionFunction(id));
+                setNotification(['Changes submitted successfully', 'Success']);
+            }
+            else {
+                setNotification(['Error submitting changes: Invalid action', 'Error']);
+            }
+        }
+        catch (error) {
+            setNotification([`Error submitting changes: ${error}`, 'Error']);
+            return;
+        }
+
+
     }
 
     useEffect(() => {
@@ -104,9 +130,12 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
 
     return (
         <>
-            <Paper radius='md' p='lg' m='lg' withBorder>
-                <Title order={1}>{title}</Title>
-                <Table style={{ overflowX: "auto" }}>
+            <Paper radius='lg' p='lg' m='lg' withBorder>
+                <Group justify='space-between'>
+                    <Title order={1}>{title}</Title>
+                    <Pagination total={maxPages} value={page} onChange={setPage} />
+                </Group>
+                <Table style={{ overflowX: 'auto' }}>
                     <Table.Thead>
                         <Table.Tr>
                             {editableObj && <Table.Th></Table.Th>}
@@ -160,12 +189,6 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
 
                 <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button onClick={prevPage} disabled={page <= 1} color='blue'>
-                            <FaArrowLeft />
-                        </Button>
-                        <Button onClick={nextPage} disabled={page >= maxPages} color='blue'>
-                            <FaArrowRight />
-                        </Button>
                         <Select
                             style={{ maxWidth: '80px', textAlign: 'center' }}
                             data={pageSizes}
@@ -173,13 +196,14 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
                             onChange={handlePageSizeChange}
                         />
                         {editableObj && (
-                            <Button disabled={selectedObjs.size == 0} onClick={() => setSelectedObjs(new Set())} color='red'>
-                                Clear Selection
-                            </Button>
-
+                            <Select
+                                data={actions}
+                                value={action}
+                                onChange={handleActionChange}
+                            />
                         )}
                     </div>
-                    <Dialog opened={notification != null} size="xl">
+                    <Dialog opened={notification != null} size='xl'>
                         <Notification
                             title={notification?.[0]}
                             icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
@@ -188,9 +212,15 @@ const PaginatedTable = ({ getFunction, defPageSize, title, neededAttr, morePageS
                         />
                     </Dialog>
                     {editableObj && (
-                        <Button onClick={submitChange} color='blue'>
-                            Submit
-                        </Button>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+
+                            <Button disabled={selectedObjs.size == 0} onClick={() => setSelectedObjs(new Set())} color='red'>
+                                Clear Selection
+                            </Button>
+                            <Button onClick={submitChange} color='blue'>
+                                Submit
+                            </Button>
+                        </div>
                     )}
                 </Group>
             </Paper >

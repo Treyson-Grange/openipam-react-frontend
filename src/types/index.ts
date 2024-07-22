@@ -62,4 +62,4 @@ export type Filter = {
     id: number;
 };
 
-export * as API from "./api";
+export * as API from './api';

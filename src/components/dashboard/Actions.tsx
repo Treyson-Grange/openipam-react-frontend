@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import PaginatedTable from '../tables/PaginatedTable';
-import { usePaginatedApi } from '../../hooks/useApi';
 
 const Actions = (): JSX.Element => {
     const [pageSize] = useState<number>(5);
     const api = getApiEndpointFunctions();
-    const { data: asdf } = usePaginatedApi(api.logs.get, 1, 5);
-    console.log(asdf);
+
     return (
         <>
             <PaginatedTable
@@ -15,7 +13,8 @@ const Actions = (): JSX.Element => {
                 getFunction={api.logs.mylogs}
                 title='Recent Actions'
                 neededAttr={['content_type', 'object_repr', 'action_time']}
-                morePageSizes={['15', '25', '50']}
+                morePageSizes={['1']}
+                actions={['Test', 'For', 'UI']}
             />
             <PaginatedTable
                 defPageSize={pageSize}

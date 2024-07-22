@@ -6,14 +6,14 @@ import {
     useMemo,
     useRef,
     useState,
-} from "react";
+} from 'react';
 import {
     DataRequest,
     MemoizableRequest,
     QueryRequest,
-} from "../utilities/apiFunctions";
-import { PaginatedData } from "../types/api";
-import objectHash from "object-hash";
+} from '../utilities/apiFunctions';
+import { PaginatedData } from '../types/api';
+import objectHash from 'object-hash';
 
 const queryParamsEqual = <T extends Record<string, string | number | boolean>>(
     a: T,
@@ -120,7 +120,7 @@ export const useApiData = <
             .then(setData)
             .then(setLoading.bind(this, false))
             .catch((e) => {
-                if (e instanceof DOMException && e.name === "AbortError") {
+                if (e instanceof DOMException && e.name === 'AbortError') {
                     // Request was aborted, ignore. We did this to ourselves.
                     return;
                 }
@@ -172,7 +172,7 @@ export const usePaginatedApi = <
     endpoint: Endpoint,
     page: number,
     pageSize: number,
-    queryParams?: Omit<Parameters<Endpoint>[0], "page" | "page_size">,
+    queryParams?: Omit<Parameters<Endpoint>[0], 'page' | 'page_size'>,
     transform: (data: Awaited<ReturnType<Endpoint>>) => Return = (data) =>
         data as Return
 ) => {
@@ -190,7 +190,7 @@ export const usePaginatedApi = <
 /**
  * Fetch JSON data from a KCM API list endpoint and cache the results. Uses a LRU cache to store the last `cacheSize` pages.
  * @param endpoint The API endpoint function to fetch data from
- * @param prefetch How many pages to "prefetch" (fetch in advance) when the page changes
+ * @param prefetch How many pages to 'prefetch' (fetch in advance) when the page changes
  * @param page The page number to fetch
  * @param pageSize The number of items per page
  * @param queryParams The optional query parameters to include in the request
@@ -206,7 +206,7 @@ export const useCachingApi = <
     prefetch: number,
     page: number,
     pageSize: number,
-    queryParams?: Omit<Parameters<Endpoint>[0], "page" | "page_size">,
+    queryParams?: Omit<Parameters<Endpoint>[0], 'page' | 'page_size'>,
     cacheSize: number = 20,
     transform: (data: Awaited<ReturnType<Endpoint>>) => Return = (data) =>
         data as Return
@@ -273,7 +273,7 @@ export const useCachingApi = <
 
     function load() {
         console.log(
-            "loading",
+            'loading',
             page,
             pageSize,
             memoizedQueryParams,
@@ -339,7 +339,7 @@ export const useCachingApi = <
          * Perform an immediate reload of the data without modifying the query parameters. This also clears the cache.
          */
         reload: useCallback(() => {
-            console.log("reloading");
+            console.log('reloading');
             dataCache.current = {};
             lastUsed.current = [];
             load();
@@ -352,7 +352,7 @@ export const useCachingApi = <
 };
 
 /**
- * Fetch JSON data from a KCM API endpoint and allow the user to edit it. The data will be saved back to the API when the user clicks "Save".
+ * Fetch JSON data from a KCM API endpoint and allow the user to edit it. The data will be saved back to the API when the user clicks 'Save'.
  * @param getEndpoint The API endpoint function to fetch data from. If null, the initial data object will be used instead.
  * @param setEndpoint The API endpoint function to save data to
  * @param initialData The initial data object to use if the fetch fails

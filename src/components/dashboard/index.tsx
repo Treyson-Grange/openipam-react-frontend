@@ -1,10 +1,10 @@
-import Actions from "./Actions";
-import Admin from "./Admin";
-import Navigation from "./Navigation";
-import Stats from "./Stats";
-import Welcome from "./Welcome";
+import Actions from './Actions';
+import Admin from './Admin';
+import Navigation from './Navigation';
+import Stats from './Stats';
+import Welcome from './Welcome';
 import { Grid } from '@mantine/core';
-import useAuth from "../../hooks/useAuth";
+import useAuth from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 
 const DashBoard = () => {

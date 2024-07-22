@@ -1,6 +1,6 @@
 
-import { useApiData } from "./useApi";
-import { getApiEndpointFunctions } from "../utilities/apiFunctions";
+import { useApiData } from './useApi';
+import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
 const useAuth = () => {
     const api = getApiEndpointFunctions();

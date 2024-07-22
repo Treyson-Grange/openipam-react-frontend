@@ -9,9 +9,10 @@ import logo from '../assets/openIpamLogo.png';
 import useAuth from '../hooks/useAuth';
 
 interface DropdownLink {
-    link: string;
+    link?: string;
     label: string;
-    dropdown?: { link: string; label: string }[];
+    isLabel?: boolean;
+    dropdown?: { link?: string; label: string; isLabel?: boolean }[];
 }
 
 const links: DropdownLink[] = [
@@ -70,10 +71,11 @@ const adminLinks: DropdownLink[] = [
         link: '',
         label: 'Admin',
         dropdown: [
-            { label: 'Users & Groups', link: '/' },
+            { isLabel: true, label: 'Users & Groups' },
             { label: 'Users', link: '/' },
             { label: 'Groups', link: '/' },
             { label: 'Tokens', link: '/' },
+            { isLabel: true, label: 'Permissions' },
             { label: '', link: '/' },
             { label: '', link: '/' },
         ]
@@ -102,15 +104,17 @@ export function Navbar() {
     const finalLinks = isAdmin ? adminLinks : links;
 
     const items = finalLinks.map((link) => (
-        <Menu key={link.link} trigger="hover" openDelay={0} closeDelay={10}>
+        <Menu key={link.link || link.label} trigger='hover' openDelay={0} closeDelay={10}>
             <Menu.Target>
                 <Link
-                    to={link.link}
-                    className="link"
+                    to={link.link || '#'}
+                    className='link'
                     data-active={active === link.link || undefined}
                     onClick={() => {
-                        setActive(link.link);
-                        close();
+                        if (link.link) {
+                            setActive(link.link);
+                            close();
+                        }
                     }}
                 >
                     {link.label}
@@ -119,17 +123,23 @@ export function Navbar() {
             {link.dropdown ? (
                 <Menu.Dropdown>
                     {link.dropdown.map((item) => (
-                        <Menu.Item
-                            key={item.link}
-                            component={Link}
-                            to={item.link}
-                            onClick={() => {
-                                setActive(item.link);
-                                close();
-                            }}
-                        >
-                            {item.label}
-                        </Menu.Item>
+                        item.isLabel ? (
+                            <div key={item.label}>{item.label}</div>
+                        ) : (
+                            <Menu.Item
+                                key={item.link || item.label}
+                                component={Link}
+                                to={item.link || '#'}
+                                onClick={() => {
+                                    if (item.link) {
+                                        setActive(item.link);
+                                        close();
+                                    }
+                                }}
+                            >
+                                {item.label}
+                            </Menu.Item>
+                        )
                     ))}
                 </Menu.Dropdown>
             ) : null}
@@ -137,26 +147,26 @@ export function Navbar() {
     ));
 
     return (
-        <header className="header">
-            <Container size="md" className="inner">
-                <Group gap={5} visibleFrom="xs">
-                    <Link to="/" className="link logo-container" style={{ display: 'flex', alignItems: 'center' }}>
-                        <img src={logo} alt="Logo" className="logo" style={{ height: "2rem" }} />
-                        <span className="logo-title" style={{ marginLeft: "0.5rem", fontSize: "1.5rem", fontWeight: "bold" }}>openIPAM</span>
+        <header className='header'>
+            <Container size='md' className='inner'>
+                <Group gap={5} visibleFrom='xs'>
+                    <Link to='/' className='link logo-container' style={{ display: 'flex', alignItems: 'center' }}>
+                        <img src={logo} alt='Logo' className='logo' style={{ height: '2rem' }} />
+                        <span className='logo-title' style={{ marginLeft: '0.5rem', fontSize: '1.5rem', fontWeight: 'bold' }}>openIPAM</span>
                     </Link>
                     {items}
                 </Group>
-                <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
-                <Title order={3} hiddenFrom="xs" style={{ marginRight: 'auto', marginLeft: '1rem' }}>
+                <Burger opened={opened} onClick={toggle} hiddenFrom='xs' size='sm' />
+                <Title order={3} hiddenFrom='xs' style={{ marginRight: 'auto', marginLeft: '1rem' }}>
                     openIPAM
                 </Title>
             </Container>
             <Drawer
                 opened={opened}
                 onClose={close}
-                title="openIPAM"
-                padding="md"
-                size="xs"
+                title='openIPAM'
+                padding='md'
+                size='xs'
             >
                 <Stack>
                     {items}

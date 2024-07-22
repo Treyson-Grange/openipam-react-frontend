@@ -3,15 +3,15 @@ import { Text, Paper, Title, Table } from '@mantine/core';
 
 const Navigation = () => {
     const items = {
-        "List Hosts": "/hosts",
-        "Add Host": "/hosts/add",
-        "DNS Records": "/dns",
-        "Feature or Bug?": "/request",
-        "Profile": "/profile",
+        'List Hosts': '/hosts',
+        'Add Host': '/hosts/add',
+        'DNS Records': '/dns',
+        'Feature or Bug?': '/request',
+        'Profile': '/profile',
     }
     return (
-        <Paper radius="md" p="lg" m="lg" withBorder>
-            <Title order={1} mb="xl">Navigation</Title>
+        <Paper p='lg' m='lg' radius='lg' withBorder>
+            <Title order={1} mb='xl'>Navigation</Title>
             <Table>
                 <Table.Tbody>
                     {Object.entries(items).map(([label, link]) => (
@@ -20,13 +20,13 @@ const Navigation = () => {
                                 <Text>
                                     <a
                                         style={{
-                                            textDecoration: "none",
-                                            color: "inherit",
-                                            transition: "text-decoration 0.2s",
+                                            textDecoration: 'none',
+                                            color: 'inherit',
+                                            transition: 'text-decoration 0.2s',
                                         }}
                                         href={link}
-                                        onMouseEnter={(e) => (e.target as HTMLAnchorElement).style.textDecoration = "underline"}
-                                        onMouseLeave={(e) => (e.target as HTMLAnchorElement).style.textDecoration = "none"}
+                                        onMouseEnter={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
+                                        onMouseLeave={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
                                     >
                                         {label}
                                     </a>
