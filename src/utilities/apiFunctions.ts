@@ -48,7 +48,12 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, "logs/", { headers: { "Content-Type": "application/json" } }),
+        >(HttpMethod.GET, "logs/", { headers: { "Content-Type": "application/json", } }),
+        mylogs: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, "logs/my-logs/", { headers: { "Content-Type": "application/json", } }),
     },
     reports: {
         recent: requestGenerator<
