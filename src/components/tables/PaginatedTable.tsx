@@ -24,13 +24,18 @@ interface BasePaginatedTableProps {
      */
     neededAttr: string[];
     /**
-     * Additional page sizes to display in the page size dropdown
+     * Additional page sizes to display in the page size dropdown. Displays in 
+     * order provided.
      */
     morePageSizes?: string[];
     /**
-     * Whether the table has editable objects
+     * Whether the table is sortable
      */
     sortable?: boolean;
+    /**
+     * Whether to override the default page sizes with the provided page sizes
+     */
+    overridePageSizes?: boolean;
 }
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
@@ -57,11 +62,17 @@ interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
 
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
+
+/**
+ * PaginatedTable component that displays data in a paginated table
+ * @param props 
+ * @returns JSX.Element
+ */
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions;
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions;
 
-    const { getFunction, defPageSize, title, neededAttr, morePageSizes, editableObj, sortable } = props;
+    const { getFunction, defPageSize, title, neededAttr, morePageSizes, overridePageSizes, editableObj, sortable } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);
@@ -73,6 +84,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [direction, setDirection] = useState<string>('asc');
 
     const pageSizes = ['5', '10', '20'];
+    if (overridePageSizes) { pageSizes.length = 0; }
+
     if (morePageSizes) {
         const uniqueSizes = new Set([...pageSizes, ...morePageSizes]);
         pageSizes.length = 0;
@@ -154,65 +167,62 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 <Title>{title}</Title>
                 <Pagination total={maxPages} value={page} onChange={setPage} />
             </Group>
-            <Table style={{ overflowX: 'auto' }}>
-                <colgroup>
-                    {editableObj && <col style={{ width: '5%' }} />}
-                    {neededAttr.map(attr => (
-                        <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
-                    ))}
-                </colgroup>
-                <Table.Thead>
-                    <Table.Tr>
-                        {editableObj && <Table.Th></Table.Th>}
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+                <Table>
+                    <colgroup>
+                        {editableObj && <col style={{ width: '5%' }} />}
                         {neededAttr.map(attr => (
-                            <Table.Th key={attr} style={{ textAlign: 'left' }}>
-                                <Group gap="xs">
-                                    <Text>{handleFormatHeader(attr)}</Text>
-                                    {sortable && (
-                                        <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
-                                            {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
-                                        </Button>
-                                    )}
-                                </Group>
-                            </Table.Th>
+                            <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
                         ))}
-                        {neededAttr.some(attr => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/.test(attr)) && (
-                            <Table.Th style={{ textAlign: 'right' }}>Date</Table.Th>
-                        )}
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {data.map((item: any) => {
-                        return (
-                            <Table.Tr key={item.id}>
-                                {editableObj && (
-                                    <Table.Td>
-                                        <Checkbox
-                                            checked={selectedObjs.has(item.id)}
-                                            onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
-                                        />
-                                    </Table.Td>
-                                )}
-                                {neededAttr.map(attr => {
-                                    const value = item[attr];
-                                    const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/;
-
-                                    if (isoDateRegex.test(value)) {
-                                        const date = new Date(value);
-                                        const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{date.toLocaleDateString('en-US', options)}</Table.Td>;
-                                    } else if (Array.isArray(value)) {
-                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value.join(', ')}</Table.Td>;
-                                    } else {
-                                        return <Table.Td key={attr} style={{ textAlign: 'left' }}>{value || 'N/A'}</Table.Td>;
-                                    }
-                                })}
-
-                            </Table.Tr>
-                        );
-                    })}
-                </Table.Tbody>
-            </Table>
+                    </colgroup>
+                    <Table.Thead>
+                        <Table.Tr>
+                            {editableObj && <Table.Th></Table.Th>}
+                            {neededAttr.map(attr => (
+                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                    <Group gap="xs">
+                                        <Text>{handleFormatHeader(attr)}</Text>
+                                        {sortable && (
+                                            <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
+                                                {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
+                                            </Button>
+                                        )}
+                                    </Group>
+                                </Table.Th>
+                            ))}
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {data.map((item: any) => {
+                            return (
+                                <Table.Tr key={item.id}>
+                                    {editableObj && (
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={selectedObjs.has(item.id)}
+                                                onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
+                                            />
+                                        </Table.Td>
+                                    )}
+                                    {neededAttr.map(attr => {
+                                        const value = item[attr];
+                                        const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/;
+                                        if (isoDateRegex.test(value)) {
+                                            const date = new Date(value);
+                                            const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+                                            return <Table.Td key={attr}>{date.toLocaleDateString('en-US', options)}</Table.Td>;
+                                        } else if (Array.isArray(value)) {
+                                            return <Table.Td key={attr}>{value.join(', ')}</Table.Td>;
+                                        } else {
+                                            return <Table.Td key={attr}>{value || 'N/A'}</Table.Td>;
+                                        }
+                                    })}
+                                </Table.Tr>
+                            );
+                        })}
+                    </Table.Tbody>
+                </Table>
+            </div>
             <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <Select
@@ -239,7 +249,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 </Dialog>
                 {editableObj && (
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='red'>
+                        <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='#8d0d20'>
                             Clear Selection
                         </Button>
                         <Button onClick={submitChange} color='blue'>

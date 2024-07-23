@@ -33,11 +33,8 @@ export const getApiEndpointFunctions = <
         /**
          * Logout the current user
          */
-        logout: requestGenerator<
-            HttpMethod.POST,
-            void,
-            API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        logout: requestGenerator<HttpMethod.POST>
+            (HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
         /**
          * Gets the current user for testing purposes only :D
          */
@@ -103,7 +100,28 @@ export const getApiEndpointFunctions = <
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'groups/', { headers: { 'Content-Type': 'application/json' } }),
-    }
+    },
+    /**
+     * DNS API
+     */
+    dns: {
+        /**
+         * Gets DNSRecord objects
+         * Sortable: true
+         */
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'dns/', { headers: { 'Content-Type': 'application/json' } }),
+        byId: (id: string | number) => ({
+            delete: requestGenerator<HttpMethod.DELETE>(
+                HttpMethod.DELETE,
+                `dns/${id}/`,
+                { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
+            ),
+        })
+    },
 });
 
 declare global {
