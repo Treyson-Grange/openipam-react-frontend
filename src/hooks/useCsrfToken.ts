@@ -4,8 +4,8 @@ import {
     useState,
     useCallback
 } from 'react';
-import { getCSRFToken } from '../api';
 import { useConfig } from '../contexts/ConfigContext';
+import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
 const setCookie = (name: string, value: string, days = 1) => {
     const date = new Date();
@@ -14,16 +14,18 @@ const setCookie = (name: string, value: string, days = 1) => {
 }
 
 export const useCsrfToken = () => {
+    const api = getApiEndpointFunctions();
     const [csrftoken, setCsrfToken] = useState<string>('');
     const hasFetchedToken = useRef<boolean>(false);
     const { config } = useConfig();
 
     const fetchCsrfToken = useCallback(async () => {
         try {
-            const tokens = await getCSRFToken(config.apiUrl);
-            setCsrfToken(tokens.csrfToken);
-            setCookie('csrftoken', tokens.csrfToken);
-            hasFetchedToken.current = true;
+            const csrfCall = await api.auth.getCSRFToken();
+            console.log(csrfCall.csrfToken);
+            setCsrfToken(csrfCall.csrfToken);
+            setCookie('csrftoken', csrfCall.csrfToken);
+            hasFetchedToken.current = true
         } catch (error) {
             console.error('Failed to fetch CSRF token:', error);
         }

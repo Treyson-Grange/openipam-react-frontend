@@ -1,4 +1,3 @@
-import Login from '../pages/Login';
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
 import { getCookie } from './getCookie';
@@ -44,6 +43,16 @@ export const getApiEndpointFunctions = <
          */
         logout: requestGenerator<HttpMethod.POST>
             (HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+
+        /**
+         * Get the CSRF token for initial login
+         */
+        getCSRFToken: requestGenerator<
+            HttpMethod.GET,
+            void,
+            { csrfToken: string; sessionID: string } | StrictTypeChecking
+
+        >(HttpMethod.GET, 'get_csrf/', { headers: { 'Content-Type': 'application/json', } }),
         /**
          * Gets the current user for testing purposes only :D
          */
