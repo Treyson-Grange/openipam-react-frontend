@@ -61,12 +61,14 @@ const Dns = () => {
                 title='DNS Records'
                 neededAttr={['name', 'ttl', 'dns_type', 'content']}
                 editableObj={true}
-                actions={['Delete Selected Dns Records']}
                 morePageSizes={['10', '25', '50']}
                 overridePageSizes={true}
-                actionFunctions={{
-                    DeleteSelectedDnsRecords: deleteDNSRecord
-                }}
+                sortable={true}
+                sortableFields={['name', 'ttl', 'dns_type']}
+                searchable={true}
+                searchableFields={['name', 'content', 'dns_type']}
+                actions={['Delete Selected Dns Records']}
+                actionFunctions={{ DeleteSelectedDnsRecords: deleteDNSRecord }}
             />
             <Button onClick={handleLogout}>
                 LOgout

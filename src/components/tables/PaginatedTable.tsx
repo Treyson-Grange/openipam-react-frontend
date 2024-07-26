@@ -2,77 +2,58 @@ import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { useState, useEffect } from 'react';
 import { QueryRequest } from '../../utilities/apiFunctions';
-import { Button, Paper, Title, Table, Text, Select, Group, Checkbox, Notification, Dialog, Pagination } from '@mantine/core';
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
-import { FaRegCircleXmark, FaRegCircleCheck } from 'react-icons/fa6';
+import {
+    Button,
+    Paper,
+    Title,
+    Table,
+    Text,
+    Select,
+    Group,
+    Checkbox,
+    Notification,
+    Dialog,
+    Pagination,
+    TextInput
+} from '@mantine/core';
+import {
+    FaRegCircleXmark,
+    FaRegCircleCheck,
+    FaSort,
+    FaSortUp,
+    FaSortDown
+} from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
-    /**
-     * Function to get data from the API
-     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
-    /**
-     * Default page size
-     */
     defPageSize: number;
-    /**
-     * Title of the table
-     */
     title: string;
-    /**
-     * List of attributes to display
-     */
     neededAttr: string[];
-    /**
-     * Additional page sizes to display in the page size dropdown. Displays in 
-     * order provided.
-     */
     morePageSizes?: string[];
-    /**
-     * Whether the table is sortable
-     */
-    sortable?: boolean;
-    /**
-     * Whether to override the default page sizes with the provided page sizes
-     */
     overridePageSizes?: boolean;
+    sortable?: boolean;
+    sortableFields?: string[];
+    searchable?: boolean;
+    searchableFields?: string[];
 }
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
-    /**
-     * Whether the table has editable objects
-     */
     editableObj: true;
-    /**
-     * List of actions to display in the action dropdown
-     */
     actions: string[];
-    /**
-     * Object containing functions to call when submitting an action
-     */
     actionFunctions: Record<string, (id: number) => void>;
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
-    /**
-     * Default to false
-     */
     editableObj?: false;
 }
 
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
-
-/**
- * PaginatedTable component that displays data in a paginated table
- * @param props 
- * @returns JSX.Element
- */
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions;
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions;
 
-    const { getFunction, defPageSize, title, neededAttr, morePageSizes, overridePageSizes, editableObj, sortable } = props;
+    const { getFunction, defPageSize, title, neededAttr, morePageSizes, overridePageSizes, editableObj, sortable, sortableFields, searchable, searchableFields } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);
@@ -82,6 +63,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [action, setAction] = useState<string>(actions[0]);
     const [orderBy, setOrderBy] = useState<string>('');
     const [direction, setDirection] = useState<string>('asc');
+    const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
 
     const pageSizes = ['5', '10', '20'];
     if (overridePageSizes) { pageSizes.length = 0; }
@@ -97,11 +79,18 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setPageSize(parseInt(value || '5'));
     }
 
+    const handleSearchChange = (field: string, value: string) => {
+        setSearchTerms(prevTerms => ({ ...prevTerms, [field]: value }));
+    }
+
     const { data: paginatedData } = usePaginatedApi(
         getFunction,
         page,
         pageSize,
-        orderBy ? { "order_by": orderBy, "direction": direction } : {}
+        {
+            ...orderBy ? { "order_by": orderBy, "direction": direction } : {},
+            ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v))
+        }
     );
 
     const handleActionChange = (value: string | null) => {
@@ -182,10 +171,18 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                 <Table.Th key={attr} style={{ textAlign: 'left' }}>
                                     <Group gap="xs">
                                         <Text>{handleFormatHeader(attr)}</Text>
-                                        {sortable && (
+                                        {sortable && sortableFields?.includes(attr) && (
                                             <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
                                                 {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
                                             </Button>
+                                        )}
+                                        {searchable && searchableFields?.includes(attr) && (
+                                            <TextInput
+                                                placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                value={searchTerms[attr] || ''}
+                                                onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
+                                                size="xs"
+                                            />
                                         )}
                                     </Group>
                                 </Table.Th>
@@ -250,7 +247,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 {editableObj && (
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='#8d0d20'>
-                            Clear Selection
+                            Clear Selection {selectedObjs.size !== 0 && `(${selectedObjs.size})`}
                         </Button>
                         <Button onClick={submitChange} color='blue'>
                             Submit

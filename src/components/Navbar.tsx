@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { Container, Group, Burger, Drawer, Stack, Menu, Title } from '@mantine/core';
+import {
+    Container,
+    Group,
+    Burger,
+    Drawer,
+    Stack,
+    Menu,
+    Title
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 

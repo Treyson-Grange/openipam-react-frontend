@@ -1,4 +1,9 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import {
+    useEffect,
+    useRef,
+    useState,
+    useCallback
+} from 'react';
 import { getCSRFToken } from '../api';
 import { useConfig } from '../contexts/ConfigContext';
 

@@ -1,4 +1,12 @@
-import { TextInput, Button, Text, Group, Container, Paper, Title } from '@mantine/core';
+import {
+    TextInput,
+    Button,
+    Text,
+    Group,
+    Container,
+    Paper,
+    Title
+} from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../contexts/ConfigContext';
