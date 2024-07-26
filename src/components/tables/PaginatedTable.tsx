@@ -39,8 +39,8 @@ interface BasePaginatedTableProps {
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj: true;
-    actions: string[];
-    actionFunctions: Record<string, (id: number) => void>;
+    actions?: string[];
+    actionFunctions?: Record<string, (id: number) => void>;
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
@@ -50,8 +50,8 @@ interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
-    const actions = (props as EditablePaginatedTableProps).actions;
-    const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions;
+    const actions = (props as EditablePaginatedTableProps).actions ?? [];
+    const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions ?? {};
 
     const { getFunction, defPageSize, title, neededAttr, morePageSizes, overridePageSizes, editableObj, sortable, sortableFields, searchable, searchableFields } = props;
     const [data, setData] = useState<any[]>([]);
@@ -60,7 +60,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [page, setPage] = useState<number>(1);
     const [selectedObjs, setSelectedObjs] = useState<Set<number>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
-    const [action, setAction] = useState<string>(actions[0]);
+    const [action, setAction] = useState<string>(actions[0] ?? '');
     const [orderBy, setOrderBy] = useState<string>('');
     const [direction, setDirection] = useState<string>('asc');
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
@@ -228,7 +228,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         value={pageSize.toString()}
                         onChange={handlePageSizeChange}
                     />
-                    {editableObj && (
+                    {editableObj && actions.length > 0 && (
                         <Select
                             data={actions}
                             value={action}
