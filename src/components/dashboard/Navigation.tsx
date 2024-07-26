@@ -1,13 +1,14 @@
 import { Text, Paper, Title, Table } from '@mantine/core';
-
+import { useNavigate } from 'react-router-dom';
 
 const Navigation = () => {
+    const navigate = useNavigate();
     const items = {
-        'List Hosts': '/hosts',
-        'Add Host': '/hosts/add',
-        'DNS Records': '/dns',
-        'Feature or Bug?': '/request',
-        'Profile': '/profile',
+        'List Hosts': 'hosts',
+        'Add Host': 'hostsadd',
+        'DNS Records': 'dns',
+        'Feature or Bug?': 'request',
+        'Profile': 'profile',
     }
     return (
         <Paper p='lg' m='lg' radius='lg' withBorder>
@@ -24,7 +25,7 @@ const Navigation = () => {
                                             color: 'inherit',
                                             transition: 'text-decoration 0.2s',
                                         }}
-                                        href={link}
+                                        onClick={() => navigate(link)}
                                         onMouseEnter={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
                                         onMouseLeave={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
                                     >

@@ -1,6 +1,8 @@
 import { Text, Paper, Title, Table } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 
 const Admin = () => {
+    const navigate = useNavigate();
     const items = {
         'Administration': 'admin',
         'Authentication and Authorization': 'authentication',
@@ -32,7 +34,7 @@ const Admin = () => {
                                             color: 'inherit',
                                             transition: 'text-decoration 0.2s',
                                         }}
-                                        href={link}
+                                        onClick={() => navigate(link)}
                                         onMouseEnter={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'underline'}
                                         onMouseLeave={(e) => (e.target as HTMLAnchorElement).style.textDecoration = 'none'}
                                     >

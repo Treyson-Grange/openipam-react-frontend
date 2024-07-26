@@ -85,7 +85,7 @@ export const getApiEndpointFunctions = <
         >(HttpMethod.GET, 'logs/', { headers: { 'Content-Type': 'application/json', } }),
         /**
          * Gets LogEntry objects from the current user\
-         * Sortable: false
+         * Sortable: true
          */
         mylogs: requestGenerator<
             HttpMethod.GET,
@@ -133,7 +133,15 @@ export const getApiEndpointFunctions = <
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/', { headers: { 'Content-Type': 'application/json' } }),
+        /**
+         * API endpoints for a specific DNS Object
+         * @param id 
+         * @returns An object containing all endpoints for the given DNS object
+         */
         byId: (id: string | number) => ({
+            /**
+             * Deletes a DNSRecord object given an objects ID
+             */
             delete: requestGenerator<HttpMethod.DELETE>(
                 HttpMethod.DELETE,
                 `dns/${id}/`,
