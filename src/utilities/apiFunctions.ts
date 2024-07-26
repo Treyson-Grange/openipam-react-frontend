@@ -41,8 +41,9 @@ export const getApiEndpointFunctions = <
         /**
          * Logout the current user
          */
-        logout: requestGenerator<HttpMethod.POST>
-            (HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        logout: requestGenerator<
+            HttpMethod.POST
+        >(HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
 
         /**
          * Get the CSRF token for initial login
