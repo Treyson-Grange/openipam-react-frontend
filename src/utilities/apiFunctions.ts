@@ -1,3 +1,4 @@
+import Login from '../pages/Login';
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
 import { getCookie } from './getCookie';
@@ -30,6 +31,14 @@ export const getApiEndpointFunctions = <
      * Auth API
      */
     auth: {
+        /**
+         * Login to the API, given a username and password
+         */
+        login: requestGenerator<
+            HttpMethod.POST,
+            { username: string; password: string },
+            API.GenericResponse | StrictTypeChecking
+        >(HttpMethod.POST, 'login/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
         /**
          * Logout the current user
          */

@@ -9,31 +9,24 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../contexts/ConfigContext';
-import { apiCall } from '../api';
 import { useCsrfToken } from '../hooks/useCsrfToken';
+import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
 const LoginForm = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string>('');
 
+    const api = getApiEndpointFunctions();
     const navigate = useNavigate();
-    const { config } = useConfig();
-    const { csrftoken, fetchCsrfToken } = useCsrfToken();
+    const { csrftoken } = useCsrfToken();
 
     const handleLogin = async () => {
         try {
-            await fetchCsrfToken();
-            const url = `${config.apiUrl}/login/`;
-            await apiCall(url, 'POST', { username, password }, csrftoken);
+            await api.auth.login({ username, password });
             navigate('/');
         } catch (error: any) {
-            if (error.message === '401') {
-                setError('Invalid credentials');
-            } else if (error.message === '400') {
-                setError('Bad request');
-            }
+            setError(`${error}`);
         }
     };
 
