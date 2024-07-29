@@ -1,6 +1,19 @@
-import { Paper, Title } from '@mantine/core';
+import { Paper, Title, Button } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
 const Welcome = () => {
+    const api = getApiEndpointFunctions();
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        try {
+            api.auth.logout();
+            navigate('/login');
+        } catch (error) {
+            console.error('There was a problem with the logout operation', error);
+        }
+    }
+
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder >
             <Title order={1} mb='xl'>Welcome to openIPAM</Title>
@@ -12,6 +25,7 @@ const Welcome = () => {
                 <li>DNS Entries - Do you see all DNS Entries?</li>
             </ul>
             <p>If you have any questions, please email: <a href='mailto:openipam@lists.usu.edu'>openipam@lists.usu.edu</a></p>
+            <Button onClick={handleLogout} variant='outline' color='red'>Logout</Button>
         </Paper>
     );
 };

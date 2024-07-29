@@ -1,19 +1,8 @@
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import PaginatedTable from '../tables/PaginatedTable';
-import { Button } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
 
 const Actions = (): JSX.Element => {
-    const navigate = useNavigate();
     const api = getApiEndpointFunctions();
-    const handleLogout = async () => {
-        try {
-            api.auth.logout();
-            navigate('/login');
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-        }
-    }
     return (
         <>
             <PaginatedTable
@@ -39,7 +28,6 @@ const Actions = (): JSX.Element => {
                 searchable={true}
                 searchableFields={['name']}
             />
-            <Button onClick={handleLogout}>Logout</Button>
         </>
     );
 }
