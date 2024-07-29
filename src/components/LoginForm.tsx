@@ -33,7 +33,9 @@ const LoginForm = () => {
                 setUser({
                     ...loginResponse,
                     is_ipamadmin: userDetailsResponse.is_ipamadmin,
+                    groups: userDetailsResponse.groups,
                 });
+
                 navigate('/');
             } else {
                 setError('Login failed: Invalid user data');
