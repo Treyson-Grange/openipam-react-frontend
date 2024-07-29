@@ -13,6 +13,7 @@ interface AuthContextType {
     isAdmin: () => boolean;
     setUser: (user: User | null) => void;
     getGroups: () => string[];
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,6 +30,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [user, setUser] = useState<User | null>(null);
     const isAdmin = () => user?.is_ipamadmin ?? false;
     const getGroups = () => user?.groups ?? [];
+    const logout = () => setUser(null);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -46,7 +48,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, isAdmin, setUser, getGroups }}>
+        <AuthContext.Provider value={{ user, isAdmin, setUser, getGroups, logout }}>
             {children}
         </AuthContext.Provider>
     );

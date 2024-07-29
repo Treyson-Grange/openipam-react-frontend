@@ -1,13 +1,16 @@
 import { Paper, Title, Button } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Welcome = () => {
+    const { logout } = useAuth();
     const api = getApiEndpointFunctions();
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
             api.auth.logout();
+            logout();
             localStorage.removeItem('user');
             navigate('/login');
         } catch (error) {
