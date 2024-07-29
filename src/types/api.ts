@@ -37,6 +37,7 @@ export type AuthResponse = {
     is_ipamadmin: boolean;
     is_active: boolean;
     last_login: string;
+    groups: string[];
 }
 
 export type PaginatedApiFunction<

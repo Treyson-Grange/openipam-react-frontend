@@ -8,6 +8,7 @@ const Welcome = () => {
     const handleLogout = async () => {
         try {
             api.auth.logout();
+            localStorage.removeItem('user');
             navigate('/login');
         } catch (error) {
             console.error('There was a problem with the logout operation', error);
