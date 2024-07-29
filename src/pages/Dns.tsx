@@ -1,4 +1,4 @@
-import PaginatedTable from "../components/tables/PaginatedTable";
+import PaginatedTable from '../components/tables/PaginatedTable';
 import { useState } from 'react';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 

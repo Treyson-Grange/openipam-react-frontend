@@ -88,7 +88,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         page,
         pageSize,
         {
-            ...orderBy ? { "order_by": orderBy, "direction": direction } : {},
+            ...orderBy ? { 'order_by': orderBy, 'direction': direction } : {},
             ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v))
         }
     );
@@ -169,10 +169,10 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                             {editableObj && <Table.Th></Table.Th>}
                             {neededAttr.map(attr => (
                                 <Table.Th key={attr} style={{ textAlign: 'left' }}>
-                                    <Group gap="xs">
+                                    <Group gap='xs'>
                                         <Text>{handleFormatHeader(attr)}</Text>
                                         {sortable && sortableFields?.includes(attr) && (
-                                            <Button variant="subtle" onClick={() => handleSort(attr, direction)}>
+                                            <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
                                                 {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
                                             </Button>
                                         )}
@@ -181,7 +181,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                 placeholder={`Search ${handleFormatHeader(attr)}`}
                                                 value={searchTerms[attr] || ''}
                                                 onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
-                                                size="xs"
+                                                size='xs'
                                             />
                                         )}
                                     </Group>

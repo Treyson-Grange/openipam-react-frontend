@@ -14,7 +14,8 @@ import { Link } from 'react-router-dom';
 import '../styles/index.css';
 import logo from '../assets/openIpamLogo.png';
 
-import useAuth from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
+
 
 interface DropdownLink {
     link?: string;
@@ -115,10 +116,8 @@ const adminLinks: DropdownLink[] = [
 export function Navbar() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const [active, setActive] = useState(links[0].link);
-    const auth = useAuth();
-    const isAdmin = auth.results?.is_ipamadmin;
-
-    const finalLinks = isAdmin ? adminLinks : links;
+    const { isAdmin } = useAuth();
+    const finalLinks = isAdmin() ? adminLinks : links;
 
     const items = finalLinks.map((link) => (
         <Menu key={link.link || link.label} trigger='hover' openDelay={0} closeDelay={10}>
