@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Container,
     Group,
@@ -9,13 +9,12 @@ import {
     Title
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import '../styles/index.css';
 import logo from '../assets/openIpamLogo.png';
 
 import { useAuth } from '../contexts/AuthContext';
-
 
 interface DropdownLink {
     link?: string;
@@ -115,8 +114,16 @@ const adminLinks: DropdownLink[] = [
 
 export function Navbar() {
     const [opened, { toggle, close }] = useDisclosure(false);
-    const [active, setActive] = useState(links[0].link);
+    const location = useLocation();
     const { isAdmin } = useAuth();
+
+    const currentPath = location.pathname;
+    const [active, setActive] = useState(currentPath);
+
+    useEffect(() => {
+        setActive(currentPath);
+    }, [currentPath]);
+
     const finalLinks = isAdmin() ? adminLinks : links;
 
     const items = finalLinks.map((link) => (
