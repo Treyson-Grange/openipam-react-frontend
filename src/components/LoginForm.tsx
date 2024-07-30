@@ -21,13 +21,13 @@ const LoginForm = () => {
 
     const api = getApiEndpointFunctions();
     const navigate = useNavigate();
-    const { csrftoken } = useCsrfToken();
+    const { csrftoken, fetchCsrfToken } = useCsrfToken();
     const { setUser } = useAuth();
 
     const handleLogin = async () => {
         try {
             const loginResponse = await api.auth.login({ username, password });
-
+            await fetchCsrfToken();
             if (isUser(loginResponse)) {
                 const userDetailsResponse = await api.auth.me();
                 setUser({
