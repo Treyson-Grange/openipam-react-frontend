@@ -1,6 +1,6 @@
+import { useState, useEffect } from 'react';
 import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
-import { useState, useEffect } from 'react';
 import { QueryRequest } from '../../utilities/apiFunctions';
 import {
     Button,
@@ -40,7 +40,7 @@ interface BasePaginatedTableProps {
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     editableObj: true;
     actions?: string[];
-    actionFunctions?: Record<string, (id: number) => void>;
+    actionFunctions?: Record<string, { func: (params: any) => void, key: string }>;
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
@@ -58,7 +58,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);
     const [page, setPage] = useState<number>(1);
-    const [selectedObjs, setSelectedObjs] = useState<Set<number>>(new Set());
+    const [selectedObjs, setSelectedObjs] = useState<Set<any>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
     const [action, setAction] = useState<string>(actions[0] ?? '');
     const [orderBy, setOrderBy] = useState<string>('');
@@ -118,30 +118,35 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setSelectedObjs(prevSelectedObjs => {
             const updatedSelectedObjs = new Set(prevSelectedObjs);
             if (checked) {
-                updatedSelectedObjs.add(item.id);
+                updatedSelectedObjs.add(item);
             } else {
-                updatedSelectedObjs.delete(item.id);
+                updatedSelectedObjs.delete(item);
             }
+            console.log(selectedObjs)
             return updatedSelectedObjs;
         });
     };
 
     const submitChange = () => {
-        const actionFunction = actionFunctions[ridSpaces(action)];
-        try {
-            if (actionFunction) {
-                selectedObjs.forEach(id => actionFunction(id));
-                setNotification(['Changes submitted successfully', 'Success']);
-            }
-            else {
-                setNotification(['Error submitting changes: Invalid action', 'Error']);
-            }
-        }
-        catch (error) {
-            setNotification([`Error submitting changes: ${error}`, 'Error']);
+        const actionObj = actionFunctions[ridSpaces(action)];
+        if (!actionObj) {
+            setNotification(['Error: Invalid action', 'Error']);
             return;
         }
-    }
+
+        const { func, key } = actionObj;
+
+        try {
+            selectedObjs.forEach((selectedItem) => {
+                const value = selectedItem[key];
+                func(value);
+            });
+
+            setNotification(['Changes submitted successfully', 'Success']);
+        } catch (error) {
+            setNotification([`Error: ${error}`, 'Error']);
+        }
+    };
 
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
@@ -196,7 +201,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                     {editableObj && (
                                         <Table.Td>
                                             <Checkbox
-                                                checked={selectedObjs.has(item.id)}
+                                                checked={Array.from(selectedObjs).some(obj => obj.id === item.id)}
                                                 onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
                                             />
                                         </Table.Td>

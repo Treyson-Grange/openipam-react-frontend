@@ -149,6 +149,20 @@ export const getApiEndpointFunctions = <
             ),
         })
     },
+    host: {
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'hosts/', { headers: { 'Content-Type': 'application/json' } }),
+        byId: (id: string | number) => ({
+            get: requestGenerator<
+                HttpMethod.GET,
+                API.GenericResponse,
+                API.Host | StrictTypeChecking
+            >(HttpMethod.GET, `hosts/${id}/`, { headers: { 'Content-Type': 'application/json' } }),
+        })
+    }
 });
 
 declare global {

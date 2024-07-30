@@ -547,6 +547,22 @@ export interface RecentReport {
     users_month: number;
 }
 
+export interface Host {
+    mac: string;
+    details: string;
+    vendor: string;
+    hostname: string;
+    expires: string;
+    description: string;
+    is_dynamic: boolean;
+    disabled_host: boolean;
+    dhcp_group: string[];
+    attributes: string[];
+    master_ip_address: string;
+    group_owners: string[];
+    changed_by: User;
+}
+
 export interface Interface {
     description: string;
     is_enabled: boolean;
