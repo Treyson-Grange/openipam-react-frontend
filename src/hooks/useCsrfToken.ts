@@ -22,7 +22,6 @@ export const useCsrfToken = () => {
     const fetchCsrfToken = useCallback(async () => {
         try {
             const csrfCall = await api.auth.getCSRFToken();
-            console.log(csrfCall.csrfToken);
             setCsrfToken(csrfCall.csrfToken);
             setCookie('csrftoken', csrfCall.csrfToken);
             hasFetchedToken.current = true

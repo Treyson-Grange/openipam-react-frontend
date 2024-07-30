@@ -9,7 +9,7 @@ const Dns = () => {
                 console.log('Deleted DNS Record');
             });
         } catch (error) {
-            console.error(error);
+            throw new Error();
         }
     }
 

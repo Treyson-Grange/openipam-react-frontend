@@ -22,8 +22,8 @@ const Actions = (): JSX.Element => {
                 actions={['Change Source Internal', 'Change Source LDAP']}
                 sortable={true}
                 actionFunctions={{
-                    ChangeSourceInternal: (id: number) => console.log(`Editing group ${id}`),
-                    ChangeSourceLDAP: (id: number) => console.log(`Deleting group ${id}`)
+                    ChangeSourceInternal: { func: (id: number) => console.log(`Editing group ${id}`), key: 'id' },
+                    ChangeSourceLDAP: { func: (id: number) => console.log(`Deleting group ${id}`), key: 'id' }
                 }}
                 searchable={true}
                 searchableFields={['name']}

@@ -96,7 +96,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const handleActionChange = (value: string | null) => {
         if (value) {
             setAction(value);
-            console.log(`Action changed to ${value}`);
         }
     }
 
@@ -122,7 +121,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             } else {
                 updatedSelectedObjs.delete(item);
             }
-            console.log(selectedObjs)
             return updatedSelectedObjs;
         });
     };
