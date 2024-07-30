@@ -24,6 +24,9 @@ const LoginForm = () => {
     const { csrftoken, fetchCsrfToken } = useCsrfToken();
     const { setUser } = useAuth();
 
+    /**
+     * Handle login, and auth configuration if successful.
+     */
     const handleLogin = async () => {
         try {
             const loginResponse = await api.auth.login({ username, password });

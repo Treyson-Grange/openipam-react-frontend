@@ -22,13 +22,18 @@ interface DropdownLink {
     isLabel?: boolean;
     dropdown?: { link?: string; label: string; isLabel?: boolean }[];
 }
-
+/**
+ * Links for regular users.
+ */
 const links: DropdownLink[] = [
     { link: '/', label: 'Home' },
     { link: '/hosts', label: 'Hosts' },
     { link: '/dns', label: 'DNS' },
 ];
 
+/**
+ * Links for admin users.
+ */
 const adminLinks: DropdownLink[] = [
     { link: '/', label: 'Home' },
     {

@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
 const Dns = () => {
+    /**
+     * For use in the pagination table. Deletes a DNS record by ID.
+     * @param id 
+     */
     const deleteDNSRecord: (id: number) => void = (id: number) => {
         try {
             api.dns.byId(id).delete().then(() => {
@@ -13,6 +17,10 @@ const Dns = () => {
         }
     }
 
+    /**
+     * For use in the pagination table. Logs a host by ID. POC only.
+     * @param id 
+     */
     const logHost: (id: string) => void = (id: string) => {
         try {
             api.host.byId(id).get().then((response) => {

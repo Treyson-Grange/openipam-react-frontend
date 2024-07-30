@@ -25,25 +25,73 @@ import {
 } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
+    /**
+     * The function to call to get the data for the table.
+     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
+    /**
+     * The default page size to use for the table.
+     */
     defPageSize: number;
+    /**
+     * The title of the table.
+     */
     title: string;
+    /**
+     * The attributes needed to display in the table.
+     */
     neededAttr: string[];
+    /**
+     * Additional page sizes to display in the page size dropdown.
+     */
     morePageSizes?: string[];
+    /**
+     * Whether to override the default page sizes with the additional page sizes.
+     * Requires `morePageSizes` to be set.
+     */
     overridePageSizes?: boolean;
+    /**
+     * Whether the objects in the table are sortable.
+     */
     sortable?: boolean;
+    /**
+     * The fields that are sortable.
+     */
     sortableFields?: string[];
+    /**
+     * Whether the objects in the table are searchable
+     * Requires `searchableFields` to be set.
+    */
     searchable?: boolean;
+    /**
+     * The fields that are searchable.
+     * Requires `searchable` to be set.
+    */
     searchableFields?: string[];
 }
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
+    /**
+     * Whether the objects in the table are editable.
+     */
     editableObj: true;
+    /**
+     * The actions that can be performed on the objects in the table.
+     * To have actions, both `actions` and `actionFunctions` must be set.
+     */
     actions?: string[];
+    /**
+     * The functions to call when an action is performed.
+     * To have actions, both `actions` and `actionFunctions` must be set.
+     * Please pass func and key, where the key is the attribute to pass to the function.
+     */
     actionFunctions?: Record<string, { func: (params: any) => void, key: string }>;
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
+    /**
+     * Whether the objects in the table are editable. Defaults to false.
+     */
     editableObj?: false;
 }
 
@@ -53,7 +101,19 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions ?? [];
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions ?? {};
 
-    const { getFunction, defPageSize, title, neededAttr, morePageSizes, overridePageSizes, editableObj, sortable, sortableFields, searchable, searchableFields } = props;
+    const {
+        getFunction,
+        defPageSize,
+        title,
+        neededAttr,
+        morePageSizes,
+        overridePageSizes,
+        editableObj,
+        sortable,
+        sortableFields,
+        searchable,
+        searchableFields
+    } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize);

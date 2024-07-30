@@ -149,18 +149,33 @@ export const getApiEndpointFunctions = <
             ),
         })
     },
+    /**
+     * Hosts API
+     */
     host: {
+        /**
+         * Gets Host objects
+         * Sortable: false
+         */
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/', { headers: { 'Content-Type': 'application/json' } }),
-        byId: (id: string | number) => ({
+        /**
+         * API endpoints for a specific Host Object
+         * @param mac 
+         * @returns An object containing all endpoints for the given Host object
+        */
+        byId: (mac: string | number) => ({
+            /**
+             * Queries a Host object given a mac address
+             */
             get: requestGenerator<
                 HttpMethod.GET,
                 API.GenericResponse,
                 API.Host | StrictTypeChecking
-            >(HttpMethod.GET, `hosts/${id}/`, { headers: { 'Content-Type': 'application/json' } }),
+            >(HttpMethod.GET, `hosts/${mac}/`, { headers: { 'Content-Type': 'application/json' } }),
         })
     }
 });
@@ -169,7 +184,7 @@ declare global {
     var api: ReturnType<typeof getApiEndpointFunctions>;
 }
 
-const BASE_URL = 'http://127.0.0.1:8000/api/v2';
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 enum HttpMethod {
     GET = 'GET',
