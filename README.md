@@ -25,3 +25,9 @@ This is a WIP rework of the openIPAM front end at USU. openIPAM is currently set
 4. **Access the Application**
    - Navigate to the frontend URL.
    - Log in with a username specific to your local OpenIPAM database.
+
+
+## More
+
+- GitHub repo [here](https://github.com/Treyson-Grange/openipam-react-frontend)
+- Project board [here](https://github.com/users/Treyson-Grange/projects/2/views/2)

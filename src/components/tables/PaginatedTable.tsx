@@ -169,8 +169,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setOrderBy(key);
     }
 
-    const ridSpaces = (str: string) => str.replace(/\s/g, '');
-
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
     const handleCheckboxChange = (item: any, checked: boolean) => {
@@ -186,7 +184,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     };
 
     const submitChange = () => {
-        const actionObj = actionFunctions[ridSpaces(action)];
+        const actionObj = actionFunctions[action.replace(/\s/g, '')];
         if (!actionObj) {
             setNotification(['Error: Invalid action', 'Error']);
             return;

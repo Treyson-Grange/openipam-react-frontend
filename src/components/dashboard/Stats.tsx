@@ -32,7 +32,7 @@ const Stats = () => {
                         <Title order={2}>Hosts</Title>
                         {hostItems.map((item) => (
                             <p key={item}>
-                                {itemText(item)}: {data[item]}
+                                {data[item]} {itemText(item)}
                             </p>
                         ))}
                     </Paper>
