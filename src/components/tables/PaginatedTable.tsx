@@ -223,7 +223,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         <Paper radius='lg' p='lg' m='lg' withBorder>
             <Group justify='space-between'>
                 <Title>{title}</Title>
-                <Pagination total={maxPages} value={page} onChange={setPage} />
+                {maxPages !== 1 &&
+                    <Pagination total={maxPages} value={page} onChange={setPage} />
+                }
             </Group>
             <div style={{ overflowX: 'auto', width: '100%' }}>
                 <Table>
