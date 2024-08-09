@@ -1,13 +1,13 @@
-import PaginatedTable from '../components/tables/PaginatedTable';
+// import PaginatedTable from '../components/tables/PaginatedTable';
 import DomainGrid from '../components/DomainGrid';
-import { useState } from 'react';
-import { getApiEndpointFunctions } from '../utilities/apiFunctions';
-import { useAuth } from '../contexts/AuthContext';
+// import { useState } from 'react';
+// import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+// import { useAuth } from '../contexts/AuthContext';
 
 const Domains = () => {
-    const [pageSize] = useState<number>(10);
-    const api = getApiEndpointFunctions();
-    const auth = useAuth();
+    // const [pageSize] = useState<number>(10);
+    // const api = getApiEndpointFunctions();
+    // const auth = useAuth();
     // if (auth.isAdmin()) {
     //     //paginated table cant handle the links for the domains. fix l8er
     //     return (

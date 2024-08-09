@@ -6,6 +6,7 @@ import { Card, Text, Title, Grid, Paper, Badge, Group, ActionIcon, em, Paginatio
 import { FaPencilAlt, FaEye } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
+
 const DomainGrid = (): JSX.Element => {
     const PAGE_SIZE = 12;
     const [page, setPage] = useState(1);
@@ -53,7 +54,9 @@ const DomainGrid = (): JSX.Element => {
                     <Grid.Col span={span} key={index}>
                         <Card style={{ minHeight: "12rem", position: "relative" }} shadow="sm" padding="lg">
                             <Group>
-                                <Title order={2} size="h4">{domain.name}</Title>
+                                <Link to={`/domains/${domain.name}`} className='header-link'>
+                                    <Title order={2} size="h4">{domain.name}</Title>
+                                </Link>
                                 <Badge color="blue" variant="light" size="lg">
                                     {domain.record_count}
                                 </Badge>
