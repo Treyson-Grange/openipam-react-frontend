@@ -1,3 +1,4 @@
+import { get } from 'http';
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
 import { getCookie } from './getCookie';
@@ -134,6 +135,14 @@ export const getApiEndpointFunctions = <
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/', { headers: { 'Content-Type': 'application/json' } }),
         /**
+         * Useless endpoint, just wanted to show that permissions can be checked, see api.
+         */
+        mine: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'dns/mine', { headers: { 'Content-Type': 'application/json' } }),
+        /**
          * API endpoints for a specific DNS Object
          * @param id 
          * @returns An object containing all endpoints for the given DNS object
@@ -148,6 +157,20 @@ export const getApiEndpointFunctions = <
                 { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
             ),
         })
+    },
+    /**
+     * Domain API
+     */
+    domain: {
+        /**
+         * Gets user owned Domain objects
+         * Sortable: false
+         */
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'domains/', { headers: { 'Content-Type': 'application/json' } }),
     },
     /**
      * Hosts API

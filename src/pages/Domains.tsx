@@ -1,8 +1,9 @@
 import PaginatedTable from '../components/tables/PaginatedTable';
+import DomainGrid from '../components/DomainGrid';
 import { useState } from 'react';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
-const Dns = () => {
+const Domains = () => {
     /**
      * For use in the pagination table. Deletes a DNS record by ID.
      * @param id 
@@ -36,11 +37,11 @@ const Dns = () => {
 
     return (
         <>
-            <PaginatedTable
+            {/* <PaginatedTable
                 defPageSize={pageSize}
-                getFunction={api.dns.get}
-                title="DNS Records"
-                neededAttr={['name', 'ttl', 'dns_type', 'content']}
+                getFunction={api.domain.get}
+                title="You Domains"
+                neededAttr={['name', 'record_count', 'changed', 'id']}
                 editableObj={true}
                 morePageSizes={['10', '25', '50']}
                 overridePageSizes={true}
@@ -53,16 +54,10 @@ const Dns = () => {
                     DeleteSelectedDnsRecords: { func: deleteDNSRecord, key: 'id' },
                     LogHost: { func: logHost, key: 'host' }
                 }}
-            />
-
-            <PaginatedTable
-                defPageSize={pageSize}
-                getFunction={api.host.get}
-                title='DNS Records'
-                neededAttr={['mac', 'hostname', 'details']}
-            />
+            /> */}
+            <DomainGrid />
         </>
     );
 };
 
-export default Dns;
+export default Domains;

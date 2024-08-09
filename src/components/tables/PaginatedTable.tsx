@@ -68,6 +68,12 @@ interface BasePaginatedTableProps {
      * Requires `searchable` to be set.
     */
     searchableFields?: string[];
+
+    /**
+     * The additional URL parameters to pass to the API.
+     * Pass it in like *additionalUrlParams={{ "paramName": String(value)) }}*
+    */
+    additionalUrlParams?: Record<string, string>;
 }
 
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
@@ -112,7 +118,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         sortable,
         sortableFields,
         searchable,
-        searchableFields
+        searchableFields,
+        additionalUrlParams
     } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
@@ -149,7 +156,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         pageSize,
         {
             ...orderBy ? { 'order_by': orderBy, 'direction': direction } : {},
-            ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v))
+            ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v)),
+            ...additionalUrlParams
         }
     );
 

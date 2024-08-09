@@ -48,8 +48,8 @@ const useApiEndpointMemo = (endpoint: MemoizableRequest) => {
 
 /**
  * Fetch JSON data from a KCM API endpoint with query parameters
- * @param endpoint The API endpoint function to fetch data from
- * @param queryParams The optional query parameters to include in the request
+ * @param endpoint 
+ * @param queryParams The optional query parameters to include in the requestThe API endpoint function to fetch data from
  * @param transform A function to transform the fetched data before returning it, called once after the request completes
  * @param makeRequest Whether to make requests or not
  * @returns The fetched data, null if the request has not completed

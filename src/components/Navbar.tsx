@@ -28,7 +28,7 @@ interface DropdownLink {
 const links: DropdownLink[] = [
     { link: '/', label: 'Home' },
     { link: '/hosts', label: 'Hosts' },
-    { link: '/dns', label: 'DNS' },
+    { link: '/domains', label: 'Domains' },
 ];
 
 /**
@@ -49,8 +49,8 @@ const adminLinks: DropdownLink[] = [
         ]
     },
     {
-        link: '/dns',
-        label: 'DNS',
+        link: '/domains',
+        label: 'Domains',
         dropdown: [
             { label: 'DHCP DNS Records', link: '/6' },
             { label: 'DNS Records', link: '/7' },
