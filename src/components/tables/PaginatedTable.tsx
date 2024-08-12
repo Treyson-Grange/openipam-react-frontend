@@ -14,12 +14,17 @@ import {
     Notification,
     Dialog,
     Pagination,
-    TextInput
+    TextInput,
+    ActionIcon,
+    Tooltip
 } from '@mantine/core';
 import {
     FaSort,
     FaSortUp,
-    FaSortDown
+    FaSortDown,
+    FaCheck,
+    FaXmark,
+    FaPencil
 } from 'react-icons/fa6';
 
 interface BasePaginatedTableProps {
@@ -262,80 +267,111 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                     <Pagination total={maxPages} value={page} onChange={setPage} />
                 }
             </Group>
-            <div style={{ overflowX: 'auto', width: '100%' }}>
-                <Table>
-                    <colgroup>
-                        {editableObj && <col style={{ width: '5%' }} />}
-                        {neededAttr.map(attr => (
-                            <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
-                        ))}
-                    </colgroup>
-                    <Table.Thead>
-                        <Table.Tr>
-                            {editableObj && <Table.Th></Table.Th>}
+            {data.length === 0 ? (
+                <Text size='xl'>No data available</Text>
+            ) : (
+                <div style={{ overflowX: 'auto', width: '100%' }}>
+                    <Table>
+                        <colgroup>
+                            {editableObj && <col style={{ width: '5%' }} />}
                             {neededAttr.map(attr => (
-                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
-                                    <Group gap='xs'>
-                                        <Text>{handleFormatHeader(attr)}</Text>
-                                        {sortable && sortableFields?.includes(attr) && (
-                                            <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
-                                                {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
-                                            </Button>
-                                        )}
-                                        {searchable && searchableFields?.includes(attr) && (
-                                            <TextInput
-                                                placeholder={`Search ${handleFormatHeader(attr)}`}
-                                                value={searchTerms[attr] || ''}
-                                                onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
-                                                size='xs'
-                                            />
-                                        )}
-                                    </Group>
-                                </Table.Th>
+                                <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
                             ))}
-                            {editableObj && <Table.Th>Edit</Table.Th>}
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {data.map((item: any) => {
-                            const isEditing = editingRow === item.id;
-                            return (
-                                <Table.Tr key={item.id}>
-                                    {editableObj && (
-                                        <Table.Td>
-                                            <Checkbox
-                                                checked={Array.from(selectedObjs).some(obj => obj.id === item.id)}
-                                                onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
-                                            />
-                                        </Table.Td>
-                                    )}
-                                    {neededAttr.map(attr => (
-                                        <Table.Td key={attr}>
-                                            {isEditing && editableFields?.includes(attr) ? (
+                        </colgroup>
+                        <Table.Thead>
+                            <Table.Tr>
+                                {editableObj && <Table.Th></Table.Th>}
+                                {neededAttr.map(attr => (
+                                    <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                        <Group gap='xs'>
+                                            <Text>{handleFormatHeader(attr)}</Text>
+                                            {sortable && sortableFields?.includes(attr) && (
+                                                <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
+                                                    {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
+                                                </Button>
+                                            )}
+                                            {searchable && searchableFields?.includes(attr) && (
                                                 <TextInput
-                                                    value={editValues[attr]}
-                                                    onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
+                                                    placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                    value={searchTerms[attr] || ''}
+                                                    onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
+                                                    size='xs'
                                                 />
-                                            ) : (
-                                                item[attr]
                                             )}
-                                        </Table.Td>
-                                    ))}
-                                    {editableObj && (
-                                        <Table.Td>
-                                            {isEditing ? (
-                                                <Button onClick={() => handleEditSubmit(item)}>Submit</Button>
-                                            ) : (
-                                                <Button onClick={() => handleEditClick(item)}>Edit</Button>
-                                            )}
-                                        </Table.Td>
-                                    )}
-                                </Table.Tr>
-                            );
-                        })}
-                    </Table.Tbody>
-                </Table>
-            </div>
+                                        </Group>
+                                    </Table.Th>
+                                ))}
+                                {editableObj && <Table.Th>Edit</Table.Th>}
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {data.map((item: any) => {
+                                const isEditing = editingRow === item.id;
+                                return (
+                                    <Table.Tr key={item.id}>
+                                        {editableObj && (
+                                            <Table.Td>
+                                                <Checkbox
+                                                    checked={Array.from(selectedObjs).some(obj => obj.id === item.id)}
+                                                    onChange={(event) => handleCheckboxChange(item, event.currentTarget.checked)}
+                                                />
+                                            </Table.Td>
+                                        )}
+                                        {neededAttr.map(attr => (
+                                            <Table.Td key={attr}>
+                                                {isEditing && editableFields?.includes(attr) ? (
+                                                    <TextInput
+                                                        value={editValues[attr]}
+                                                        onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
+                                                    />
+                                                ) : (
+                                                    item[attr]
+                                                )}
+                                            </Table.Td>
+                                        ))}
+                                        {editableObj && (
+                                            <Table.Td>
+                                                <div style={{ display: 'flex', justifyContent: 'left' }}>
+                                                    {isEditing ? (
+                                                        <>
+                                                            <Tooltip label="Submit Changes">
+                                                                <ActionIcon
+                                                                    mr={8}
+                                                                    onClick={() => handleEditSubmit(item)}
+                                                                >
+                                                                    <FaCheck />
+                                                                </ActionIcon>
+                                                            </Tooltip>
+                                                            <Tooltip label="Cancel Changes">
+                                                                <ActionIcon
+                                                                    onClick={() => {
+                                                                        setEditingRow(null);
+                                                                        setEditValues({});
+                                                                    }}
+                                                                >
+                                                                    <FaXmark />
+                                                                </ActionIcon>
+                                                            </Tooltip>
+                                                        </>
+                                                    ) : (
+                                                        <Tooltip label="Edit DNS Record">
+                                                            <ActionIcon onClick={() => handleEditClick(item)}>
+                                                                <FaPencil />
+                                                            </ActionIcon>
+                                                        </Tooltip>
+                                                    )}
+                                                </div>
+
+                                            </Table.Td>
+
+                                        )}
+                                    </Table.Tr>
+                                );
+                            })}
+                        </Table.Tbody>
+                    </Table>
+                </div>
+            )}
             {actions.length > 0 && (
                 <Group justify='flex-end' m='lg'>
                     <Select
