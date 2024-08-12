@@ -13,7 +13,7 @@ const Actions = (): JSX.Element => {
                 morePageSizes={['1']}
                 sortable={true}
             />
-            {/* <PaginatedTable
+            <PaginatedTable
                 defPageSize={5}
                 getFunction={api.groups.get}
                 title='Groups'
@@ -27,7 +27,7 @@ const Actions = (): JSX.Element => {
                 }}
                 searchable={true}
                 searchableFields={['name']}
-            /> */}
+            />
         </>
     );
 }

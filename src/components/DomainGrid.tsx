@@ -3,7 +3,7 @@ import { usePaginatedApi } from '../hooks/useApi';
 import { useMediaQuery } from '@mantine/hooks';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import { Card, Text, Title, Grid, Paper, Badge, Group, ActionIcon, em, Pagination } from '@mantine/core';
-import { FaPencilAlt, FaEye } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
 
@@ -40,7 +40,13 @@ const DomainGrid = (): JSX.Element => {
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder>
             <Group justify='space-between'>
-                <Title>Your Domains</Title>
+                {data?.results?.length === 0 ? (
+                    <Title order={1}>
+                        No domains found
+                    </Title>
+                ) : (
+                    <Title>Your Domains</Title>
+                )}
                 {maxPages !== 1 && (
                     <Pagination
                         total={maxPages}
@@ -55,7 +61,7 @@ const DomainGrid = (): JSX.Element => {
                         <Card style={{ minHeight: "12rem", position: "relative" }} shadow="sm" padding="lg">
                             <Group>
                                 <Link to={`/domains/${domain.name}`} className='header-link'>
-                                    <Title order={2} size="h4">{domain.name}</Title>
+                                    <Title order={2} size="h3">{domain.name}</Title>
                                 </Link>
                                 <Badge color="blue" variant="light" size="lg">
                                     {domain.record_count}
@@ -77,14 +83,14 @@ const DomainGrid = (): JSX.Element => {
                                         <FaEye size={18} />
                                     </ActionIcon>
                                 </Link>
-                                <ActionIcon
+                                {/* <ActionIcon
                                     variant="light"
                                     color="blue"
                                     size="xl"
                                     radius="xl"
                                 >
                                     <FaPencilAlt size={18} />
-                                </ActionIcon>
+                                </ActionIcon> */}
                             </Group>
                         </Card>
                     </Grid.Col>

@@ -174,7 +174,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             ...additionalUrlParams
         }
     );
-    console.log(paginatedData)
+
     const handleActionChange = (value: string | null) => {
         if (value) {
             setAction(value);
@@ -222,7 +222,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
 
             setNotification(['Changes submitted successfully', 'Success']);
         } catch (error) {
-            setNotification([`Error: ${error}`, 'Error']);
+            setNotification([`${error}`, 'Error']);
         }
     };
 
@@ -267,49 +267,53 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                     <Pagination total={maxPages} value={page} onChange={setPage} />
                 }
             </Group>
-            {data.length === 0 ? (
-                <Text size='xl'>No data available</Text>
-            ) : (
-                <div style={{ overflowX: 'auto', width: '100%' }}>
-                    <Table>
-                        <colgroup>
-                            {editableObj && <col style={{ width: '5%' }} />}
+            <div style={{ overflowX: 'auto', width: '100%' }}>
+                <Table>
+                    <colgroup>
+                        {editableObj && actions.length && <col style={{ width: '5%' }} />}
+                        {neededAttr.map(attr => (
+                            <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
+                        ))}
+                    </colgroup>
+                    <Table.Thead>
+                        <Table.Tr>
+                            {editableObj && actions.length !== 0 && <Table.Th></Table.Th>}
                             {neededAttr.map(attr => (
-                                <col key={attr} style={{ width: `${90 / neededAttr.length}%` }} />
+                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                    <Group gap='xs'>
+                                        <Text>{handleFormatHeader(attr)}</Text>
+                                        {sortable && sortableFields?.includes(attr) && (
+                                            <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
+                                                {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
+                                            </Button>
+                                        )}
+                                        {searchable && searchableFields?.includes(attr) && (
+                                            <TextInput
+                                                placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                value={searchTerms[attr] || ''}
+                                                onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
+                                                size='xs'
+                                            />
+                                        )}
+                                    </Group>
+                                </Table.Th>
                             ))}
-                        </colgroup>
-                        <Table.Thead>
+                            {editableObj && editFunction && <Table.Th>Edit</Table.Th>}
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {data.length === 0 ? (
                             <Table.Tr>
-                                {editableObj && <Table.Th></Table.Th>}
-                                {neededAttr.map(attr => (
-                                    <Table.Th key={attr} style={{ textAlign: 'left' }}>
-                                        <Group gap='xs'>
-                                            <Text>{handleFormatHeader(attr)}</Text>
-                                            {sortable && sortableFields?.includes(attr) && (
-                                                <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
-                                                    {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
-                                                </Button>
-                                            )}
-                                            {searchable && searchableFields?.includes(attr) && (
-                                                <TextInput
-                                                    placeholder={`Search ${handleFormatHeader(attr)}`}
-                                                    value={searchTerms[attr] || ''}
-                                                    onChange={(e) => handleSearchChange(attr, e.currentTarget.value)}
-                                                    size='xs'
-                                                />
-                                            )}
-                                        </Group>
-                                    </Table.Th>
-                                ))}
-                                {editableObj && <Table.Th>Edit</Table.Th>}
+                                <Table.Td colSpan={neededAttr.length + (editableObj ? 1 : 0)}>
+                                    <Text size='xl'>No data available</Text>
+                                </Table.Td>
                             </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
-                            {data.map((item: any) => {
+                        ) : (
+                            data.map((item: any) => {
                                 const isEditing = editingRow === item.id;
                                 return (
                                     <Table.Tr key={item.id}>
-                                        {editableObj && (
+                                        {editableObj && actions.length > 0 && (
                                             <Table.Td>
                                                 <Checkbox
                                                     checked={Array.from(selectedObjs).some(obj => obj.id === item.id)}
@@ -329,14 +333,16 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                 )}
                                             </Table.Td>
                                         ))}
-                                        {editableObj && (
+                                        {editableObj && editFunction && (
                                             <Table.Td>
                                                 <div style={{ display: 'flex', justifyContent: 'left' }}>
                                                     {isEditing ? (
                                                         <>
                                                             <Tooltip label="Submit Changes">
                                                                 <ActionIcon
+                                                                    size={'lg'}
                                                                     mr={8}
+                                                                    color="green"
                                                                     onClick={() => handleEditSubmit(item)}
                                                                 >
                                                                     <FaCheck />
@@ -344,6 +350,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             </Tooltip>
                                                             <Tooltip label="Cancel Changes">
                                                                 <ActionIcon
+                                                                    size={'lg'}
+                                                                    color="red"
                                                                     onClick={() => {
                                                                         setEditingRow(null);
                                                                         setEditValues({});
@@ -355,51 +363,56 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                         </>
                                                     ) : (
                                                         <Tooltip label="Edit DNS Record">
-                                                            <ActionIcon onClick={() => handleEditClick(item)}>
+                                                            <ActionIcon
+                                                                onClick={() => handleEditClick(item)}
+                                                                size={'lg'}
+                                                            >
                                                                 <FaPencil />
                                                             </ActionIcon>
                                                         </Tooltip>
                                                     )}
                                                 </div>
-
                                             </Table.Td>
-
                                         )}
                                     </Table.Tr>
                                 );
-                            })}
-                        </Table.Tbody>
-                    </Table>
-                </div>
-            )}
-            {actions.length > 0 && (
-                <Group justify='flex-end' m='lg'>
-                    <Select
-                        value={action}
-                        onChange={handleActionChange}
-                        data={actions}
-                        style={{ marginRight: '10px' }}
-                    />
-                    <Button onClick={submitChange}>Submit</Button>
-                </Group>
-            )}
-            {maxPages !== 1 && (
-                <Group justify='flex-end' m='lg'>
-                    <Text>Select number of rows</Text>
-                    <Select
-                        value={pageSize.toString()}
-                        onChange={handlePageSizeChange}
-                        data={pageSizes}
-                    />
-                </Group>
-            )}
-            {notification && (
-                <Dialog opened={!!notification} onClose={() => setNotification(null)}>
-                    <Notification color={notification[1] === 'Success' ? 'teal' : 'red'}>
-                        {notification[0]}
-                    </Notification>
-                </Dialog>
-            )}
+                            })
+                        )}
+                    </Table.Tbody>
+                </Table>
+            </div>
+            <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {actions.length > 0 && (
+                    <Group justify='flex-end' m='lg'>
+                        <Select
+                            value={action}
+                            onChange={handleActionChange}
+                            data={actions}
+                            style={{ marginRight: '10px' }}
+                        />
+                        <Button onClick={submitChange} disabled={!action || selectedObjs.size === 0}>
+                            Submit
+                        </Button>
+                    </Group>
+                )}
+                {maxPages !== 1 && (
+                    <Group justify='flex-end' m='lg'>
+                        <Text>Select number of rows</Text>
+                        <Select
+                            value={pageSize.toString()}
+                            onChange={handlePageSizeChange}
+                            data={pageSizes}
+                        />
+                    </Group>
+                )}
+                {notification && (
+                    <Dialog opened={!!notification} onClose={() => setNotification(null)}>
+                        <Notification color={notification[1] === 'Success' ? 'teal' : 'red'}>
+                            {notification[0]}
+                        </Notification>
+                    </Dialog>
+                )}
+            </Group>
         </Paper>
     );
 };
