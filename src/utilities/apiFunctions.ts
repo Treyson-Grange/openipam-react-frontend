@@ -156,6 +156,14 @@ export const getApiEndpointFunctions = <
                 `dns/${id}/`,
                 { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
             ),
+            /**
+             * Updates a DNSRecord object given an objects ID and new data
+             */
+            update: requestGenerator<
+                HttpMethod.PUT,
+                Partial<API.DNSRecord>,
+                API.DNSRecord | StrictTypeChecking
+            >(HttpMethod.PUT, `dns/${id}/`, { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
         })
     },
     /**
@@ -171,6 +179,18 @@ export const getApiEndpointFunctions = <
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'domains/', { headers: { 'Content-Type': 'application/json' } }),
+
+        byId: (id: string | number) => ({
+            getRecords: requestGenerator<
+                HttpMethod.GET,
+                API.PaginationParams<API.Filters.LogFilter>,
+                API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            >(
+                HttpMethod.GET,
+                `domains/${id}/records/`,
+                { headers: { 'Content-Type': 'application/json' } }
+            ),
+        })
     },
     /**
      * Hosts API

@@ -17,8 +17,6 @@ import {
     TextInput
 } from '@mantine/core';
 import {
-    FaRegCircleXmark,
-    FaRegCircleCheck,
     FaSort,
     FaSortUp,
     FaSortDown
@@ -68,7 +66,6 @@ interface BasePaginatedTableProps {
      * Requires `searchable` to be set.
     */
     searchableFields?: string[];
-
     /**
      * The additional URL parameters to pass to the API.
      * Pass it in like *additionalUrlParams={{ "paramName": String(value)) }}*
@@ -92,6 +89,15 @@ interface EditablePaginatedTableProps extends BasePaginatedTableProps {
      * Please pass func and key, where the key is the attribute to pass to the function.
      */
     actionFunctions?: Record<string, { func: (params: any) => void, key: string }>;
+    /**
+     * The function to call to edit an object in the table.
+     * Requires `editableObj` to be
+    */
+    editFunction?: (dnsName: string) => QueryRequest<any, any>;
+    /**
+     * The editable fields
+     */
+    editableFields?: string[];
 }
 
 interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
@@ -106,7 +112,8 @@ type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTab
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions ?? [];
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions ?? {};
-
+    const editFunction = (props as EditablePaginatedTableProps).editFunction;
+    const editableFields = (props as EditablePaginatedTableProps).editableFields;
     const {
         getFunction,
         defPageSize,
@@ -131,6 +138,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>('');
     const [direction, setDirection] = useState<string>('asc');
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+    const [editingRow, setEditingRow] = useState<number | null>(null);
+    const [editValues, setEditValues] = useState<Record<string, string>>({});
 
     const pageSizes = ['5', '10', '20'];
     if (overridePageSizes) { pageSizes.length = 0; }
@@ -144,11 +153,11 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const handlePageSizeChange = (value: string | null) => {
         setPage(1);
         setPageSize(parseInt(value || '5'));
-    }
+    };
 
     const handleSearchChange = (field: string, value: string) => {
         setSearchTerms(prevTerms => ({ ...prevTerms, [field]: value }));
-    }
+    };
 
     const { data: paginatedData } = usePaginatedApi(
         getFunction,
@@ -160,12 +169,12 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             ...additionalUrlParams
         }
     );
-
+    console.log(paginatedData)
     const handleActionChange = (value: string | null) => {
         if (value) {
             setAction(value);
         }
-    }
+    };
 
     const handleSort = (key: string, oldDirection: string) => {
         if (!sortable) return;
@@ -175,7 +184,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         }
         setDirection(newDirection);
         setOrderBy(key);
-    }
+    };
 
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
@@ -211,6 +220,32 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             setNotification([`Error: ${error}`, 'Error']);
         }
     };
+
+    const handleEditClick = (item: any) => {
+        setEditingRow(item.id);
+        setEditValues(editableFields?.reduce((acc, field) => {
+            acc[field] = item[field] || '';
+            return acc;
+        }, {} as Record<string, string>) || {});
+    };
+
+    const handleEditInputChange = (field: string, value: string) => {
+        setEditValues(prevValues => ({ ...prevValues, [field]: value }));
+    };
+
+    const handleEditSubmit = async (item: any) => {
+        try {
+            if (editFunction) {
+                const updateFunction = editFunction(item.id);
+                await updateFunction(editValues);
+                setNotification(['Edit submitted successfully', 'Success']);
+                setEditingRow(null);
+            }
+        } catch (error) {
+            setNotification([`Error: ${error}`, 'Error']);
+        }
+    };
+
 
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
@@ -258,10 +293,12 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                     </Group>
                                 </Table.Th>
                             ))}
+                            {editableObj && <Table.Th>Edit</Table.Th>}
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {data.map((item: any) => {
+                            const isEditing = editingRow === item.id;
                             return (
                                 <Table.Tr key={item.id}>
                                     {editableObj && (
@@ -272,60 +309,61 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                             />
                                         </Table.Td>
                                     )}
-                                    {neededAttr.map(attr => {
-                                        const value = item[attr];
-                                        const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?[-+]\d{2}:\d{2}$/;
-                                        if (isoDateRegex.test(value)) {
-                                            const date = new Date(value);
-                                            const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-                                            return <Table.Td key={attr}>{date.toLocaleDateString('en-US', options)}</Table.Td>;
-                                        } else if (Array.isArray(value)) {
-                                            return <Table.Td key={attr}>{value.join(', ')}</Table.Td>;
-                                        } else {
-                                            return <Table.Td key={attr}>{value || 'N/A'}</Table.Td>;
-                                        }
-                                    })}
+                                    {neededAttr.map(attr => (
+                                        <Table.Td key={attr}>
+                                            {isEditing && editableFields?.includes(attr) ? (
+                                                <TextInput
+                                                    value={editValues[attr]}
+                                                    onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
+                                                />
+                                            ) : (
+                                                item[attr]
+                                            )}
+                                        </Table.Td>
+                                    ))}
+                                    {editableObj && (
+                                        <Table.Td>
+                                            {isEditing ? (
+                                                <Button onClick={() => handleEditSubmit(item)}>Submit</Button>
+                                            ) : (
+                                                <Button onClick={() => handleEditClick(item)}>Edit</Button>
+                                            )}
+                                        </Table.Td>
+                                    )}
                                 </Table.Tr>
                             );
                         })}
                     </Table.Tbody>
                 </Table>
             </div>
-            <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
+            {actions.length > 0 && (
+                <Group justify='flex-end' m='lg'>
                     <Select
-                        style={{ maxWidth: '80px', textAlign: 'center' }}
-                        data={pageSizes}
+                        value={action}
+                        onChange={handleActionChange}
+                        data={actions}
+                        style={{ marginRight: '10px' }}
+                    />
+                    <Button onClick={submitChange}>Submit</Button>
+                </Group>
+            )}
+            {maxPages !== 1 && (
+                <Group justify='flex-end' m='lg'>
+                    <Text>Select number of rows</Text>
+                    <Select
                         value={pageSize.toString()}
                         onChange={handlePageSizeChange}
+                        data={pageSizes}
                     />
-                    {editableObj && actions.length > 0 && (
-                        <Select
-                            data={actions}
-                            value={action}
-                            onChange={handleActionChange}
-                        />
-                    )}
-                </div>
-                <Dialog opened={notification != null} size='xl'>
-                    <Notification
-                        title={notification?.[0]}
-                        icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
-                        color='blue'
-                        onClose={() => setNotification(null)}
-                    />
+                </Group>
+            )}
+            {notification && (
+                <Dialog opened={!!notification} onClose={() => setNotification(null)}>
+                    <Notification color={notification[1] === 'Success' ? 'teal' : 'red'}>
+                        {notification[0]}
+                    </Notification>
                 </Dialog>
-                {editableObj && (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='#8d0d20'>
-                            Clear Selection {selectedObjs.size !== 0 && `(${selectedObjs.size})`}
-                        </Button>
-                        <Button onClick={submitChange} color='blue'>
-                            Submit
-                        </Button>
-                    </div>
-                )}
-            </Group>
+            )}
         </Paper>
     );
 };

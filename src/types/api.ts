@@ -231,6 +231,37 @@ export interface User {
     date_joined: string;
 }
 
+export interface DNSRecord {
+    /**
+     * The display name of the DNS record.
+     */
+    name: string;
+    /**
+     * the content of the DNS record. (IP address, hostname, etc.)
+     */
+    content: string;
+    /**
+     * The dns type of the DNS record.
+     */
+    dns_type: string;
+    /**
+     * The time-to-live of the DNS record.
+     */
+    ttl: number;
+    /**
+     * The host that the DNS record is associated with.
+     */
+    host: string;
+    /**
+     * The ID of the DNS record.
+     */
+    id: number;
+    /**
+     * The orphaned-dns url (only works if the record is orphaned)
+     */
+    url: string;
+}
+
 /**
  * Interface for the Filter model.
  */

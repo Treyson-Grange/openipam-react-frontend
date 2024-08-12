@@ -25,7 +25,7 @@ const DomainGrid = (): JSX.Element => {
         }
     }, [data]);
 
-    const calculateSpan = (count: number) => {//Ignore this for now
+    const calculateSpan = () => {//Ignore this for now
         const isMobile = useMediaQuery(`(max-width: ${em(900)})`);
         if (isMobile) {
             return 12;
@@ -34,8 +34,8 @@ const DomainGrid = (): JSX.Element => {
         return 3;
     };
 
-    const count = data?.count || 0;
-    const span = calculateSpan(count);
+    // const count = data?.count || 0;
+    const span = calculateSpan();
 
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder>
