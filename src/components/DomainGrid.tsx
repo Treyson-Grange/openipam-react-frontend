@@ -25,16 +25,15 @@ const DomainGrid = (): JSX.Element => {
         }
     }, [data]);
 
-    const calculateSpan = () => {//Ignore this for now
-        const isMobile = useMediaQuery(`(max-width: ${em(900)})`);
+    const calculateSpan = () => {
+        const isMobile = useMediaQuery(`(max-width: ${em(1100)})`);
         if (isMobile) {
             return 12;
         }
-
         return 3;
     };
 
-    // const count = data?.count || 0;
+
     const span = calculateSpan();
 
     return (
@@ -58,7 +57,7 @@ const DomainGrid = (): JSX.Element => {
             <Grid justify="flex-start" align="stretch" mt="lg">
                 {data?.results?.map((domain: any, index: number) => (
                     <Grid.Col span={span} key={index}>
-                        <Card style={{ minHeight: "12rem", position: "relative" }} shadow="sm" padding="lg">
+                        <Card radius="lg" h={"12rem"} shadow="xl" padding="lg">
                             <Group>
                                 <Link to={`/domains/${domain.name}`} className='header-link'>
                                     <Title order={2} size="h3">{domain.name}</Title>
@@ -67,11 +66,13 @@ const DomainGrid = (): JSX.Element => {
                                     {domain.record_count}
                                 </Badge>
                             </Group>
-                            <Text size="sm" color="dimmed">
+                            <Text size="md" c={"blue"} >
                                 {domain.description}
                             </Text>
                             <Group
-                                style={{ position: "absolute", bottom: "10px", right: "10px" }}
+                                pos={"absolute"}
+                                bottom={"10px"}
+                                right={"10px"}
                             >
                                 <Link to={`/domains/${domain.name}`}>
                                     <ActionIcon
@@ -83,14 +84,6 @@ const DomainGrid = (): JSX.Element => {
                                         <FaEye size={18} />
                                     </ActionIcon>
                                 </Link>
-                                {/* <ActionIcon
-                                    variant="light"
-                                    color="blue"
-                                    size="xl"
-                                    radius="xl"
-                                >
-                                    <FaPencilAlt size={18} />
-                                </ActionIcon> */}
                             </Group>
                         </Card>
                     </Grid.Col>

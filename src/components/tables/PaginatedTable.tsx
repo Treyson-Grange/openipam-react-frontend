@@ -16,7 +16,8 @@ import {
     Pagination,
     TextInput,
     ActionIcon,
-    Tooltip
+    Tooltip,
+    Flex
 } from '@mantine/core';
 import {
     FaRegCircleXmark,
@@ -281,7 +282,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         <Table.Tr>
                             {editableObj && actions.length !== 0 && <Table.Th></Table.Th>}
                             {neededAttr.map(attr => (
-                                <Table.Th key={attr} style={{ textAlign: 'left' }}>
+                                <Table.Th key={attr} ta="left">
                                     <Group gap='xs'>
                                         <Text>{handleFormatHeader(attr)}</Text>
                                         {sortable && sortableFields?.includes(attr) && (
@@ -337,7 +338,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                         ))}
                                         {editableObj && editFunction && (
                                             <Table.Td>
-                                                <div style={{ display: 'flex', justifyContent: 'left' }}>
+                                                <Flex justify="left">
                                                     {isEditing ? (
                                                         <>
                                                             <Tooltip label="Submit Changes">
@@ -373,7 +374,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             </ActionIcon>
                                                         </Tooltip>
                                                     )}
-                                                </div>
+                                                </Flex>
                                             </Table.Td>
                                         )}
                                     </Table.Tr>
