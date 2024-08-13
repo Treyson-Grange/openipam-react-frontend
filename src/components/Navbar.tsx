@@ -182,17 +182,17 @@ export function Navbar() {
                 <Group gap={5} visibleFrom='sm'>
                     <Link to='/' className='link logo-container'>
                         <Flex align='center' gap='xs'>
-                            <Image src={logo} alt='Logo' h="2rem" w="auto" />
+                            <Image src={logo} alt='openIPAM Logo' h="2rem" w="auto" />
                             <Title order={1} size="h2">openIPAM</Title>
                         </Flex>
                     </Link>
                     {items}
                 </Group>
-                <Burger opened={opened} onClick={toggle} hiddenFrom='sm' size='sm' />
+                <Burger opened={opened} onClick={toggle} hiddenFrom='sm' size='sm' aria-label='Open Nav Menu' />
                 <Group gap={5} hiddenFrom='sm'>
                     <Link to='/' className='link logo-container'>
                         <Flex align='left'>
-                            <Image src={logo} alt='Logo' h="2rem" w="auto" hiddenFrom='sm' />
+                            <Image src={logo} alt='openIPAM Logo' h="2rem" w="auto" hiddenFrom='sm' />
                             <Title
                                 order={3}
                                 hiddenFrom='sm'

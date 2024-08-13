@@ -1,4 +1,3 @@
-import { Domain } from 'domain';
 import React from 'react';
 import { RouteObject } from 'react-router-dom';
 
@@ -23,7 +22,6 @@ const routes: RouteObject[] = [
                 element: <DomainDetail />
             },
             {
-
                 path: '/admin',
                 element: <AdminProtectedRoute />,
                 children: [

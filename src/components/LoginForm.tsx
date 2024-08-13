@@ -33,7 +33,6 @@ const LoginForm = () => {
             await fetchCsrfToken();
             if (isUser(loginResponse)) {
                 const userDetailsResponse = await api.auth.me();
-                console.log(userDetailsResponse);
                 setUser({
                     ...loginResponse,
                     is_ipamadmin: userDetailsResponse.is_ipamadmin,

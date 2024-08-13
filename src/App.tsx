@@ -1,6 +1,10 @@
 import React from 'react';
 import '@mantine/core/styles.css';
-import { MantineProvider, Container, ColorSchemeScript } from '@mantine/core';
+import {
+  MantineProvider,
+  Container,
+  ColorSchemeScript
+} from '@mantine/core';
 import { BrowserRouter, useRoutes } from 'react-router-dom';
 import config from './config';
 import { ConfigProvider } from './contexts/ConfigContext';

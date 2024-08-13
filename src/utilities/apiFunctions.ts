@@ -179,8 +179,15 @@ export const getApiEndpointFunctions = <
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'domains/', { headers: { 'Content-Type': 'application/json' } }),
-
+        /**
+         * API endpoints for a specific Domain Object
+         * @param id 
+         * @returns An object containing all endpoints for the given Domain object
+         */
         byId: (id: string | number) => ({
+            /**
+             * Gets DNSRecord objects connected to a Domain object
+             */
             getRecords: requestGenerator<
                 HttpMethod.GET,
                 API.PaginationParams<API.Filters.LogFilter>,

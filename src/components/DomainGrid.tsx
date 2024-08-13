@@ -2,7 +2,18 @@ import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../hooks/useApi';
 import { useMediaQuery } from '@mantine/hooks';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
-import { Card, Text, Title, Grid, Paper, Badge, Group, ActionIcon, em, Pagination } from '@mantine/core';
+import {
+    Card,
+    Text,
+    Title,
+    Grid,
+    Paper,
+    Badge,
+    Group,
+    ActionIcon,
+    em,
+    Pagination
+} from '@mantine/core';
 import { FaEye } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
@@ -74,12 +85,13 @@ const DomainGrid = (): JSX.Element => {
                                 bottom={"10px"}
                                 right={"10px"}
                             >
-                                <Link to={`/domains/${domain.name}`}>
+                                <Link to={`/domains/${domain.name}`} aria-label='View Records'>
                                     <ActionIcon
                                         variant="light"
                                         color="lightBlue"
                                         size="xl"
                                         radius="xl"
+                                        aria-label='View Records'
                                     >
                                         <FaEye size={18} />
                                     </ActionIcon>

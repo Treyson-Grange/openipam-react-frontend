@@ -1,6 +1,7 @@
 export interface AppConfig {
     apiUrl: HostName;
     frontendUrl: HostName;
+    // Add more configuration options here
 }
 
 type HostName = string & { readonly brand: unique symbol };
@@ -25,6 +26,7 @@ const validateHostName = (url: string): HostName => {
 
 const apiUrl = validateHostName(import.meta.env.VITE_API_URL as string);
 const frontendUrl = validateHostName(import.meta.env.VITE_FRONTEND_URL as string);
+// Add more configuration options here
 
 const config: AppConfig = {
     apiUrl,
