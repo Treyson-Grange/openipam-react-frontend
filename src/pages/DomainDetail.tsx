@@ -19,7 +19,6 @@ const DomainDetail = () => {
             getFunction={api.domain.byId(domain).getRecords}
             title={title}
             neededAttr={['name', 'content', 'ttl', 'dns_type']}
-            morePageSizes={['1']}
             sortable={true}
             searchable={true}
             searchableFields={['name', 'content', 'dns']}

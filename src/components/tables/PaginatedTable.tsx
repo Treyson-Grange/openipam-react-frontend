@@ -19,6 +19,8 @@ import {
     Tooltip
 } from '@mantine/core';
 import {
+    FaRegCircleXmark,
+    FaRegCircleCheck,
     FaSort,
     FaSortUp,
     FaSortDown,
@@ -382,35 +384,43 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 </Table>
             </div>
             <Group mt='md' ml='sm' style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {actions.length > 0 && (
-                    <Group justify='flex-end' m='lg'>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    {data.length >= +pageSizes[0] && (
                         <Select
-                            value={action}
-                            onChange={handleActionChange}
-                            data={actions}
-                            style={{ marginRight: '10px' }}
-                        />
-                        <Button onClick={submitChange} disabled={!action || selectedObjs.size === 0}>
-                            Submit
-                        </Button>
-                    </Group>
-                )}
-                {maxPages !== 1 && (
-                    <Group justify='flex-end' m='lg'>
-                        <Text>Select number of rows</Text>
-                        <Select
+                            style={{ maxWidth: '80px', textAlign: 'center' }}
+                            data={pageSizes}
                             value={pageSize.toString()}
                             onChange={handlePageSizeChange}
-                            data={pageSizes}
                         />
-                    </Group>
-                )}
+                    )}
+
+                    {editableObj && actions.length > 0 && (
+                        <Select
+                            data={actions}
+                            value={action}
+                            onChange={handleActionChange}
+                        />
+                    )}
+                </div>
                 {notification && (
-                    <Dialog opened={!!notification} onClose={() => setNotification(null)}>
-                        <Notification color={notification[1] === 'Success' ? 'teal' : 'red'}>
-                            {notification[0]}
-                        </Notification>
+                    <Dialog opened={notification != null} size='xl'>
+                        <Notification
+                            title={notification?.[0]}
+                            icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
+                            color='blue'
+                            onClose={() => setNotification(null)}
+                        />
                     </Dialog>
+                )}
+                {editableObj && (
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='#8d0d20'>
+                            Clear Selection {selectedObjs.size !== 0 && `(${selectedObjs.size})`}
+                        </Button>
+                        <Button onClick={submitChange} color='blue'>
+                            Submit
+                        </Button>
+                    </div>
                 )}
             </Group>
         </Paper>
