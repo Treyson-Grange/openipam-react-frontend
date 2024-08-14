@@ -32,19 +32,19 @@ import {
 
 interface BasePaginatedTableProps {
     /**
-     * The function to call to get the data for the table.
+     * The GET function defined in /utilities/apiFunctions.ts used to get the data.
      */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
     /**
-     * The default page size to use for the table.
+     * The default page size to use for the table. Defaults to 5.
      */
-    defPageSize: number;
+    defPageSize?: number;
     /**
      * The title of the table.
      */
     title: string;
     /**
-     * The attributes needed to display in the table.
+     * The attributes from the API to display in the table.
      */
     neededAttr: string[];
     /**
@@ -58,25 +58,41 @@ interface BasePaginatedTableProps {
     overridePageSizes?: boolean;
     /**
      * Whether the objects in the table are sortable.
+     * Sortability depends on API support. In the Django API, you must alter the
+     * View or viewset. In the filter_queryset function, we will get queryparams; 
+     * `order_by` and `direction` and sort the queryset accordingly.
+     * 
+     * For a quick example, see openipam/api_v2/views/logs.py, lines 47-55.
      */
     sortable?: boolean;
     /**
      * The fields that are sortable.
+     * Most fields will end up being sortable if the API is set up correctly, but
+     * proceed with caution.
      */
     sortableFields?: string[];
     /**
      * Whether the objects in the table are searchable
      * Requires `searchableFields` to be set.
+     * Searchability depends on API support. In the Django API, you must alter the
+     * View. To do so, you must obtain the query parameters for the searchable fields, and
+     * filter the queryset accordingly.
+     * 
+     * For a quick example, see openipam/api_v2/views/users, lines 60-72.
     */
     searchable?: boolean;
     /**
      * The fields that are searchable.
      * Requires `searchable` to be set.
+     * All searchable fields need to be set up in the API. They won't just work.
     */
     searchableFields?: string[];
     /**
      * The additional URL parameters to pass to the API.
      * Pass it in like *additionalUrlParams={{ "paramName": String(value)) }}*
+     * 
+     * There are no current use cases for this. But it can be used to pass in additional
+     * parameters to the get function of the API.
     */
     additionalUrlParams?: Record<string, string>;
 }
@@ -84,6 +100,10 @@ interface BasePaginatedTableProps {
 interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     /**
      * Whether the objects in the table are editable.
+     * 
+     * DO not set this to true if you dont have at least one of the following:
+     * - 'actions' and 'actionFunctions'
+     * - 'editFunction' and 'editableFields'
      */
     editableObj: true;
     /**
@@ -95,11 +115,15 @@ interface EditablePaginatedTableProps extends BasePaginatedTableProps {
      * The functions to call when an action is performed.
      * To have actions, both `actions` and `actionFunctions` must be set.
      * Please pass func and key, where the key is the attribute to pass to the function.
+     * functionName: { func: (id: number) => console.log(`Editing group ${id}`), key: 'id' },
+     *      OR
+     * functionName: { func: previouslyDefinedFunction, key: 'id' }
      */
     actionFunctions?: Record<string, { func: (params: any) => void, key: string }>;
     /**
-     * The function to call to edit an object in the table.
-     * Requires `editableObj` to be
+     * The PUT function defined in /utilities/apiFunctions.ts used to edit the data.
+     * The way you pass the function is a bit different. See the example in DomainDetail.tsx.
+     * Requires `editableObj` to be true.
     */
     editFunction?: (dnsName: string) => QueryRequest<any, any>;
     /**
@@ -117,6 +141,25 @@ interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
 
 type PaginatedTableProps = EditablePaginatedTableProps | NonEditablePaginatedTableProps;
 
+/**
+ * The PaginatedTable component is a flexible and reusable component 
+ * that displays paginated data in a table format. It supports sorting, actions, editing,
+ * searching, page size selection, and more.
+ * 
+ * To properly use most features in this component, you must pass in the necessary props.
+ * For example, if you want to use sorting, you cannot just set sortable to true. You 
+ * must also state what fields are sortable in the sortableFields prop. This is because
+ * the API may not support sorting on all fields.
+ * 
+ * If you want to use searching, you must set searchable to true and pass in the fields
+ * that are searchable in the searchableFields prop. See the props documentation for more.
+ * 
+ * If you want to use actions, you must pass in the actions and actionFunctions props.
+ * For more information, see the props documentation above.
+ * 
+ * If you want to use editing, you must pass in the editFunction and editableFields props.
+ * For more information, see the props documentation above.
+ */
 const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const actions = (props as EditablePaginatedTableProps).actions ?? [];
     const actionFunctions = (props as EditablePaginatedTableProps).actionFunctions ?? {};
@@ -138,7 +181,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     } = props;
     const [data, setData] = useState<any[]>([]);
     const [maxPages, setMaxPages] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(defPageSize);
+    const [pageSize, setPageSize] = useState<number>(defPageSize || 5);
     const [page, setPage] = useState<number>(1);
     const [selectedObjs, setSelectedObjs] = useState<Set<any>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
@@ -148,6 +191,17 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
+
+    const { data: paginatedData, loading } = usePaginatedApi(
+        getFunction,
+        page,
+        pageSize,
+        {
+            ...orderBy ? { 'order_by': orderBy, 'direction': direction } : {},
+            ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v)),
+            ...additionalUrlParams
+        }
+    );
 
     const pageSizes = ['5', '10', '20'];
     if (overridePageSizes) { pageSizes.length = 0; }
@@ -166,17 +220,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const handleSearchChange = (field: string, value: string) => {
         setSearchTerms(prevTerms => ({ ...prevTerms, [field]: value }));
     };
-
-    const { data: paginatedData } = usePaginatedApi(
-        getFunction,
-        page,
-        pageSize,
-        {
-            ...orderBy ? { 'order_by': orderBy, 'direction': direction } : {},
-            ...Object.fromEntries(Object.entries(searchTerms).filter(([_, v]) => v)),
-            ...additionalUrlParams
-        }
-    );
 
     const handleActionChange = (value: string | null) => {
         if (value) {
@@ -250,10 +293,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 setEditingRow(null);
             }
         } catch (error) {
-            setNotification([`Error: ${error}`, 'Error']);
+            setNotification([`${error}`, 'Error']);
         }
     };
-
 
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
@@ -286,9 +328,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                     <Group gap='xs'>
                                         <Text>{handleFormatHeader(attr)}</Text>
                                         {sortable && sortableFields?.includes(attr) && (
-                                            <Button variant='subtle' onClick={() => handleSort(attr, direction)}>
+                                            <ActionIcon variant='subtle' onClick={() => handleSort(attr, direction)}>
                                                 {orderBy === attr ? (direction === 'asc' ? <FaSortUp /> : <FaSortDown />) : <FaSort />}
-                                            </Button>
+                                            </ActionIcon>
                                         )}
                                         {searchable && searchableFields?.includes(attr) && (
                                             <TextInput
@@ -308,7 +350,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         {data.length === 0 ? (
                             <Table.Tr>
                                 <Table.Td colSpan={neededAttr.length + (editableObj ? 1 : 0)}>
-                                    <Text size='xl'>No data available</Text>
+                                    <Text size='xl'>
+                                        {loading ? 'Loading...' : data.length === 0 ? 'No data available' : null}
+                                    </Text>
                                 </Table.Td>
                             </Table.Tr>
                         ) : (
@@ -408,7 +452,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         <Notification
                             title={notification?.[0]}
                             icon={notification?.[1] === 'Success' ? <FaRegCircleCheck /> : <FaRegCircleXmark />}
-                            color='blue'
+                            color={notification?.[1] === 'Success' ? 'green' : 'red'}
                             onClose={() => setNotification(null)}
                         />
                     </Dialog>
@@ -418,7 +462,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         <Button disabled={selectedObjs.size === 0} onClick={() => setSelectedObjs(new Set())} color='#8d0d20'>
                             Clear Selection {selectedObjs.size !== 0 && `(${selectedObjs.size})`}
                         </Button>
-                        <Button onClick={submitChange} color='blue'>
+                        <Button onClick={submitChange} disabled={selectedObjs.size === 0} color='blue'>
                             Submit
                         </Button>
                     </div>

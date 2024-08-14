@@ -12,6 +12,7 @@ const Actions = (): JSX.Element => {
                 neededAttr={['content_type', 'object_repr', 'action_time']}
                 morePageSizes={['1']}
                 sortable={true}
+                sortableFields={['content_type', 'object_repr', 'action_time']}
             />
             <PaginatedTable
                 defPageSize={5}
@@ -21,6 +22,7 @@ const Actions = (): JSX.Element => {
                 editableObj={true}
                 actions={['Change Source Internal', 'Change Source LDAP']}
                 sortable={true}
+                sortableFields={['name', 'id', 'permissions']}
                 actionFunctions={{
                     ChangeSourceInternal: { func: (id: number) => console.log(`Editing group ${id}`), key: 'id' },
                     ChangeSourceLDAP: { func: (id: number) => console.log(`Deleting group ${id}`), key: 'id' }
