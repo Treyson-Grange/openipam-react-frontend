@@ -38,13 +38,13 @@ export const getApiEndpointFunctions = <
             HttpMethod.POST,
             { username: string; password: string },
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.POST, 'login/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        >(HttpMethod.POST, 'login/', { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
         /**
          * Logout the current user
          */
         logout: requestGenerator<
             HttpMethod.POST
-        >(HttpMethod.POST, 'logout/', { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        >(HttpMethod.POST, 'logout/', { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
 
         /**
          * Get the CSRF token for initial login
@@ -54,7 +54,7 @@ export const getApiEndpointFunctions = <
             void,
             { csrfToken: string; sessionID: string } | StrictTypeChecking
 
-        >(HttpMethod.GET, 'get_csrf/', { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'get_csrf/', {}),
         /**
          * Gets the current user for testing purposes only :D
          */
@@ -62,7 +62,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             void,
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.GET, 'whoami/', { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'whoami/', {}),
         /**
          * Gets current users information, including permissions
          */
@@ -70,7 +70,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             void,
             API.AuthResponse | StrictTypeChecking
-        >(HttpMethod.GET, 'users/me/', { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'users/me/', {}),
     },
     /**
      * Logs API
@@ -83,7 +83,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'logs/', { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'logs/', {}),
         /**
          * Gets LogEntry objects from the current user\
          * Sortable: true
@@ -92,7 +92,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'logs/my-logs/', { headers: { 'Content-Type': 'application/json', } }),
+        >(HttpMethod.GET, 'logs/my-logs/', {}),
     },
     /**
      * Reports API
@@ -105,7 +105,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             Array<any>,
             API.RecentReport | StrictTypeChecking
-        >(HttpMethod.GET, 'report/recent-stats', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'report/recent-stats', {}),
     },
     /**
      * Groups API
@@ -119,7 +119,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'groups/', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'groups/', {}),
     },
     /**
      * Hosts API
@@ -129,7 +129,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/mine/', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'hosts/mine/', {}),
     },
     /**
      * DNS API
@@ -143,7 +143,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'dns/', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'dns/', {}),
         /**
          * Useless endpoint, just wanted to show that permissions can be checked, see api.
          */
@@ -151,7 +151,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'dns/mine', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'dns/mine', {}),
         /**
          * API endpoints for a specific DNS Object
          * @param id 
@@ -164,7 +164,7 @@ export const getApiEndpointFunctions = <
             delete: requestGenerator<HttpMethod.DELETE>(
                 HttpMethod.DELETE,
                 `dns/${id}/`,
-                { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
+                { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
             ),
             /**
              * Updates a DNSRecord object given an objects ID and new data
@@ -173,7 +173,7 @@ export const getApiEndpointFunctions = <
                 HttpMethod.PUT,
                 Partial<API.DNSRecord>,
                 API.DNSRecord | StrictTypeChecking
-            >(HttpMethod.PUT, `dns/${id}/`, { headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+            >(HttpMethod.PUT, `dns/${id}/`, { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
         })
     },
     /**
@@ -188,7 +188,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'domains/', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'domains/', {}),
         /**
          * API endpoints for a specific Domain Object
          * @param id 
@@ -205,7 +205,7 @@ export const getApiEndpointFunctions = <
             >(
                 HttpMethod.GET,
                 `domains/${id}/records/`,
-                { headers: { 'Content-Type': 'application/json' } }
+                {}
             ),
         })
     },
@@ -221,7 +221,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/', { headers: { 'Content-Type': 'application/json' } }),
+        >(HttpMethod.GET, 'hosts/', {}),
         /**
          * API endpoints for a specific Host Object
          * @param mac 
@@ -235,7 +235,7 @@ export const getApiEndpointFunctions = <
                 HttpMethod.GET,
                 API.GenericResponse,
                 API.Host | StrictTypeChecking
-            >(HttpMethod.GET, `hosts/${mac}/`, { headers: { 'Content-Type': 'application/json' } }),
+            >(HttpMethod.GET, `hosts/${mac}/`, {}),
         })
     }
 });

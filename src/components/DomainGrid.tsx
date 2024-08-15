@@ -38,9 +38,7 @@ const DomainGrid = (): JSX.Element => {
         <Paper radius='lg' p='lg' m='lg' withBorder>
             <Group justify='space-between'>
                 {data?.results?.length === 0 ? (
-                    <Title order={1}>
-                        No domains found
-                    </Title>
+                    <Title>No domains found</Title>
                 ) : (
                     <Title>Your Domains</Title>
                 )}
