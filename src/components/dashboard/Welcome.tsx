@@ -1,4 +1,4 @@
-import { Paper, Title, Button } from '@mantine/core';
+import { Paper, Title, Button, Text, Group } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import { useAuth } from '../../contexts/AuthContext';
@@ -21,14 +21,10 @@ const Welcome = () => {
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder >
             <Title order={1} mb='xl'>Welcome to openIPAM</Title>
-            <p>We are now using <a href='https://github.com/openipam/django-openipam/issues/'>Issues on GitHub</a> to help aid us with features and bugs. Please make an issue on GitHub to give us feedback.</p>
-            <p>Item to consider when using the new interface:</p>
-            <ul>
-                <li>Permissions - Do you have all your permissions?</li>
-                <li>Hosts - Do you see all your hosts?</li>
-                <li>DNS Entries - Do you see all DNS Entries?</li>
-            </ul>
-            <p>If you have any questions, please email: <a href='mailto:openipam@lists.usu.edu'>openipam@lists.usu.edu</a></p>
+            <Text>We ask for your patience as we migrate over to our new upgraded design and implementation of openIPAM</Text>
+            <Text>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            </Text>
             <Button onClick={handleLogout} variant='outline' color='red'>Logout</Button>
         </Paper>
     );

@@ -44,6 +44,10 @@ interface BasePaginatedTableProps {
      */
     title: string;
     /**
+     * 
+     */
+    noDataMessage?: string;
+    /**
      * The attributes from the API to display in the table.
      */
     neededAttr: string[];
@@ -180,6 +184,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         additionalUrlParams
     } = props;
     const [data, setData] = useState<any[]>([]);
+    const [noDataMessage] = useState<string | undefined>(props.noDataMessage || "No data found");
     const [maxPages, setMaxPages] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(defPageSize || 5);
     const [page, setPage] = useState<number>(1);
@@ -351,7 +356,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                             <Table.Tr>
                                 <Table.Td colSpan={neededAttr.length + (editableObj ? 1 : 0)}>
                                     <Text size='xl'>
-                                        {loading ? 'Loading...' : data.length === 0 ? 'No data available' : null}
+                                        {loading ? 'Loading...' : data.length === 0 ? noDataMessage : null}
                                     </Text>
                                 </Table.Td>
                             </Table.Tr>

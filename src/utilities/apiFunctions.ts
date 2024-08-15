@@ -122,6 +122,16 @@ export const getApiEndpointFunctions = <
         >(HttpMethod.GET, 'groups/', { headers: { 'Content-Type': 'application/json' } }),
     },
     /**
+     * Hosts API
+     */
+    hosts: {
+        myhosts: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'hosts/mine/', { headers: { 'Content-Type': 'application/json' } }),
+    },
+    /**
      * DNS API
      */
     dns: {

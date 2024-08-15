@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../hooks/useApi';
-import { useMediaQuery } from '@mantine/hooks';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import {
     Card,
@@ -11,8 +10,7 @@ import {
     Badge,
     Group,
     ActionIcon,
-    em,
-    Pagination
+    Pagination,
 } from '@mantine/core';
 import { FaEye } from "react-icons/fa";
 import { Link } from 'react-router-dom';
@@ -36,17 +34,6 @@ const DomainGrid = (): JSX.Element => {
         }
     }, [data]);
 
-    const calculateSpan = () => {
-        const isMobile = useMediaQuery(`(max-width: ${em(1100)})`);
-        if (isMobile) {
-            return 12;
-        }
-        return 3;
-    };
-
-
-    const span = calculateSpan();
-
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder>
             <Group justify='space-between'>
@@ -65,10 +52,15 @@ const DomainGrid = (): JSX.Element => {
                     />
                 )}
             </Group>
-            <Grid justify="flex-start" align="stretch" mt="lg">
+            <Grid mt="lg" gutter="lg">
                 {data?.results?.map((domain: any, index: number) => (
-                    <Grid.Col span={span} key={index}>
-                        <Card radius="lg" h={"12rem"} shadow="xl" padding="lg">
+                    <Grid.Col span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 3 }} key={index}>
+                        <Card
+                            radius="lg"
+                            h="12rem"
+                            shadow="xl"
+                            padding="lg"
+                        >
                             <Group>
                                 <Link to={`/domains/${domain.name}`} className='header-link'>
                                     <Title order={2} size="h3">{domain.name}</Title>
@@ -77,21 +69,17 @@ const DomainGrid = (): JSX.Element => {
                                     {domain.record_count}
                                 </Badge>
                             </Group>
-                            <Text size="md" c={"blue"} >
+                            <Text size="md" c="blue">
                                 {domain.description}
                             </Text>
-                            <Group
-                                pos={"absolute"}
-                                bottom={"10px"}
-                                right={"10px"}
-                            >
-                                <Link to={`/domains/${domain.name}`} aria-label='View Records'>
+                            <Group pos="absolute" bottom="10px" right="10px">
+                                <Link to={`/domains/${domain.name}`} aria-label="View Records">
                                     <ActionIcon
                                         variant="light"
                                         color="lightBlue"
                                         size="xl"
                                         radius="xl"
-                                        aria-label='View Records'
+                                        aria-label="View Records"
                                     >
                                         <FaEye size={18} />
                                     </ActionIcon>
@@ -101,6 +89,7 @@ const DomainGrid = (): JSX.Element => {
                     </Grid.Col>
                 ))}
             </Grid>
+
         </Paper>
     );
 };
