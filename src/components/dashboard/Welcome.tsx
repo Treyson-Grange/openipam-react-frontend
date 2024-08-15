@@ -1,4 +1,4 @@
-import { Paper, Title, Button, Text, Group } from '@mantine/core';
+import { Paper, Title, Button, Text } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import { useAuth } from '../../contexts/AuthContext';

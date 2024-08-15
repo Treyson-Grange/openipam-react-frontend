@@ -26,7 +26,6 @@ const DashBoard = () => {
             <Grid.Col span={{ base: 12, md: 12, lg: 12, xl: 6 }}>
                 <Welcome />
                 <Actions />
-
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 12, lg: 12, xl: 6 }}>
                 <Stats />

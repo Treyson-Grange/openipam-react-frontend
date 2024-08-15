@@ -47,7 +47,7 @@ const useApiEndpointMemo = (endpoint: MemoizableRequest) => {
 };
 
 /**
- * Fetch JSON data from a KCM API endpoint with query parameters
+ * Fetch JSON data from a openIPAM API V2 endpoint with query parameters
  * @param endpoint 
  * @param queryParams The optional query parameters to include in the requestThe API endpoint function to fetch data from
  * @param transform A function to transform the fetched data before returning it, called once after the request completes
@@ -157,7 +157,7 @@ export const useApiData = <
 };
 
 /**
- * Fetch paginated JSON data from a KCM API endpoint with query parameters
+ * Fetch paginated JSON data from a openIPAM API V2 endpoint with query parameters
  * @param endpoint The API endpoint function to fetch data from
  * @param page The page number to fetch
  * @param pageSize The number of items per page
@@ -188,7 +188,7 @@ export const usePaginatedApi = <
 };
 
 /**
- * Fetch JSON data from a KCM API list endpoint and cache the results. Uses a LRU cache to store the last `cacheSize` pages.
+ * Fetch JSON data from a openIPAM API V2 list endpoint and cache the results. Uses a LRU cache to store the last `cacheSize` pages.
  * @param endpoint The API endpoint function to fetch data from
  * @param prefetch How many pages to 'prefetch' (fetch in advance) when the page changes
  * @param page The page number to fetch
@@ -352,7 +352,7 @@ export const useCachingApi = <
 };
 
 /**
- * Fetch JSON data from a KCM API endpoint and allow the user to edit it. The data will be saved back to the API when the user clicks 'Save'.
+ * Fetch JSON data from a openIPAM API V2 endpoint and allow the user to edit it. The data will be saved back to the API when the user clicks 'Save'.
  * @param getEndpoint The API endpoint function to fetch data from. If null, the initial data object will be used instead.
  * @param setEndpoint The API endpoint function to save data to
  * @param initialData The initial data object to use if the fetch fails

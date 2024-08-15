@@ -1,4 +1,4 @@
-// Type definitions for the KCM API.
+// Type definitions for the openIPAM API.
 // Includes generic container types for API responses, as well as specific
 // types for each endpoint. The specific types are accepted by POST requests,
 // and the Response types are returned by GET requests and contain the ID field.
@@ -6,7 +6,6 @@
 // types, and return the full Response type.
 
 import { KeyofStorable } from '.';
-import { ISO8601String } from '../utilities/dateUtils';
 import * as Filters from './apiFilters';
 export { Filters };
 
@@ -27,16 +26,49 @@ export type GenericResponse = {
 };
 
 export type AuthResponse = {
+    /**
+     * ID of the user.
+     */
     id: number;
+    /**
+     * The username of the user.
+     */
     username: string;
+    /**
+     * The first name of the user.
+     */
     first_name: string;
+    /**
+     * The last name of the user.
+     */
     last_name: string;
+    /**
+     * The email address of the user.
+     */
     email: string;
+    /**
+     * Whether the user is a staff member.
+     */
     is_staff: boolean;
+    /**
+     * Whether the user is a superuser.
+     */
     is_superuser: boolean;
+    /**
+     * Whether the user is an IPAM admin.
+     */
     is_ipamadmin: boolean;
+    /**
+     * Whether the user is active.
+     */
     is_active: boolean;
+    /**
+     * The date the user last logged in.
+     */
     last_login: string;
+    /**
+     * Groups the user is a member of.
+     */
     groups: string[];
 }
 
@@ -171,22 +203,9 @@ export type PaginatedData<PostType, AdditionalFields = {}> = {
     results: StoredObject<PostType, AdditionalFields>[];
 };
 
-/**
- * The data that can be passed to an update-like endpoint.
- */
-export type PatchData<PostType, AdditionalFields = {}> = Partial<
-    StoredObject<PostType, AdditionalFields>
->;
-
-export interface MultipleSelection {
-    /**
-     * The IDs of the objects to be operated on.
-     */
-    selected: number[];
-}
 
 /**
- * Interface for the User model.
+ * Interface for the User model. Not sure this is needed, from KCM, but its used below
  */
 export interface User {
     /**
@@ -221,6 +240,11 @@ export interface User {
      * this field will be silently ignored.
      */
     is_superuser: boolean;
+    /**
+     * Whether the user is an IPAM admin. When a user is updating their own profile,
+     * this field will be silently ignored.
+     */
+    is_ipamadmin: boolean;
     /**
      * The date of the user's last login, in ISO format.
      */
@@ -262,289 +286,7 @@ export interface DNSRecord {
     url: string;
 }
 
-/**
- * Interface for the Filter model.
- */
-export interface SavedFilter {
-    /**
-     * The name of the filter.
-     */
-    name: string;
-    /**
-     * The slug of the filter. This is a unique identifier for the filter.
-     */
-    slug: string;
-    /**
-     * The parameters of the filter, in JSON format.
-     */
-    json_string: string;
-}
 
-export interface Device {
-    /**
-     * The hostname of the device.
-     */
-    host: string;
-    /**
-     * The model of the device, if known.
-     */
-    model: string | null;
-    /**
-     * The firmware version of the device, if known.
-     */
-    version: string | null;
-    /**
-     * The vendor of the device.
-     */
-    vendor: string;
-    /**
-     * The location of the device, if known.
-     */
-    location: string | null;
-    /**
-     * The serial number of the device, if known.
-     */
-    serial: string | null;
-    /**
-     * The asset tag of the device.
-     */
-    asset: string;
-    /**
-     * Whether the device is reachable via SSH.
-     */
-    ssh: boolean;
-    /**
-     * The firmware version loaded on the primary flash of the device, if known.
-     */
-    primary_flash: string | null;
-    /**
-     * The firmware version loaded on the secondary flash of the device, if known.
-     */
-    secondary_flash: string | null;
-    /**
-     * The IP address of the device, if any.
-     */
-    ip: string | null;
-    /**
-     * Timestamp of the last successful update, in ISO format.
-     */
-    lastupdate: string;
-    /**
-     * Whether the last update was successful.
-     */
-    lastupdatesuccess: boolean;
-    /**
-     * The error message of the last update, if any.
-     */
-    lastupdateerror: string | null;
-    /**
-     * The time of a pending scheduled reload, in ISO format.
-     * May be null if no reload is scheduled.
-     */
-    reloadat: ISO8601String | null;
-}
-
-/**
- * Interface for the Job model.
- */
-export interface Job {
-    /**
-     * The time the job is scheduled to run, in ISO format.
-     */
-    scheduled_time: ISO8601String;
-    /**
-     * The command to run on the device. Multi-line string, should be
-     * rendered as a code block.
-     */
-    command: string;
-    /**
-     * If true, the job will be run on devices concurrently. Defaults to true.
-     */
-    concurrency?: boolean;
-    /**
-     * If true, devices will be rediscovered after the job is run. Defaults to
-     * false.
-     */
-    rediscover?: boolean;
-    /**
-     * Integer timeout for the job.
-     */
-    timeout: number;
-    /**
-     * The device IDs to run the job on.
-     */
-    devices: number[];
-}
-
-export interface JobAdditionalFields {
-    /**
-     * The state of the job. A value of 0 indicates success, other values indicate
-     * errors.
-     */
-    state: number;
-    /**
-     * The number of devices that succeeded in running the job. Only present on returned
-     * objects, do not pass this field to the API.
-     */
-    success: number;
-    /**
-     * The number of devices that failed to run the job. Only present on returned
-     * objects, do not pass this field to the API.
-     */
-    failed: number;
-}
-
-/**
- * Interface for the list websocket action's data array.
- */
-export interface JobListData {
-    id: number;
-    scheduled_time: string;
-    progress: {
-        pending: number;
-        running: number;
-        failed: number;
-        success: number;
-    };
-    state: number;
-    tasks: StoredObject<JobStatus>[];
-    devices: number[];
-    url: string;
-}
-
-/**
- * Interface for the JobStatus model, which is read-only.
- */
-export interface JobStatus {
-    /**
-     * The job start timestamp, in ISO format. May be null if the job has not
-     * started yet.
-     */
-    start_time: string | null;
-    /**
-     * The job end timestamp, in ISO format. May be null if the job has not
-     * finished yet.
-     */
-    end_time: string | null;
-    /**
-     * Whether the job was successful. Will be false if the job has not finished
-     * yet.
-     */
-    success: boolean;
-    /**
-     * The hostname of the device the job was run on.
-     */
-    host: string;
-    /**
-     * The output of the job. Multi-line string, should be rendered as a code
-     * block.
-     */
-    output: string;
-    /**
-     * The ID of the device the job was run on.
-     */
-    device_id: number;
-}
-
-/**
- * File list used by the firmware list endpoint.
- */
-export interface FileList {
-    /**
-     * A list of files. Each file is a tuple of the filename and the name of the
-     * firmware. Also includes a special value for the 'Select a File' option.
-     */
-    files: ([string, string] | '' | 'Select a File')[];
-}
-
-/**
- * Interface for the Firmware model.
- */
-export interface Firmware {
-    /**
-     * The filename of the firmware, relative to the firmware directory on the
-     * server.
-     */
-    filename: string;
-    /**
-     * The name of the firmware, as displayed to the user.
-     */
-    name: string;
-    /**
-     * Ordering of the firmware. Higher values are displayed first.
-     */
-    ordering?: number;
-}
-
-/**
- * Interface for the FirmwareUpdate endpoint.
- */
-export interface FirmwareUpdateArguments {
-    /**
-     * The IDs of the devices to update.
-     */
-    devices: number[];
-    /**
-     * The ID of the firmware to update to.
-     */
-    firmware: number;
-    /**
-     * The time the update is scheduled to run, in ISO format.
-     */
-    scheduled_time: string;
-}
-
-/**
- * Interface for the DiscoverGroup model.
- */
-export interface DiscoverGroup {
-    /**
-     * The name of the OpenIPAM group this DiscoverGroup is associated with.
-     */
-    ipamgroup: string;
-    /**
-     * The username to use when logging into devices.
-     */
-    username: string;
-    /**
-     * The password to use when logging into devices.
-     */
-    password: string;
-    /**
-     * The enable password to use when logging into devices. May be null.
-     */
-    enablepassword: string | null;
-}
-
-export interface ConfigDiff {
-    /**
-     * The diff string
-     */
-    diff: string;
-    /**
-     * Added lines
-     */
-    added: string[];
-    /**
-     * Removed lines
-     */
-    removed: string[];
-}
-
-export interface ConfigVersion {
-    /**
-     * The date the config was created, in ISO format.
-     */
-    date_created: string;
-    /**
-     * The comment included with this revision.
-     */
-    comment: string;
-    /**
-     * The configuration file.
-     */
-    config: string;
-}
 
 export interface LogEntry {
     /**
@@ -570,27 +312,96 @@ export interface LogEntry {
 }
 
 export interface RecentReport {
+    /**
+     * How many hosts were edited today.
+     */
     hosts_today: number;
+    /**
+     * How many hosts were edited this week.
+     */
     hosts_week: number;
+    /**
+     * How many hosts were edited this month.
+     */
     hosts_month: number;
+    /**
+     * How many users were created today.
+     */
     users_today: number;
+    /**
+     * How many users were created this week.
+     */
     users_week: number;
+    /**
+     * How many users were created this month.
+     */
     users_month: number;
+    /**
+     * How many DNS records were edited today.
+     */
+    dns_today: number;
+    /**
+     * How many DNS records were edited this week.
+     */
+    dns_week: number;
+    /**
+     * How many DNS records were edited this month.
+     */
+    dns_month: number;
 }
 
 export interface Host {
+    /**
+     * The MAC address of the host.
+     */
     mac: string;
+    /**
+     * The API URL of the host.
+     */
     details: string;
+    /**
+     * The vendor of the host.
+     */
     vendor: string;
+    /**
+     * The hostname of the host.
+     */
     hostname: string;
+    /**
+     * The expiration date of the host, in ISO format.
+     */
     expires: string;
+    /**
+     * The optional description of the host.
+     */
     description: string;
+    /**
+     * Whether or not the host is dynamic.
+     */
     is_dynamic: boolean;
+    /**
+     * If the host is disabled, this will include 3 fields, 'reason', 'changed', and 'changed_by'.
+     */
     disabled_host: boolean;
+    /**
+     * If the host has a dhcp group, this will include 3 fields, 'id', 'name', and 'description'.
+     */
     dhcp_group: string[];
+    /**
+     * The associated attributes of the host.
+     */
     attributes: string[];
+    /**
+     * The master IP address of the host.
+     */
     master_ip_address: string;
+    /**
+     * The groups that own this host
+     */
     group_owners: string[];
+    /**
+     * The user who last changed the host.
+     */
     changed_by: User;
 }
 

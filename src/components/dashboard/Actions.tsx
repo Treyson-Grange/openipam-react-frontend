@@ -13,21 +13,6 @@ const Actions = (): JSX.Element => {
                 sortable={true}
                 sortableFields={['content_type', 'object_repr', 'action_time']}
             />
-            {/* <PaginatedTable
-                getFunction={api.groups.get}
-                title='Groups'
-                neededAttr={['name', 'id', 'permissions']}
-                editableObj={true}
-                sortable={true}
-                sortableFields={['name', 'id']}
-                actions={['Change Source Internal', 'Change Source LDAP']}
-                actionFunctions={{
-                    ChangeSourceInternal: { func: (id: number) => console.log(`Editing group ${id}`), key: 'id' },
-                    ChangeSourceLDAP: { func: (id: number) => console.log(`Deleting group ${id}`), key: 'id' }
-                }}
-                searchable={true}
-                searchableFields={['name']}
-            /> */}
         </>
     );
 }

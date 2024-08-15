@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../hooks/useApi';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+import { FaEye } from "react-icons/fa";
+import { Link } from 'react-router-dom';
 import {
     Card,
     Text,
@@ -12,8 +14,6 @@ import {
     ActionIcon,
     Pagination,
 } from '@mantine/core';
-import { FaEye } from "react-icons/fa";
-import { Link } from 'react-router-dom';
 
 
 const DomainGrid = (): JSX.Element => {

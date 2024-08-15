@@ -34,7 +34,8 @@ const links: DropdownLink[] = [
 ];
 
 /**
- * Links for admin users.
+ * Links for admin users. A LOT of these are gonna get nuked, this is just copy paste from 
+ * live openipam :/
  */
 const adminLinks: DropdownLink[] = [
     { link: '/', label: 'Home' },
