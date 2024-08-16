@@ -8,6 +8,7 @@ const DomainDetail = React.lazy(() => import('./pages/DomainDetail'));
 const ProtectedRoute = React.lazy(() => import('./components/routes/UserProtectedRoute'));
 const AdminProtectedRoute = React.lazy(() => import('./components/routes/AdminProtectedRoute'));
 const AdminTest = React.lazy(() => import('./pages/TestAdmin'));
+const Host = React.lazy(() => import('./pages/Hosts'));
 
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },
@@ -21,6 +22,8 @@ const routes: RouteObject[] = [
                 path: '/domains/:domain',
                 element: <DomainDetail />
             },
+            { path: '/hosts', element: <Host viewType="userHosts" /> },
+            { path: '/hosts/all', element: <Host viewType="allHosts" /> },
             {
                 path: '/admin',
                 element: <AdminProtectedRoute />,
