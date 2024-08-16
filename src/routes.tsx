@@ -25,11 +25,26 @@ const routes: RouteObject[] = [
             },
             { path: '/hosts', element: <UserHosts /> },
             { path: '/hosts/all', element: <AllHosts /> },
+            // Admin only routes.
+            {
+                path: '/network',
+                element: <AdminProtectedRoute />,
+                children: [
+                    { path: '/network', element: <AdminTest /> }
+                ]
+            },
             {
                 path: '/admin',
                 element: <AdminProtectedRoute />,
                 children: [
-                    { path: 'asdf', element: <AdminTest /> }
+                    { path: '/admin', element: <AdminTest /> }
+                ]
+            },
+            {
+                path: '/reports',
+                element: <AdminProtectedRoute />,
+                children: [
+                    { path: '/reports', element: <AdminTest /> }
                 ]
             }
         ]

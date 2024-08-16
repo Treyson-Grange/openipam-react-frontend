@@ -62,7 +62,7 @@ const adminLinks: DropdownLink[] = [
         ]
     },
     {
-        link: '',
+        link: '/network',
         label: 'Network',
         dropdown: [
             { label: 'Addresses', link: '/11' },
@@ -83,7 +83,7 @@ const adminLinks: DropdownLink[] = [
         ]
     },
     {
-        link: '',
+        link: '/admin',
         label: 'Admin',
         dropdown: [
             { isLabel: true, label: 'Users & Groups' },
@@ -105,7 +105,7 @@ const adminLinks: DropdownLink[] = [
         ]
     },
     {
-        link: '',
+        link: '/reports',
         label: 'Reports',
         dropdown: [
             { label: 'OpenIPAM Stats', link: '/39' },

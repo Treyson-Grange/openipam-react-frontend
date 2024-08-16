@@ -245,7 +245,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const handleFormatDate = (dateStr: string) => {
         const date = new Date(dateStr);
         const optionsDate: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-        const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
         return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
     };
 
