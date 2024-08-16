@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import {
     Container,
     Group,
@@ -126,56 +125,60 @@ export function Navbar() {
     const { isAdmin } = useAuth();
 
     const currentPath = location.pathname;
-    const [active, setActive] = useState(currentPath);
-
-    useEffect(() => {
-        setActive(currentPath);
-    }, [currentPath]);
 
     const finalLinks = isAdmin() ? adminLinks : links;
 
-    const items = finalLinks.map((link) => (
-        <Menu key={link.link || link.label} trigger='hover' openDelay={0} closeDelay={10}>
-            <Menu.Target>
-                <Link
-                    to={link.link || '#'}
-                    className='link'
-                    data-active={active === link.link || undefined}
-                    onClick={() => {
-                        if (link.link) {
-                            setActive(link.link);
-                            close();
-                        }
-                    }}
-                >
-                    {link.label}
-                </Link>
-            </Menu.Target>
-            {link.dropdown ? (
-                <Menu.Dropdown>
-                    {link.dropdown.map((item) => (
-                        item.isLabel ? (
-                            <div key={item.label}>{item.label}</div>
-                        ) : (
-                            <Menu.Item
-                                key={item.link || item.label}
-                                component={Link}
-                                to={item.link || '#'}
-                                onClick={() => {
-                                    if (item.link) {
-                                        setActive(item.link);
-                                        close();
-                                    }
-                                }}
-                            >
-                                {item.label}
-                            </Menu.Item>
-                        )
-                    ))}
-                </Menu.Dropdown>
-            ) : null}
-        </Menu>
-    ));
+    const items = finalLinks.map((link) => {
+        const isActive = link.link
+            ? currentPath === link.link || (currentPath.startsWith(link.link) && link.link !== '/')
+            : false;
+
+        return (
+            <Menu key={link.link || link.label} trigger='hover' openDelay={0} closeDelay={10}>
+                <Menu.Target>
+                    <Link
+                        to={link.link || '#'}
+                        className='link'
+                        data-active={isActive ? true : undefined}
+                        onClick={() => {
+                            if (link.link) {
+                                close();
+                            }
+                        }}
+                    >
+                        {link.label}
+                    </Link>
+                </Menu.Target>
+                {link.dropdown ? (
+                    <Menu.Dropdown>
+                        {link.dropdown.map((item) => {
+                            const itemActive = item.link
+                                ? currentPath === item.link || (currentPath.startsWith(item.link) && item.link !== '/')
+                                : false;
+
+                            return item.isLabel ? (
+                                <div key={item.label}>{item.label}</div>
+                            ) : (
+                                <Menu.Item
+                                    key={item.link || item.label}
+                                    component={Link}
+                                    to={item.link || '#'}
+                                    data-active={itemActive ? true : undefined}
+                                    onClick={() => {
+                                        if (item.link) {
+                                            close();
+                                        }
+                                    }}
+                                >
+                                    {item.label}
+                                </Menu.Item>
+                            );
+                        })}
+                    </Menu.Dropdown>
+                ) : null}
+            </Menu>
+        );
+    });
 
     return (
         <header className='header'>
