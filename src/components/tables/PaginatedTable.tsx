@@ -375,7 +375,15 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                         )}
                                         {neededAttr.map(attr => {
                                             const value = item[attr];
-                                            const isDate = !isNaN(Date.parse(value));
+                                            const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
+                                            const isDate = dateRegex.test(value);
+
+                                            const formatDate = (dateStr: string) => {
+                                                const date = new Date(dateStr);
+                                                const optionsDate: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+                                                const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                                                return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
+                                            };
 
                                             return (
                                                 <Table.Td key={attr}>
@@ -385,12 +393,11 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
                                                         />
                                                     ) : (
-                                                        isDate ? new Date(value).toLocaleString() : value
+                                                        isDate ? formatDate(value) : value
                                                     )}
                                                 </Table.Td>
                                             );
                                         })}
-
                                         {editableObj && editFunction && (
                                             <Table.Td>
                                                 <Flex justify="left">
