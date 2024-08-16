@@ -1,6 +1,6 @@
 # OpenIPAM Frontend
 
-This is a WIP rework of the openIPAM front end at USU. openIPAM is currently setup through Django admin dashboard, this is bringing it to a React based app to remove its connection with the Django REST framework.
+This is a WIP rework of the openIPAM front end. openIPAM is currently setup through Django admin dashboard, this is bringing it to a React based app to remove its connection with the Django REST framework.
 
 ## Setup
 

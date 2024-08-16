@@ -2,11 +2,12 @@ import React from 'react';
 import { Button } from '@mantine/core';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import PaginatedTable from '../components/tables/PaginatedTable';
-
+import { useConfig } from '../contexts/ConfigContext';
 
 const Hosts: React.FC<{ viewType: "userHosts" | "allHosts" }> = ({ viewType }) => {
     const api = getApiEndpointFunctions();
     const attributes = ["hostname", "mac", "expires", "master_ip_address", "vendor", "last_seen", "last_seen_ip"];
+    const { config } = useConfig();
 
     return (
         <>
@@ -20,7 +21,7 @@ const Hosts: React.FC<{ viewType: "userHosts" | "allHosts" }> = ({ viewType }) =
             >Your hosts</Button>
             {viewType === "allHosts" ? (
                 <PaginatedTable
-                    title={"All USU Hosts"}
+                    title={`All ${config.organizationName} Hosts`}
                     getFunction={api.hosts.all}
                     neededAttr={attributes}
                     defPageSize={10}

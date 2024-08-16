@@ -1,6 +1,7 @@
 export interface AppConfig {
     apiUrl: HostName;
     frontendUrl: HostName;
+    organizationName: string;
     // Add more configuration options here
 }
 
@@ -26,11 +27,13 @@ const validateHostName = (url: string): HostName => {
 
 const apiUrl = validateHostName(import.meta.env.VITE_API_URL as string);
 const frontendUrl = validateHostName(import.meta.env.VITE_FRONTEND_URL as string);
+const organizationName = import.meta.env.VITE_ORGANIZATION_NAME as string;
 // Add more configuration options here
 
 const config: AppConfig = {
     apiUrl,
     frontendUrl,
+    organizationName,
 };
 
 export default config;
