@@ -1,4 +1,4 @@
-import DomainGrid from '../components/DomainGrid';
+import DomainGrid from '../../components/DomainGrid';
 
 const Domains = () => {
     return (

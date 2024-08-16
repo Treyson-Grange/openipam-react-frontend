@@ -242,6 +242,13 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setOrderBy(key);
     };
 
+    const handleFormatDate = (dateStr: string) => {
+        const date = new Date(dateStr);
+        const optionsDate: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
+        const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
+    };
+
     const handleFormatHeader = (header: string) => header.replace(/[_-]/g, ' ').replace(/\b\w/g, (char: string) => char.toUpperCase());
 
     const handleCheckboxChange = (item: any, checked: boolean) => {
@@ -378,13 +385,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                             const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
                                             const isDate = dateRegex.test(value);
 
-                                            const formatDate = (dateStr: string) => {
-                                                const date = new Date(dateStr);
-                                                const optionsDate: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
-                                                const optionsTime: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-                                                return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
-                                            };
-
                                             return (
                                                 <Table.Td key={attr}>
                                                     {isEditing && editableFields?.includes(attr) ? (
@@ -393,7 +393,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
                                                         />
                                                     ) : (
-                                                        isDate ? formatDate(value) : value
+                                                        isDate ? handleFormatDate(value) : value
                                                     )}
                                                 </Table.Td>
                                             );

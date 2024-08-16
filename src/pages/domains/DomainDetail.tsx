@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import PaginatedTable from '../components/tables/PaginatedTable';
-import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+import PaginatedTable from '../../components/tables/PaginatedTable';
+import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
 const DomainDetail = () => {
     const { domain } = useParams<{ domain: string }>() as { domain: string | number };
