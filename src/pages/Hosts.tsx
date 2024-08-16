@@ -25,6 +25,7 @@ const Hosts: React.FC<{ viewType: "userHosts" | "allHosts" }> = ({ viewType }) =
                     getFunction={api.hosts.all}
                     neededAttr={attributes}
                     defPageSize={10}
+                    noDataMessage={"No hosts found"}
                 />
             ) : (
                 <PaginatedTable
@@ -32,6 +33,7 @@ const Hosts: React.FC<{ viewType: "userHosts" | "allHosts" }> = ({ viewType }) =
                     neededAttr={attributes}
                     getFunction={api.hosts.myhosts}
                     defPageSize={10}
+                    noDataMessage={"No owned hosts found. If you feel this is an error, please contact an administrator."}
                 />
             )}
         </>

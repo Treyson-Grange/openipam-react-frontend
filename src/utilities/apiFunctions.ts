@@ -45,7 +45,6 @@ export const getApiEndpointFunctions = <
         logout: requestGenerator<
             HttpMethod.POST
         >(HttpMethod.POST, 'logout/', { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
-
         /**
          * Get the CSRF token for initial login
          */
@@ -53,8 +52,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             void,
             { csrfToken: string; sessionID: string } | StrictTypeChecking
-
-        >(HttpMethod.GET, 'get_csrf/', {}),
+        >(HttpMethod.GET, 'get_csrf/'),
         /**
          * Gets the current user for testing purposes only :D
          */
@@ -62,7 +60,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             void,
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.GET, 'whoami/', {}),
+        >(HttpMethod.GET, 'whoami/'),
         /**
          * Gets current users information, including permissions
          */
@@ -70,7 +68,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             void,
             API.AuthResponse | StrictTypeChecking
-        >(HttpMethod.GET, 'users/me/', {}),
+        >(HttpMethod.GET, 'users/me/'),
     },
     /**
      * Logs API
@@ -83,7 +81,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'logs/', {}),
+        >(HttpMethod.GET, 'logs/'),
         /**
          * Gets LogEntry objects from the current user\
          * Sortable: true
@@ -92,7 +90,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'logs/my-logs/', {}),
+        >(HttpMethod.GET, 'logs/my-logs/'),
     },
     /**
      * Reports API
@@ -105,7 +103,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             Array<any>,
             API.RecentReport | StrictTypeChecking
-        >(HttpMethod.GET, 'report/recent-stats', {}),
+        >(HttpMethod.GET, 'report/recent-stats'),
     },
     /**
      * Groups API
@@ -119,22 +117,28 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'groups/', {}),
+        >(HttpMethod.GET, 'groups/'),
     },
     /**
      * Hosts API
      */
     hosts: {
+        /**
+         * Gets Host objects owned by the current user
+         */
         myhosts: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/mine/', {}),
+        >(HttpMethod.GET, 'hosts/mine/'),
+        /**
+         * Gets All Host objects
+         */
         all: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/', {}),
+        >(HttpMethod.GET, 'hosts/'),
     },
     /**
      * DNS API
@@ -148,7 +152,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'dns/', {}),
+        >(HttpMethod.GET, 'dns/'),
         /**
          * Useless endpoint, just wanted to show that permissions can be checked, see api.
          */
@@ -156,7 +160,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'dns/mine', {}),
+        >(HttpMethod.GET, 'dns/mine'),
         /**
          * API endpoints for a specific DNS Object
          * @param id 
@@ -193,7 +197,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'domains/', {}),
+        >(HttpMethod.GET, 'domains/'),
         /**
          * API endpoints for a specific Domain Object
          * @param id 
@@ -207,11 +211,7 @@ export const getApiEndpointFunctions = <
                 HttpMethod.GET,
                 API.PaginationParams<API.Filters.LogFilter>,
                 API.PaginatedData<API.LogEntry> | StrictTypeChecking
-            >(
-                HttpMethod.GET,
-                `domains/${id}/records/`,
-                {}
-            ),
+            >(HttpMethod.GET, `domains/${id}/records/`),
         })
     },
     /**
@@ -226,7 +226,7 @@ export const getApiEndpointFunctions = <
             HttpMethod.GET,
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/', {}),
+        >(HttpMethod.GET, 'hosts/'),
         /**
          * API endpoints for a specific Host Object
          * @param mac 
@@ -240,7 +240,7 @@ export const getApiEndpointFunctions = <
                 HttpMethod.GET,
                 API.GenericResponse,
                 API.Host | StrictTypeChecking
-            >(HttpMethod.GET, `hosts/${mac}/`, {}),
+            >(HttpMethod.GET, `hosts/${mac}/`),
         })
     }
 });
@@ -482,8 +482,6 @@ function requestGenerator<
                     headers: {
                         ...headers,
                         ...extraHeaders,
-                        // Add the CSRF token to the headers, overriding any value that
-                        // might have been passed in the extra headers
                     },
                     signal: controller?.signal,
                     body: form ? (data as FormData) : JSON.stringify(data),

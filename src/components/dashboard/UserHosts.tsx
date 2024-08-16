@@ -9,7 +9,7 @@ const UserHosts = () => {
             getFunction={api.hosts.myhosts}
             title='Your Hosts'
             noDataMessage='No hosts found'
-            neededAttr={['hostname', 'ip_address', 'mac_address', 'description']}
+            neededAttr={['hostname', 'mac', 'vendor', 'description']}
             defPageSize={10}
         />
     );
