@@ -44,7 +44,7 @@ interface BasePaginatedTableProps {
      */
     title: string;
     /**
-     * 
+     * The message to display when there is no data.
      */
     noDataMessage?: string;
     /**

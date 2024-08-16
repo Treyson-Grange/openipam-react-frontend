@@ -37,6 +37,7 @@ const LoginForm = () => {
                     ...loginResponse,
                     is_ipamadmin: userDetailsResponse.is_ipamadmin,
                     groups: userDetailsResponse.groups,
+                    first_name: userDetailsResponse.first_name
                 });
 
                 navigate('/');
@@ -71,7 +72,7 @@ const LoginForm = () => {
                             required
                             size="lg"
                         />
-                        {error && <Text color="red" size="xl" mt="lg">{error}</Text>}
+                        {error && <Text c="red" size="xl" mt="lg">{error}</Text>}
                         <Button
                             type="submit"
                             radius="lg"

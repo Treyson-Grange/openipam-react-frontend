@@ -12,6 +12,7 @@ interface User {
     id: number;
     is_ipamadmin: boolean;
     groups: string[]
+    first_name: string;
 }
 
 interface AuthContextType {

@@ -63,7 +63,7 @@ const DomainGrid = (): JSX.Element => {
                                 <Link to={`/domains/${domain.name}`} className='header-link'>
                                     <Title order={2} size="h3">{domain.name}</Title>
                                 </Link>
-                                <Badge color="blue" variant="light" size="lg">
+                                <Badge c="blue" variant="light" size="lg">
                                     {domain.record_count}
                                 </Badge>
                             </Group>
@@ -74,7 +74,7 @@ const DomainGrid = (): JSX.Element => {
                                 <Link to={`/domains/${domain.name}`} aria-label="View Records">
                                     <ActionIcon
                                         variant="light"
-                                        color="lightBlue"
+                                        c="lightBlue"
                                         size="xl"
                                         radius="xl"
                                         aria-label="View Records"
