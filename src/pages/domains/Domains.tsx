@@ -1,9 +1,7 @@
 import DomainGrid from '../../components/DomainGrid';
 
 const Domains = () => {
-    return (
-        <DomainGrid />
-    )
+    return <DomainGrid />;
 };
 
 export default Domains;

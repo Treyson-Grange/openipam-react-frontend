@@ -33,7 +33,7 @@ const links: DropdownLink[] = [
 ];
 
 /**
- * Links for admin users. A LOT of these are gonna get nuked, this is just copy paste from 
+ * Links for admin users. A LOT of these are gonna get nuked, this is just copy paste from
  * live openipam :/
  */
 const adminLinks: DropdownLink[] = [
@@ -48,7 +48,7 @@ const adminLinks: DropdownLink[] = [
             { label: 'Guest Tickets', link: '/3' },
             { label: 'Notifications', link: '/4' },
             { label: 'Structured Attribute Values', link: '/5' },
-        ]
+        ],
     },
     {
         link: '/domains',
@@ -59,7 +59,7 @@ const adminLinks: DropdownLink[] = [
             { label: 'DNS Types', link: '/8' },
             { label: 'DNS Views', link: '/9' },
             { label: 'Domains', link: '/10' },
-        ]
+        ],
     },
     {
         link: '/network',
@@ -80,7 +80,7 @@ const adminLinks: DropdownLink[] = [
             { label: 'Pools', link: '/23' },
             { label: 'Shared Networks', link: '/24' },
             { label: 'Vlans', link: '/25' },
-        ]
+        ],
     },
     {
         link: '/admin',
@@ -102,7 +102,7 @@ const adminLinks: DropdownLink[] = [
             { label: 'DNS Records Logs', link: '/36' },
             { label: 'Address Logs', link: '/37' },
             { label: 'User Logs', link: '/38' },
-        ]
+        ],
     },
     {
         link: '/reports',
@@ -115,7 +115,7 @@ const adminLinks: DropdownLink[] = [
             { label: 'Broken PTR Records', link: '/43' },
             { label: 'Expired Hosts', link: '/44' },
             { label: 'Orphaned DNS', link: '/45' },
-        ]
+        ],
     },
 ];
 
@@ -130,15 +130,21 @@ export function Navbar() {
 
     const items = finalLinks.map((link) => {
         const isActive = link.link
-            ? currentPath === link.link || (currentPath.startsWith(link.link) && link.link !== '/')
+            ? currentPath === link.link ||
+              (currentPath.startsWith(link.link) && link.link !== '/')
             : false;
 
         return (
-            <Menu key={link.link || link.label} trigger='hover' openDelay={0} closeDelay={10}>
+            <Menu
+                key={link.link || link.label}
+                trigger="hover"
+                openDelay={0}
+                closeDelay={10}
+            >
                 <Menu.Target>
                     <Link
                         to={link.link || '#'}
-                        className='link'
+                        className="link"
                         data-active={isActive ? true : undefined}
                         onClick={() => {
                             if (link.link) {
@@ -153,7 +159,9 @@ export function Navbar() {
                     <Menu.Dropdown>
                         {link.dropdown.map((item) => {
                             const itemActive = item.link
-                                ? currentPath === item.link || (currentPath.startsWith(item.link) && item.link !== '/')
+                                ? currentPath === item.link ||
+                                  (currentPath.startsWith(item.link) &&
+                                      item.link !== '/')
                                 : false;
 
                             return item.isLabel ? (
@@ -181,27 +189,46 @@ export function Navbar() {
     });
 
     return (
-        <header className='header'>
-            <Container size='md' className='inner'>
-                <Group gap={5} visibleFrom='sm'>
-                    <Link to='/' className='link logo-container'>
-                        <Flex align='center' gap='xs'>
-                            <Image src={logo} alt='openIPAM Logo' h="2rem" w="auto" />
-                            <Title order={1} size="h2">openIPAM</Title>
+        <header className="header">
+            <Container size="md" className="inner">
+                <Group gap={5} visibleFrom="sm">
+                    <Link to="/" className="link logo-container">
+                        <Flex align="center" gap="xs">
+                            <Image
+                                src={logo}
+                                alt="openIPAM Logo"
+                                h="2rem"
+                                w="auto"
+                            />
+                            <Title order={1} size="h2">
+                                openIPAM
+                            </Title>
                         </Flex>
                     </Link>
                     {items}
                 </Group>
-                <Burger opened={opened} onClick={toggle} hiddenFrom='sm' size='sm' aria-label='Open Nav Menu' />
-                <Group gap={5} hiddenFrom='sm'>
-                    <Link to='/' className='link logo-container'>
-                        <Flex align='left'>
-                            <Image src={logo} alt='openIPAM Logo' h="2rem" w="auto" hiddenFrom='sm' />
+                <Burger
+                    opened={opened}
+                    onClick={toggle}
+                    hiddenFrom="sm"
+                    size="sm"
+                    aria-label="Open Nav Menu"
+                />
+                <Group gap={5} hiddenFrom="sm">
+                    <Link to="/" className="link logo-container">
+                        <Flex align="left">
+                            <Image
+                                src={logo}
+                                alt="openIPAM Logo"
+                                h="2rem"
+                                w="auto"
+                                hiddenFrom="sm"
+                            />
                             <Title
                                 order={3}
-                                hiddenFrom='sm'
-                                mr={"auto"}
-                                ml={"1rem"}
+                                hiddenFrom="sm"
+                                mr={'auto'}
+                                ml={'1rem'}
                             >
                                 openIPAM
                             </Title>
@@ -212,13 +239,11 @@ export function Navbar() {
             <Drawer
                 opened={opened}
                 onClose={close}
-                title='openIPAM'
-                padding='md'
-                size='xs'
+                title="openIPAM"
+                padding="md"
+                size="xs"
             >
-                <Stack>
-                    {items}
-                </Stack>
+                <Stack>{items}</Stack>
             </Drawer>
         </header>
     );

@@ -1,8 +1,4 @@
-import React, {
-    createContext,
-    useContext,
-    ReactNode
-} from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import AppConfig from '../config';
 
 interface ConfigContextType {
@@ -24,6 +20,13 @@ interface ConfigProviderProps {
     children: ReactNode;
 }
 
-export const ConfigProvider: React.FC<ConfigProviderProps> = ({ config, children }) => {
-    return <ConfigContext.Provider value={{ config }}>{children}</ConfigContext.Provider>;
+export const ConfigProvider: React.FC<ConfigProviderProps> = ({
+    config,
+    children,
+}) => {
+    return (
+        <ConfigContext.Provider value={{ config }}>
+            {children}
+        </ConfigContext.Provider>
+    );
 };

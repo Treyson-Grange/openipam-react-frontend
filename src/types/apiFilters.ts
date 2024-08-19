@@ -21,5 +21,3 @@ export type LogFilter = Partial<{
     stamp__gte: string;
     stamp__lte: string;
 }>;
-
-

@@ -10,11 +10,22 @@ const Stats = () => {
     const dnsItems = ['dns_today', 'dns_week', 'dns_month'];
 
     const itemText = (item: string) =>
-        item.startsWith('hosts') ? item.replace('hosts_', item.includes('today') ? 'Changed ' : 'Changed this ') :
-            item.startsWith('users') ? item.replace('users_', item.includes('today') ? 'Joined ' : 'Joined this ') :
-                item.startsWith('dns') ? item.replace('dns_', item.includes('today') ? 'Changed ' : 'Changed this ') :
-                    item;
-
+        item.startsWith('hosts')
+            ? item.replace(
+                  'hosts_',
+                  item.includes('today') ? 'Changed ' : 'Changed this ',
+              )
+            : item.startsWith('users')
+              ? item.replace(
+                    'users_',
+                    item.includes('today') ? 'Joined ' : 'Joined this ',
+                )
+              : item.startsWith('dns')
+                ? item.replace(
+                      'dns_',
+                      item.includes('today') ? 'Changed ' : 'Changed this ',
+                  )
+                : item;
 
     useEffect(() => {
         if (apiData) {
@@ -23,41 +34,68 @@ const Stats = () => {
     }, [apiData]);
 
     return (
-        <Paper radius='lg' p='lg' m='lg' withBorder>
+        <Paper radius="lg" p="lg" m="lg" withBorder>
             <Title order={1}>Recent Stats</Title>
             {loading && !error && <Text>Loading...</Text>}
             {error && <Text>Error: {error.message}</Text>}
             {data && (
                 <Grid>
                     <Grid.Col span={{ sm: 12, md: 4, lg: 4, xl: 4 }}>
-                        <Card radius='md' p='md' m='xs' withBorder>
-                            <Title mb="sm" order={2} size="h3">Hosts</Title>
+                        <Card radius="md" p="md" m="xs" withBorder>
+                            <Title mb="sm" order={2} size="h3">
+                                Hosts
+                            </Title>
                             {hostItems.map((item) => (
-                                <Flex key={item} align="center" justify="space-between" mb="md">
+                                <Flex
+                                    key={item}
+                                    align="center"
+                                    justify="space-between"
+                                    mb="md"
+                                >
                                     <Text>{itemText(item)}</Text>
-                                    <Text fw={700} size="lg" c="blue">{data[item]}</Text>
+                                    <Text fw={700} size="lg" c="blue">
+                                        {data[item]}
+                                    </Text>
                                 </Flex>
                             ))}
                         </Card>
                     </Grid.Col>
                     <Grid.Col span={{ sm: 12, md: 4, lg: 4, xl: 4 }}>
-                        <Card radius='md' p='md' m='xs' withBorder>
-                            <Title mb="sm" order={2} size="h3">Users</Title>
+                        <Card radius="md" p="md" m="xs" withBorder>
+                            <Title mb="sm" order={2} size="h3">
+                                Users
+                            </Title>
                             {userItems.map((item) => (
-                                <Flex key={item} align="center" justify="space-between" mb="md">
+                                <Flex
+                                    key={item}
+                                    align="center"
+                                    justify="space-between"
+                                    mb="md"
+                                >
                                     <Text>{itemText(item)}</Text>
-                                    <Text fw={700} size="lg" c="blue">{data[item]}</Text>
+                                    <Text fw={700} size="lg" c="blue">
+                                        {data[item]}
+                                    </Text>
                                 </Flex>
                             ))}
                         </Card>
                     </Grid.Col>
                     <Grid.Col span={{ sm: 12, md: 4, lg: 4, xl: 4 }}>
-                        <Card radius='md' p='md' m='xs' withBorder>
-                            <Title mb="sm" order={2} size="h3">DNS Records</Title>
+                        <Card radius="md" p="md" m="xs" withBorder>
+                            <Title mb="sm" order={2} size="h3">
+                                DNS Records
+                            </Title>
                             {dnsItems.map((item) => (
-                                <Flex key={item} align="center" justify="space-between" mb="md">
+                                <Flex
+                                    key={item}
+                                    align="center"
+                                    justify="space-between"
+                                    mb="md"
+                                >
                                     <Text>{itemText(item)}</Text>
-                                    <Text fw={700} size="lg" c="blue">{data[item]}</Text>
+                                    <Text fw={700} size="lg" c="blue">
+                                        {data[item]}
+                                    </Text>
                                 </Flex>
                             ))}
                         </Card>
@@ -65,7 +103,6 @@ const Stats = () => {
                 </Grid>
             )}
         </Paper>
-
     );
 };
 

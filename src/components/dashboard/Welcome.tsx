@@ -14,23 +14,31 @@ const Welcome = () => {
             localStorage.removeItem('user');
             navigate('/login');
         } catch (error) {
-            console.error('There was a problem with the logout operation', error);
+            console.error(
+                'There was a problem with the logout operation',
+                error,
+            );
         }
-    }
+    };
 
     return (
-        <Paper radius='lg' p='lg' m='lg' withBorder >
-            <Title order={1} mb='xl'>
-                Welcome to openIPAM{user?.first_name ? `, ${user.first_name}` : ''}
+        <Paper radius="lg" p="lg" m="lg" withBorder>
+            <Title order={1} mb="xl">
+                Welcome to openIPAM
+                {user?.first_name ? `, ${user.first_name}` : ''}
             </Title>
-            <Stack align='flex-start'>
+            <Stack align="flex-start">
                 <Text>
-                    We ask for your patience as we migrate over to our new upgraded design and implementation of openIPAM.
+                    We ask for your patience as we migrate over to our new
+                    upgraded design and implementation of openIPAM.
                 </Text>
                 <Text>
-                    Please reach out to the IPAM team if you have any questions or concerns.
+                    Please reach out to the IPAM team if you have any questions
+                    or concerns.
                 </Text>
-                <Button onClick={handleLogout} variant='outline' color='red'>Logout</Button>
+                <Button onClick={handleLogout} variant="outline" color="red">
+                    Logout
+                </Button>
             </Stack>
         </Paper>
     );

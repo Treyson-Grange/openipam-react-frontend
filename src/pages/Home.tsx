@@ -1,6 +1,5 @@
 import DashBoard from '../components/dashboard';
 
-
 const Home = () => {
     return (
         <>

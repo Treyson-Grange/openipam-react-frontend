@@ -5,7 +5,7 @@ import {
     Group,
     Container,
     Paper,
-    Title
+    Title,
 } from '@mantine/core';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -37,29 +37,44 @@ const LoginForm = () => {
                     ...loginResponse,
                     is_ipamadmin: userDetailsResponse.is_ipamadmin,
                     groups: userDetailsResponse.groups,
-                    first_name: userDetailsResponse.first_name
+                    first_name: userDetailsResponse.first_name,
                 });
 
                 navigate('/');
             } else {
                 setError('Login failed: Invalid user data');
             }
-        } catch (error: any) {
-            setError('Login failed. Please check your credentials and try again.');
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setError(
+                    'Login failed. Please check your credentials and try again.',
+                );
+            } else {
+                setError('An unexpected error occurred.');
+            }
         }
     };
 
     return (
         <Container size="md" mt="xl">
             <Paper radius="md" p="xl" withBorder>
-                <Title order={1} mb="xl" ta="center">Login</Title>
-                <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+                <Title order={1} mb="xl" ta="center">
+                    Login
+                </Title>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleLogin();
+                    }}
+                >
                     <Group>
                         <TextInput
                             label="Username"
                             placeholder="John Doe"
                             value={username}
-                            onChange={(event) => setUsername(event.currentTarget.value)}
+                            onChange={(event) =>
+                                setUsername(event.currentTarget.value)
+                            }
                             required
                             size="lg"
                         />
@@ -68,11 +83,17 @@ const LoginForm = () => {
                             label="Password"
                             placeholder="Your password"
                             value={password}
-                            onChange={(event) => setPassword(event.currentTarget.value)}
+                            onChange={(event) =>
+                                setPassword(event.currentTarget.value)
+                            }
                             required
                             size="lg"
                         />
-                        {error && <Text c="red" size="xl" mt="lg">{error}</Text>}
+                        {error && (
+                            <Text c="red" size="xl" mt="lg">
+                                {error}
+                            </Text>
+                        )}
                         <Button
                             type="submit"
                             radius="lg"

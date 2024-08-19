@@ -25,7 +25,7 @@ import { getCookie } from './getCookie';
  * To enforce this, call this hook with a template parameter of `void`.
  */
 export const getApiEndpointFunctions = <
-    StrictTypeChecking extends void | never = never
+    StrictTypeChecking extends void | never = never,
 >() => ({
     /**
      * Auth API
@@ -38,13 +38,15 @@ export const getApiEndpointFunctions = <
             HttpMethod.POST,
             { username: string; password: string },
             API.GenericResponse | StrictTypeChecking
-        >(HttpMethod.POST, 'login/', { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        >(HttpMethod.POST, 'login/', {
+            headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
+        }),
         /**
          * Logout the current user
          */
-        logout: requestGenerator<
-            HttpMethod.POST
-        >(HttpMethod.POST, 'logout/', { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
+        logout: requestGenerator<HttpMethod.POST>(HttpMethod.POST, 'logout/', {
+            headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
+        }),
         /**
          * Get the CSRF token for initial login
          */
@@ -163,7 +165,7 @@ export const getApiEndpointFunctions = <
         >(HttpMethod.GET, 'dns/mine'),
         /**
          * API endpoints for a specific DNS Object
-         * @param id 
+         * @param id
          * @returns An object containing all endpoints for the given DNS object
          */
         byId: (id: string | number) => ({
@@ -173,7 +175,9 @@ export const getApiEndpointFunctions = <
             delete: requestGenerator<HttpMethod.DELETE>(
                 HttpMethod.DELETE,
                 `dns/${id}/`,
-                { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }
+                {
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
+                },
             ),
             /**
              * Updates a DNSRecord object given an objects ID and new data
@@ -182,8 +186,10 @@ export const getApiEndpointFunctions = <
                 HttpMethod.PUT,
                 Partial<API.DNSRecord>,
                 API.DNSRecord | StrictTypeChecking
-            >(HttpMethod.PUT, `dns/${id}/`, { headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' } }),
-        })
+            >(HttpMethod.PUT, `dns/${id}/`, {
+                headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
+            }),
+        }),
     },
     /**
      * Domain API
@@ -200,7 +206,7 @@ export const getApiEndpointFunctions = <
         >(HttpMethod.GET, 'domains/'),
         /**
          * API endpoints for a specific Domain Object
-         * @param id 
+         * @param id
          * @returns An object containing all endpoints for the given Domain object
          */
         byId: (id: string | number) => ({
@@ -212,7 +218,7 @@ export const getApiEndpointFunctions = <
                 API.PaginationParams<API.Filters.LogFilter>,
                 API.PaginatedData<API.LogEntry> | StrictTypeChecking
             >(HttpMethod.GET, `domains/${id}/records/`),
-        })
+        }),
     },
     /**
      * Hosts API
@@ -229,9 +235,9 @@ export const getApiEndpointFunctions = <
         >(HttpMethod.GET, 'hosts/'),
         /**
          * API endpoints for a specific Host Object
-         * @param mac 
+         * @param mac
          * @returns An object containing all endpoints for the given Host object
-        */
+         */
         byId: (mac: string | number) => ({
             /**
              * Queries a Host object given a mac address
@@ -241,8 +247,8 @@ export const getApiEndpointFunctions = <
                 API.GenericResponse,
                 API.Host | StrictTypeChecking
             >(HttpMethod.GET, `hosts/${mac}/`),
-        })
-    }
+        }),
+    },
 });
 
 declare global {
@@ -260,7 +266,10 @@ enum HttpMethod {
 }
 
 export class ApiError extends Error {
-    constructor(message: string, public readonly status: number) {
+    constructor(
+        message: string,
+        public readonly status: number,
+    ) {
         super(message);
     }
 }
@@ -269,7 +278,7 @@ export class ApiResponseError extends ApiError {
     constructor(public readonly response: Response) {
         super(
             'API did not return a valid JSON response. See response property.',
-            response.status
+            response.status,
         );
     }
 }
@@ -291,7 +300,7 @@ const ERROR_DESCRIPTION_FIELDS = ['detail'];
  */
 async function handleResponse<ResultType>(
     response: Response,
-    asText: boolean
+    asText: boolean,
 ): Promise<ResultType | undefined> {
     if (response.ok) {
         try {
@@ -321,13 +330,13 @@ async function handleResponse<ResultType>(
                         return acc;
                     },
                     // Default to the status text if no error description fields were found
-                    response.statusText
+                    response.statusText,
                 );
                 throw new ApiError(message, response.status);
             },
             () => {
                 throw new ApiError(response.statusText, response.status);
-            }
+            },
         );
     }
 }
@@ -335,12 +344,12 @@ async function handleResponse<ResultType>(
 export type QueryRequest<ParamsType = any, ResponseType = any> = (
     params?: ParamsType,
     extraHeaders?: Record<string, string>,
-    controller?: AbortController
+    controller?: AbortController,
 ) => Promise<ResponseType>;
 export type DataRequest<DataType = any, ResponseType = any> = (
     data?: DataType,
     extraHeaders?: Record<string, string>,
-    controller?: AbortController
+    controller?: AbortController,
 ) => Promise<ResponseType>;
 
 /**
@@ -367,7 +376,7 @@ export type MemoizableRequest = (QueryRequest | DataRequest) & {
 function requestGenerator<
     Method extends HttpMethod,
     DataType = void,
-    ResponseType = void
+    ResponseType = void,
 >(
     method: Method,
     url: string,
@@ -392,7 +401,7 @@ function requestGenerator<
          * Whether or not to return the raw response instead of parsing it.
          */
         raw?: boolean;
-    } = {}
+    } = {},
 ): Method extends HttpMethod.GET
     ? QueryRequest<DataType, ResponseType>
     : DataRequest<DataType, ResponseType> {
@@ -419,7 +428,7 @@ function requestGenerator<
             const queryRequest = async (
                 params?: DataType,
                 extraHeaders: Record<string, string> = {},
-                controller?: AbortController
+                controller?: AbortController,
             ) => {
                 const newParams = Object.entries(params ?? {}).reduce(
                     (acc, [key, value]) => {
@@ -431,7 +440,7 @@ function requestGenerator<
                         }
                         return acc;
                     },
-                    {} as Record<string, string>
+                    {} as Record<string, string>,
                 );
                 const query = new URLSearchParams(newParams).toString();
                 const response = await fetch(`${url}?${query}`, {
@@ -468,7 +477,7 @@ function requestGenerator<
             const dataRequest = async (
                 data?: DataType,
                 extraHeaders: Record<string, string> = {},
-                controller?: AbortController
+                controller?: AbortController,
             ) => {
                 const token = getCookie('csrftoken');
                 if (token === undefined) {

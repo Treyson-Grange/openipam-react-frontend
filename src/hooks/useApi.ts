@@ -17,7 +17,7 @@ import objectHash from 'object-hash';
 
 const queryParamsEqual = <T extends Record<string, string | number | boolean>>(
     a: T,
-    b: T
+    b: T,
 ) => {
     return (
         Object.keys(a).every((key) => a[key] === b[key]) &&
@@ -26,9 +26,9 @@ const queryParamsEqual = <T extends Record<string, string | number | boolean>>(
 };
 
 const useQueryParamsMemo = <
-    T extends Record<string, string | number | boolean>
+    T extends Record<string, string | number | boolean>,
 >(
-    queryParams: T
+    queryParams: T,
 ) => {
     const [memo, setMemo] = useState(queryParams);
     // update memo if queryParams change
@@ -48,7 +48,7 @@ const useApiEndpointMemo = (endpoint: MemoizableRequest) => {
 
 /**
  * Fetch JSON data from a openIPAM API V2 endpoint with query parameters
- * @param endpoint 
+ * @param endpoint
  * @param queryParams The optional query parameters to include in the requestThe API endpoint function to fetch data from
  * @param transform A function to transform the fetched data before returning it, called once after the request completes
  * @param makeRequest Whether to make requests or not
@@ -56,45 +56,45 @@ const useApiEndpointMemo = (endpoint: MemoizableRequest) => {
  */
 export const useApiData = <
     Endpoint extends QueryRequest | DataRequest | null,
-    Return = Awaited<ReturnType<Exclude<Endpoint, null>>>
+    Return = Awaited<ReturnType<Exclude<Endpoint, null>>>,
 >(
     endpoint: Endpoint,
     queryParams?: Parameters<Endpoint extends null ? never : Endpoint>[0],
     transform: (
-        data: Awaited<ReturnType<Endpoint extends null ? never : Endpoint>>
+        data: Awaited<ReturnType<Endpoint extends null ? never : Endpoint>>,
     ) => Return = (data) => data,
-    makeRequest: boolean = true
+    makeRequest: boolean = true,
 ):
     | {
-        loading: false;
-        data: Return;
-        /**
-         * The error that occurred while fetching the data, if any.
-         */
-        error: Error | undefined;
-        /**
-         * Perform an immediate reload of the data without modifying the query parameters.
-         */
-        reload: () => Promise<void>;
-    }
+          loading: false;
+          data: Return;
+          /**
+           * The error that occurred while fetching the data, if any.
+           */
+          error: Error | undefined;
+          /**
+           * Perform an immediate reload of the data without modifying the query parameters.
+           */
+          reload: () => Promise<void>;
+      }
     | {
-        loading: true;
-        data: undefined;
-        /**
-         * The error that occurred while fetching the data, if any.
-         */
-        error: Error | undefined;
-        /**
-         * Perform an immediate reload of the data without modifying the query parameters.
-         */
-        reload: () => Promise<void>;
-    } => {
+          loading: true;
+          data: undefined;
+          /**
+           * The error that occurred while fetching the data, if any.
+           */
+          error: Error | undefined;
+          /**
+           * Perform an immediate reload of the data without modifying the query parameters.
+           */
+          reload: () => Promise<void>;
+      } => {
     const [data, setData] = useState<Return | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | undefined>(undefined);
     const memoizedQueryParams = useQueryParamsMemo(queryParams ?? {});
     const memoizedEndpoint = useApiEndpointMemo(
-        (endpoint as MemoizableRequest) ?? {}
+        (endpoint as MemoizableRequest) ?? {},
     );
     const controller = useRef<AbortController | null>(null);
     /**
@@ -126,7 +126,7 @@ export const useApiData = <
                 }
                 console.error(
                     `Failed to fetch data from ${memoizedEndpoint.endpoint}`,
-                    e
+                    e,
                 );
                 if (e instanceof Error) {
                     setError(e);
@@ -167,22 +167,22 @@ export const useApiData = <
  */
 export const usePaginatedApi = <
     Endpoint extends QueryRequest<any, PaginatedData<unknown>>,
-    Return = Awaited<ReturnType<Endpoint>>
+    Return = Awaited<ReturnType<Endpoint>>,
 >(
     endpoint: Endpoint,
     page: number,
     pageSize: number,
     queryParams?: Omit<Parameters<Endpoint>[0], 'page' | 'page_size'>,
     transform: (data: Awaited<ReturnType<Endpoint>>) => Return = (data) =>
-        data as Return
+        data as Return,
 ) => {
     const dataParams = useMemo(
         () => ({
             ...queryParams,
-            page: (page),
+            page: page,
             page_size: pageSize,
         }),
-        [page, pageSize, queryParams]
+        [page, pageSize, queryParams],
     );
     return useApiData(endpoint, dataParams, transform);
 };
@@ -200,7 +200,7 @@ export const usePaginatedApi = <
  */
 export const useCachingApi = <
     Endpoint extends QueryRequest<any, PaginatedData<unknown>>,
-    Return = Awaited<ReturnType<Endpoint>>
+    Return = Awaited<ReturnType<Endpoint>>,
 >(
     endpoint: Endpoint,
     prefetch: number,
@@ -209,18 +209,18 @@ export const useCachingApi = <
     queryParams?: Omit<Parameters<Endpoint>[0], 'page' | 'page_size'>,
     cacheSize: number = 20,
     transform: (data: Awaited<ReturnType<Endpoint>>) => Return = (data) =>
-        data as Return
+        data as Return,
 ) => {
     const [data, setData] = useState<Return | undefined>(undefined);
     const [loading, setLoading] = useState(true);
     const memoizedQueryParams = useQueryParamsMemo(queryParams ?? {});
     const memoizedEndpoint = useApiEndpointMemo(
-        endpoint as QueryRequest as MemoizableRequest
+        endpoint as QueryRequest as MemoizableRequest,
     );
     const dataCache = useRef<Partial<Record<number, Return>>>({});
     const lastUsed = useRef<number[]>([]);
     const loadingPromises = useRef<Map<number, Promise<Return | undefined>>>(
-        new Map()
+        new Map(),
     );
 
     function cache(page: number, data: Return) {
@@ -277,7 +277,7 @@ export const useCachingApi = <
             page,
             pageSize,
             memoizedQueryParams,
-            memoizedEndpoint
+            memoizedEndpoint,
         );
         const pagesToFetch = new Set<number>();
         for (let i = page + 1; i < page + prefetch; i++) {
@@ -312,7 +312,7 @@ export const useCachingApi = <
                 });
                 loadingPromises.current.set(page, promise);
                 return promise;
-            })
+            }),
         ).finally(() => {
             // Just make sure that the currently-displayed page is the most recently used
             lastUsed.current = lastUsed.current.filter((p) => p !== page);
@@ -365,16 +365,16 @@ export function useEditableData<
     GetEndpoint extends QueryRequest | null,
     SetEndpoint extends DataRequest<Return>,
     Return = GetEndpoint extends null
-    ? Parameters<SetEndpoint>[0]
-    : Awaited<ReturnType<Exclude<GetEndpoint, null>>>
+        ? Parameters<SetEndpoint>[0]
+        : Awaited<ReturnType<Exclude<GetEndpoint, null>>>,
 >(
     getEndpoint: GetEndpoint,
     setEndpoint: SetEndpoint,
     initialData: Return,
     queryArgs?: Parameters<GetEndpoint extends null ? never : GetEndpoint>[0],
     transform: (
-        data: ReturnType<GetEndpoint extends null ? never : GetEndpoint>
-    ) => Return = (data) => data as Return
+        data: ReturnType<GetEndpoint extends null ? never : GetEndpoint>,
+    ) => Return = (data) => data as Return,
 ): {
     /**
      * The current data object, including any changes made by the user
@@ -390,7 +390,7 @@ export function useEditableData<
      * @returns A function to update the field
      */
     update: (
-        field: keyof Return
+        field: keyof Return,
     ) => Dispatch<SetStateAction<Return[keyof Return]>>;
     /**
      * Save the current data object to the API
@@ -423,10 +423,11 @@ export function useEditableData<
                 setModified(true);
                 setData((prev) => ({
                     ...prev,
-                    [field]: value instanceof Function ? value(prev[field]) : value,
+                    [field]:
+                        value instanceof Function ? value(prev[field]) : value,
                 }));
             },
-        [(setData as MemoizableRequest).endpoint]
+        [(setData as MemoizableRequest).endpoint],
     );
 
     const save = useCallback(async () => {

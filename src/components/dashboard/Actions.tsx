@@ -7,7 +7,7 @@ const Actions = (): JSX.Element => {
         <>
             <PaginatedTable
                 getFunction={api.logs.mylogs}
-                title='Recent Actions'
+                title="Recent Actions"
                 neededAttr={['content_type', 'object_repr', 'action_time']}
                 morePageSizes={['1']}
                 sortable={true}
@@ -15,6 +15,6 @@ const Actions = (): JSX.Element => {
             />
         </>
     );
-}
+};
 
 export default Actions;

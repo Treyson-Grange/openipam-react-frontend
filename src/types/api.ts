@@ -70,11 +70,11 @@ export type AuthResponse = {
      * Groups the user is a member of.
      */
     groups: string[];
-}
+};
 
 export type PaginatedApiFunction<
     ResponseData,
-    Params extends PaginationParams = PaginationParams
+    Params extends PaginationParams = PaginationParams,
 > = (params: Params) => Promise<PaginatedData<ResponseData>>;
 
 /**
@@ -85,11 +85,10 @@ export type PaginatedApiFunction<
 export type AdvancedFilterParams<
     FilterType extends Partial<
         Record<string & KeyofStorable<FilterType>, string | number | boolean>
-    >
+    >,
 > = {
-        [key in KeyofStorable<FilterType> as `${'~' | ''}${key}${| `{${number}}[${number}]`
-        | ''}`]?: FilterType[key];
-    };
+    [key in KeyofStorable<FilterType> as `${'~' | ''}${key}${`{${number}}[${number}]` | ''}`]?: FilterType[key];
+};
 
 /**
  * Utility type to strip advanced filter syntax from a set of parameters, returning the base filter type.
@@ -101,7 +100,7 @@ export type AdvancedFilterParams<
 export type StripAdvancedFilters<
     Params extends Partial<
         Record<string & KeyofStorable<Params>, string | number | boolean>
-    >
+    >,
 > = Omit<Params, `${KeyofStorable<Params>}{${number}}[${number}]`>;
 
 /**
@@ -109,7 +108,7 @@ export type StripAdvancedFilters<
  * @template Filters The type of the filters that can be passed to the endpoint.
  */
 export type PaginationParams<
-    Filters extends Partial<Record<string, string | number | boolean>> = {}
+    Filters extends Partial<Record<string, string | number | boolean>> = {},
 > = Filters & BaseListParams;
 
 /**
@@ -119,10 +118,10 @@ export type PaginationParams<
  * @template Ordering The type of the ordering that can be passed to the endpoint.
  */
 export type OrderablePaginationParams<
-    Filters extends Partial<Record<string, string | number | boolean>> = Partial<
-        Record<string, any>
-    >,
-    Ordering extends string = any
+    Filters extends Partial<
+        Record<string, string | number | boolean>
+    > = Partial<Record<string, any>>,
+    Ordering extends string = any,
 > = PaginationParams<Filters> & {
     ordering?: Ordering | `-${Ordering}`;
 };
@@ -134,7 +133,7 @@ export type OrderablePaginationParams<
 export type StripPaginationParams<
     Params extends Partial<
         Record<string & KeyofStorable<Params>, string | number | boolean>
-    >
+    >,
 > = Omit<Params, keyof BaseListParams>;
 /**
  * Represents the version of an object that is stored in the database.
@@ -202,7 +201,6 @@ export type PaginatedData<PostType, AdditionalFields = {}> = {
      */
     results: StoredObject<PostType, AdditionalFields>[];
 };
-
 
 /**
  * Interface for the User model. Not sure this is needed, from KCM, but its used below
@@ -285,8 +283,6 @@ export interface DNSRecord {
      */
     url: string;
 }
-
-
 
 export interface LogEntry {
     /**

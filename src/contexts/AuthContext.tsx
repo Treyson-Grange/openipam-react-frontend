@@ -3,7 +3,7 @@ import React, {
     useState,
     useContext,
     ReactNode,
-    useEffect
+    useEffect,
 } from 'react';
 
 interface User {
@@ -11,7 +11,7 @@ interface User {
     email: string;
     id: number;
     is_ipamadmin: boolean;
-    groups: string[]
+    groups: string[];
     first_name: string;
 }
 
@@ -33,7 +33,9 @@ export const useAuth = () => {
     return context;
 };
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+    children,
+}) => {
     const [user, setUser] = useState<User | null>(null);
     const isAdmin = () => user?.is_ipamadmin ?? false;
     const getGroups = () => user?.groups ?? [];
@@ -55,7 +57,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }, [user]);
 
     return (
-        <AuthContext.Provider value={{ user, isAdmin, setUser, getGroups, logout }}>
+        <AuthContext.Provider
+            value={{ user, isAdmin, setUser, getGroups, logout }}
+        >
             {children}
         </AuthContext.Provider>
     );

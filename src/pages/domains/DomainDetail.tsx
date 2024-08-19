@@ -3,7 +3,9 @@ import PaginatedTable from '../../components/tables/PaginatedTable';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
 const DomainDetail = () => {
-    const { domain } = useParams<{ domain: string }>() as { domain: string | number };
+    const { domain } = useParams<{ domain: string }>() as {
+        domain: string | number;
+    };
     const api = getApiEndpointFunctions();
     const title = 'DNS Records for ' + domain;
 
@@ -27,6 +29,6 @@ const DomainDetail = () => {
             editableFields={['name', 'content', 'ttl']}
         />
     );
-}
+};
 
 export default DomainDetail;

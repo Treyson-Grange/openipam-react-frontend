@@ -37,13 +37,13 @@ export type Column = {
     };
     orderable?: boolean;
     render?:
-    | ((
-        value: any,
-        options?: any,
-        list?: any,
-        params?: Params
-    ) => React.ReactNode | string)
-    | string;
+        | ((
+              value: any,
+              options?: any,
+              list?: any,
+              params?: Params,
+          ) => React.ReactNode | string)
+        | string;
     [key: string]: any;
 };
 

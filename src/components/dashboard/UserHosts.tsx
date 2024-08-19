@@ -7,11 +7,11 @@ const UserHosts = () => {
     return (
         <PaginatedTable
             getFunction={api.hosts.myhosts}
-            title='Your Hosts'
-            noDataMessage='No hosts found'
+            title="Your Hosts"
+            noDataMessage="No hosts found"
             neededAttr={['hostname', 'mac', 'vendor', 'description']}
             defPageSize={10}
         />
     );
-}
+};
 export default UserHosts;
