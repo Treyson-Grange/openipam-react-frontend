@@ -53,25 +53,23 @@ const DomainGrid = (): JSX.Element => {
             <Grid mt="lg" gutter="lg">
                 {data?.results?.map((domain: any, index: number) => (
                     <Grid.Col span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 3 }} key={index}>
-                        <Card
-                            radius="lg"
-                            h="12rem"
-                            shadow="xl"
-                            padding="lg"
-                        >
-                            <Group>
-                                <Link to={`/domains/${domain.name}`} className='header-link'>
+                        <Link to={`/domains/${domain.name}`} className='header-link'>
+                            <Card
+                                radius="lg"
+                                h="12rem"
+                                shadow="xl"
+                                padding="lg"
+                            >
+                                <Group>
                                     <Title order={2} size="h3">{domain.name}</Title>
-                                </Link>
-                                <Badge c="blue" variant="light" size="lg">
-                                    {domain.record_count}
-                                </Badge>
-                            </Group>
-                            <Text size="md" c="blue">
-                                {domain.description}
-                            </Text>
-                            <Group pos="absolute" bottom="10px" right="10px">
-                                <Link to={`/domains/${domain.name}`} aria-label="View Records">
+                                    <Badge c="blue" variant="light" size="lg">
+                                        {domain.record_count}
+                                    </Badge>
+                                </Group>
+                                <Text size="md" c="blue">
+                                    {domain.description}
+                                </Text>
+                                <Group pos="absolute" bottom="10px" right="10px">
                                     <ActionIcon
                                         variant="light"
                                         c="lightBlue"
@@ -81,13 +79,12 @@ const DomainGrid = (): JSX.Element => {
                                     >
                                         <FaEye size={18} />
                                     </ActionIcon>
-                                </Link>
-                            </Group>
-                        </Card>
+                                </Group>
+                            </Card>
+                        </Link>
                     </Grid.Col>
                 ))}
             </Grid>
-
         </Paper>
     );
 };
