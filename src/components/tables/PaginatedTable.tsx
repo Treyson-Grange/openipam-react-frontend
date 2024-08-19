@@ -17,7 +17,8 @@ import {
     TextInput,
     ActionIcon,
     Tooltip,
-    Flex
+    Flex,
+    Loader,
 } from '@mantine/core';
 import {
     FaRegCircleXmark,
@@ -47,6 +48,12 @@ interface BasePaginatedTableProps {
      * The message to display when there is no data.
      */
     noDataMessage?: string;
+    /**
+     * Whether to highlight the dates in the table. 
+     * Defaults to false.
+     * Green if the date is in the future, red if the date is in the past. (useful for expiration)
+     */
+    highlightDates?: boolean;
     /**
      * The attributes from the API to display in the table.
      */
@@ -176,6 +183,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         neededAttr,
         morePageSizes,
         overridePageSizes,
+        highlightDates,
         editableObj,
         sortable,
         sortableFields,
@@ -319,7 +327,10 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     return (
         <Paper radius='lg' p='lg' m='lg' withBorder>
             <Group justify='space-between'>
-                <Title>{title}</Title>
+                <Group justify='space-between'>
+                    <Title>{title}</Title>
+                    {loading && <Loader size={30} />}
+                </Group>
                 {maxPages !== 1 &&
                     <Pagination total={maxPages} value={page} onChange={setPage} />
                 }
@@ -384,6 +395,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                             const value = item[attr];
                                             const dateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
                                             const isDate = dateRegex.test(value);
+                                            const pastOrFuture = new Date(value) < new Date();
 
                                             return (
                                                 <Table.Td key={attr}>
@@ -393,7 +405,17 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             onChange={(e) => handleEditInputChange(attr, e.currentTarget.value)}
                                                         />
                                                     ) : (
-                                                        isDate ? handleFormatDate(value) : value
+                                                        isDate ? (
+                                                            highlightDates ? (
+                                                                <Text c={pastOrFuture ? 'red' : 'green'}>
+                                                                    {handleFormatDate(value)}
+                                                                </Text>
+                                                            ) : (
+                                                                handleFormatDate(value)
+                                                            )
+                                                        ) : (
+                                                            value
+                                                        )
                                                     )}
                                                 </Table.Td>
                                             );
