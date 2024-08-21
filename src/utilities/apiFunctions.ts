@@ -80,7 +80,7 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'logs/'),
         /**
@@ -89,7 +89,7 @@ export const getApiEndpointFunctions = <
          */
         mylogs: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'logs/my-logs/'),
     },
@@ -116,7 +116,7 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'groups/'),
     },
@@ -129,7 +129,7 @@ export const getApiEndpointFunctions = <
          */
         myhosts: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/mine/'),
         /**
@@ -137,7 +137,7 @@ export const getApiEndpointFunctions = <
          */
         all: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/'),
     },
@@ -151,7 +151,7 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/'),
         /**
@@ -159,7 +159,7 @@ export const getApiEndpointFunctions = <
          */
         mine: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/mine'),
 
@@ -212,7 +212,7 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'domains/'),
         /**
@@ -226,7 +226,7 @@ export const getApiEndpointFunctions = <
              */
             getRecords: requestGenerator<
                 HttpMethod.GET,
-                API.PaginationParams<API.Filters.LogFilter>,
+                API.PaginationParams,
                 API.PaginatedData<API.LogEntry> | StrictTypeChecking
             >(HttpMethod.GET, `domains/${id}/records/`),
         }),
@@ -241,7 +241,7 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams<API.Filters.LogFilter>,
+            API.PaginationParams,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/'),
         /**

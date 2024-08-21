@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import {
     Card,
@@ -13,6 +13,7 @@ import {
     Group,
     ActionIcon,
     Pagination,
+    TextInput,
 } from '@mantine/core';
 
 const DomainGrid = (): JSX.Element => {
@@ -35,7 +36,24 @@ const DomainGrid = (): JSX.Element => {
                 {data?.results?.length === 0 ? (
                     <Title>No domains found</Title>
                 ) : (
-                    <Title>Your Domains</Title>
+                    <Group justify="space-between">
+                        <Title>Your Domains</Title>
+                        <TextInput
+                            placeholder="Search Domains"
+                            radius="xl"
+                            size="lg"
+                            aria-label="Search Domains"
+                        />
+                        <ActionIcon
+                            variant=""
+                            size="xl"
+                            onClick={() => {
+                                console.log('Search clicked');
+                            }}
+                        >
+                            <FaSearch />
+                        </ActionIcon>
+                    </Group>
                 )}
                 {maxPages !== 1 && (
                     <Pagination
