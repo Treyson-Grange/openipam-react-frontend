@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
-import { FaEye, FaSearch } from 'react-icons/fa';
+import { FaEye } from 'react-icons/fa';
+import { useDebouncedValue } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import {
     Card,
@@ -15,14 +16,20 @@ import {
     Pagination,
     TextInput,
 } from '@mantine/core';
+import { FaCircleXmark } from 'react-icons/fa6';
 
 const DomainGrid = (): JSX.Element => {
     const PAGE_SIZE = 12;
     const [page, setPage] = useState(1);
     const [maxPages, setMaxPages] = useState(0);
 
+    const [search, setSearch] = useState('');
+    const [debounce] = useDebouncedValue(search, 200);
+
     const api = getApiEndpointFunctions();
-    const { data } = usePaginatedApi(api.domain.get, page, PAGE_SIZE);
+    const { data } = usePaginatedApi(api.domain.get, page, PAGE_SIZE, {
+        ...(debounce && { name: debounce }),
+    });
 
     useEffect(() => {
         if (data?.count) {
@@ -33,28 +40,27 @@ const DomainGrid = (): JSX.Element => {
     return (
         <Paper radius="lg" p="lg" m="lg" withBorder>
             <Group justify="space-between">
-                {data?.results?.length === 0 ? (
-                    <Title>No domains found</Title>
-                ) : (
-                    <Group justify="space-between">
-                        <Title>Your Domains</Title>
-                        <TextInput
-                            placeholder="Search Domains"
-                            radius="xl"
-                            size="lg"
-                            aria-label="Search Domains"
-                        />
-                        <ActionIcon
-                            variant=""
-                            size="xl"
-                            onClick={() => {
-                                console.log('Search clicked');
-                            }}
-                        >
-                            <FaSearch />
-                        </ActionIcon>
-                    </Group>
-                )}
+                <Group justify="space-between">
+                    <Title>Your Domains</Title>
+                    <TextInput
+                        placeholder="Search Domains"
+                        radius="xl"
+                        size="lg"
+                        aria-label="Search Domains"
+                        value={search}
+                        onChange={(e) => setSearch(e.currentTarget.value)}
+                    />
+                    <ActionIcon
+                        variant="light"
+                        size="xl"
+                        color="red"
+                        onClick={() => setSearch('')}
+                        aria-label="Clear Search"
+                    >
+                        <FaCircleXmark size={22} />
+                    </ActionIcon>
+                </Group>
+                {data?.results?.length === 0 && <Title>No domains found</Title>}
                 {maxPages !== 1 && (
                     <Pagination
                         total={maxPages}

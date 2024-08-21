@@ -30,6 +30,7 @@ import {
     FaXmark,
     FaPencil,
 } from 'react-icons/fa6';
+import { useDebouncedValue } from '@mantine/hooks';
 
 interface BasePaginatedTableProps {
     /**
@@ -211,6 +212,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>('');
     const [direction, setDirection] = useState<string>('asc');
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+    const [debounce] = useDebouncedValue(searchTerms, 200);
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
 
@@ -221,7 +223,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         {
             ...(orderBy ? { order_by: orderBy, direction: direction } : {}),
             ...Object.fromEntries(
-                Object.entries(searchTerms).filter(([_, v]) => v),
+                Object.entries(debounce).filter(([_, v]) => v),
             ),
             ...additionalUrlParams,
         },

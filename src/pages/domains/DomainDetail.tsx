@@ -28,7 +28,7 @@ const DomainDetail = () => {
     return (
         <>
             <Group justify="flex-end" mr="xl">
-                <Card>
+                <Card radius="lg">
                     <Group>
                         <Title order={4}>Add DNS Record</Title>
                         <ActionIcon size="xl" onClick={handleModalChange}>
