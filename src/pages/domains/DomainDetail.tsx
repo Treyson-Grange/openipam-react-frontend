@@ -2,8 +2,9 @@ import { useParams } from 'react-router-dom';
 import PaginatedTable from '../../components/tables/PaginatedTable';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import AddRecordModal from '../../components/domains/AddRecordModal';
-import { Button } from '@mantine/core';
+import { ActionIcon, Group, Card, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { FaPlus } from 'react-icons/fa';
 
 const DomainDetail = () => {
     const { domain } = useParams<{ domain: string }>() as {
@@ -26,7 +27,16 @@ const DomainDetail = () => {
 
     return (
         <>
-            <Button onClick={handleModalChange}></Button>
+            <Group justify="flex-end" mr="xl">
+                <Card>
+                    <Group>
+                        <Title order={4}>Add DNS Record</Title>
+                        <ActionIcon size="xl" onClick={handleModalChange}>
+                            <FaPlus />
+                        </ActionIcon>
+                    </Group>
+                </Card>
+            </Group>
             <PaginatedTable
                 defPageSize={10}
                 getFunction={api.domain.byId(domain).getRecords}
