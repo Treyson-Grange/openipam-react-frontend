@@ -9,7 +9,6 @@ const Actions = (): JSX.Element => {
                 getFunction={api.logs.mylogs}
                 title="Recent Actions"
                 neededAttr={['content_type', 'object_repr', 'action_time']}
-                morePageSizes={['1']}
                 sortable={true}
                 sortableFields={['content_type', 'object_repr', 'action_time']}
             />

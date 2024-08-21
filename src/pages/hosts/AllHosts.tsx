@@ -1,13 +1,16 @@
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import PaginatedTable from '../../components/tables/PaginatedTable';
-import HostControl from '../../components/HostControl';
+import HostControl from '../../components/hosts/HostControl';
 import { useConfig } from '../../contexts/ConfigContext';
+import { Flex } from '@mantine/core';
 const AllHosts = () => {
     const api = getApiEndpointFunctions();
     const { config } = useConfig();
     return (
         <>
-            <HostControl currentSelection={'allHosts'} />
+            <Flex justify="flex-end">
+                <HostControl currentSelection={'allHosts'} />
+            </Flex>
             <PaginatedTable
                 title={`All ${config.organizationName} Hosts`}
                 neededAttr={[

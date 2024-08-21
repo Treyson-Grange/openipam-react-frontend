@@ -14,6 +14,7 @@ const AdminProtectedRoute = React.lazy(
 const AdminTest = React.lazy(() => import('./pages/TestAdmin'));
 const UserHosts = React.lazy(() => import('./pages/hosts/UserHosts'));
 const AllHosts = React.lazy(() => import('./pages/hosts/AllHosts'));
+const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },
@@ -47,6 +48,7 @@ const routes: RouteObject[] = [
             },
         ],
     },
+    { path: '*', element: <PageNotFound /> },
 ];
 
 export default routes;

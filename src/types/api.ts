@@ -259,9 +259,13 @@ export interface DNSRecord {
      */
     name: string;
     /**
-     * the content of the DNS record. (IP address, hostname, etc.)
+     * The IP Content of the DNS record.
      */
-    content: string;
+    ip_content: string;
+    /**
+     * The text content of the DNS record.
+     */
+    text_content: string;
     /**
      * The dns type of the DNS record.
      */

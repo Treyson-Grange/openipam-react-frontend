@@ -644,7 +644,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         />
                     </Dialog>
                 )}
-                {editableObj && (
+                {editableObj && actions.length > 0 && (
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <Button
                             disabled={selectedObjs.size === 0}

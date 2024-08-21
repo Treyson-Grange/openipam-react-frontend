@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { usePaginatedApi } from '../hooks/useApi';
-import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+import { usePaginatedApi } from '../../hooks/useApi';
+import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import { FaEye } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import {

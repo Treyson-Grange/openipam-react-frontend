@@ -1,4 +1,3 @@
-// import { get } from 'http';
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
 import { getCookie } from './getCookie';
@@ -163,6 +162,18 @@ export const getApiEndpointFunctions = <
             API.PaginationParams<API.Filters.LogFilter>,
             API.PaginatedData<API.LogEntry> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/mine'),
+
+        /**
+         * Creates a new DNSRecord object
+         */
+        create: requestGenerator<
+            HttpMethod.POST,
+            Partial<API.DNSRecord>,
+            API.DNSRecord | StrictTypeChecking
+        >(HttpMethod.POST, 'dns/', {
+            headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
+        }),
+
         /**
          * API endpoints for a specific DNS Object
          * @param id

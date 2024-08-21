@@ -1,7 +1,7 @@
 import React from 'react';
 import { SegmentedControl } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-import { useConfig } from '../contexts/ConfigContext';
+import { useConfig } from '../../contexts/ConfigContext';
 
 const HostControl: React.FC<{ currentSelection: string }> = ({
     currentSelection,
