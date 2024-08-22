@@ -22,7 +22,7 @@ const PageNotFound = () => {
                 <Card m="xl" radius="xl">
                     <Card.Section>
                         <Group justify="center" m="xl">
-                            <ActionIcon size="xl">
+                            <ActionIcon aria-label="1" size="xl">
                                 <Fa1 />
                             </ActionIcon>
                             <Title>Refresh the page</Title>
@@ -39,7 +39,7 @@ const PageNotFound = () => {
                 <Card m="xl" radius="xl">
                     <Card.Section>
                         <Group justify="center" m="xl">
-                            <ActionIcon size="xl">
+                            <ActionIcon aria-label="2" size="xl">
                                 <Fa2 />
                             </ActionIcon>
                             <Title>Reach out!</Title>
@@ -56,7 +56,7 @@ const PageNotFound = () => {
                 <Card m="xl" radius="xl">
                     <Card.Section>
                         <Group justify="center" m="xl">
-                            <ActionIcon size="xl">
+                            <ActionIcon aria-label="3" size="xl">
                                 <Fa3 />
                             </ActionIcon>
                             <Title>Fill out an issue</Title>

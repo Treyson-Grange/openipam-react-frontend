@@ -404,6 +404,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                         {sortable &&
                                             sortableFields?.includes(attr) && (
                                                 <ActionIcon
+                                                    aria-label="Sort"
                                                     variant="subtle"
                                                     onClick={() =>
                                                         handleSort(
@@ -551,6 +552,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                         <>
                                                             <Tooltip label="Submit Changes">
                                                                 <ActionIcon
+                                                                    aria-label="Submit Changes"
                                                                     size={'lg'}
                                                                     mr={8}
                                                                     color="green"
@@ -565,6 +567,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             </Tooltip>
                                                             <Tooltip label="Cancel Changes">
                                                                 <ActionIcon
+                                                                    aria-label="Cancel Changes"
                                                                     size={'lg'}
                                                                     color="red"
                                                                     onClick={() => {
@@ -581,8 +584,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             </Tooltip>
                                                         </>
                                                     ) : (
-                                                        <Tooltip label="Edit DNS Record">
+                                                        <Tooltip label="Edit">
                                                             <ActionIcon
+                                                                aria-label="Edit"
                                                                 onClick={() =>
                                                                     handleEditClick(
                                                                         item,

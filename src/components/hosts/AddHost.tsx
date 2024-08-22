@@ -7,13 +7,10 @@ const AddHost = () => {
     const navigate = useNavigate();
     return (
         <Group justify="flex-end" mr="xl">
-            <Card radius="lg">
+            <Card radius="lg" onClick={() => navigate('/hosts/add')}>
                 <Group>
                     <Title order={4}>Add Host</Title>
-                    <ActionIcon
-                        size="xl"
-                        onClick={() => navigate('/hosts/add')}
-                    >
+                    <ActionIcon aria-label="Add Host" size="xl">
                         <FaPlus />
                     </ActionIcon>
                 </Group>

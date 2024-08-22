@@ -1,10 +1,22 @@
 import { useForm } from '@mantine/form';
-import { Button, Group, TextInput, Card, Select } from '@mantine/core';
+import {
+    Button,
+    Group,
+    TextInput,
+    Card,
+    Select,
+    Title,
+    Radio,
+} from '@mantine/core';
 
 const AddHostForm = () => {
+    const EMPTY_CHOICE = '----';
     const checkMacAddress = (value: string) => {
         const macAddressRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
-        return macAddressRegex.test(value) ? true : false;
+        const validMac = macAddressRegex.test(value) ? true : false;
+        const isUsed = false;
+
+        return validMac && !isUsed;
     };
 
     const form = useForm({
@@ -12,39 +24,63 @@ const AddHostForm = () => {
             macAddress: '',
             hostname: '',
             addressType: '----',
+            networkOrIP: '',
         },
         validate: {
-            macAddress: (value) =>
-                checkMacAddress(value) ? null : 'Invalid MAC Address',
-            hostname: (value) =>
-                value.trim().length > 0 ? null : 'Invalid Hostname',
+            // macAddress: (value) =>
+            //     checkMacAddress(value) ? null : 'Invalid MAC Address',
+            // hostname: (value) =>
+            //     value.trim().length > 0 ? null : 'Invalid Hostname',
+            // addressType: (value) =>
+            //     value !== EMPTY_CHOICE ? null : 'Please select an Address Type',
         },
     });
 
     return (
         <form onSubmit={form.onSubmit((values) => console.log(values))}>
             <Card>
+                <Title mb="lg">Add Host</Title>
+                <Title order={3} component="h2" mb="lg">
+                    Host Details
+                </Title>
+
                 <TextInput
                     withAsterisk
                     label="MAC Address"
-                    key={form.key('macAddress')}
                     {...form.getInputProps('macAddress')}
                 />
                 <TextInput
                     withAsterisk
                     label="Hostname"
-                    key={form.key('hostname')}
                     {...form.getInputProps('hostname')}
                 />
                 <Select
                     label="Address Type"
-                    key={form.key('addressType')}
-                    placeholder="-----------------"
+                    placeholder={EMPTY_CHOICE}
                     {...form.getInputProps('addressType')}
                     data={[
                         'Dynamic, routable address (preferred)',
                         'Dynamic, non-routable address',
                     ]}
+                />
+
+                <Radio.Group
+                    label="Network or IP"
+                    {...form.getInputProps('networkOrIP')}
+                    mt="sm"
+                    mb="sm"
+                >
+                    <Group>
+                        <Radio value="Network" label="Network" />
+                        <Radio value="IP" label="IP" />
+                    </Group>
+                </Radio.Group>
+
+                <Select
+                    label="Network"
+                    placeholder={EMPTY_CHOICE}
+                    {...form.getInputProps('network')}
+                    data={[EMPTY_CHOICE]}
                 />
 
                 <Group justify="flex-end" mt="md">
