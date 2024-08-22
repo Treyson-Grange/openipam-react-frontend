@@ -101,6 +101,7 @@ const AddRecordModal = (props: RecordModalProps): JSX.Element => {
                 />
 
                 <TextInput
+                    withAsterisk
                     label="Content"
                     key={form.key('content')}
                     {...form.getInputProps('content')}

@@ -32,7 +32,7 @@ const DomainGrid = (): JSX.Element => {
     });
 
     useEffect(() => {
-        if (data?.count) {
+        if (data?.count !== undefined) {
             setMaxPages(Math.ceil(data.count / PAGE_SIZE));
         }
     }, [data]);
@@ -44,20 +44,21 @@ const DomainGrid = (): JSX.Element => {
                     <Title>Your Domains</Title>
                     <TextInput
                         placeholder="Search Domains"
+                        size="md"
                         radius="xl"
-                        size="lg"
-                        aria-label="Search Domains"
                         value={search}
                         onChange={(e) => setSearch(e.currentTarget.value)}
+                        aria-label="Search Domains"
                     />
                     <ActionIcon
                         variant="light"
                         size="xl"
+                        radius="xl"
                         color="red"
                         onClick={() => setSearch('')}
                         aria-label="Clear Search"
                     >
-                        <FaCircleXmark size={22} />
+                        <FaCircleXmark size={18} />
                     </ActionIcon>
                 </Group>
                 {data?.results?.length === 0 && <Title>No domains found</Title>}

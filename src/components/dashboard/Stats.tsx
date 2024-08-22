@@ -35,7 +35,9 @@ const Stats = () => {
 
     return (
         <Paper radius="lg" p="lg" m="lg" withBorder>
-            <Title order={1}>Recent Stats</Title>
+            <Title mb="xs" order={1}>
+                Recent Stats
+            </Title>
             {loading && !error && <Text>Loading...</Text>}
             {error && <Text>Error: {error.message}</Text>}
             {data && (

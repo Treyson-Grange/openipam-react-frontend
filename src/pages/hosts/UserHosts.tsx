@@ -1,15 +1,17 @@
 import HostControl from '../../components/hosts/HostControl';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import PaginatedTable from '../../components/tables/PaginatedTable';
-import { Flex } from '@mantine/core';
+import AddHost from '../../components/hosts/AddHost';
+import { Group } from '@mantine/core';
+
 const UserHosts = () => {
     const api = getApiEndpointFunctions();
-
     return (
         <>
-            <Flex justify="flex-end">
+            <Group justify="flex-end">
+                <AddHost />
                 <HostControl currentSelection={'userHosts'} />
-            </Flex>
+            </Group>
             <PaginatedTable
                 title={'Your Hosts'}
                 neededAttr={[

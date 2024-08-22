@@ -15,6 +15,7 @@ const AdminTest = React.lazy(() => import('./pages/TestAdmin'));
 const UserHosts = React.lazy(() => import('./pages/hosts/UserHosts'));
 const AllHosts = React.lazy(() => import('./pages/hosts/AllHosts'));
 const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
+const AddHost = React.lazy(() => import('./pages/hosts/AddHost'));
 
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },
@@ -23,13 +24,19 @@ const routes: RouteObject[] = [
         element: <ProtectedRoute />,
         children: [
             { path: '/', element: <Home /> },
+
+            // DNS related routes.
             { path: '/domains', element: <Dns /> },
             {
                 path: '/domains/:domain',
                 element: <DomainDetail />,
             },
+
+            // Hosts related routes
             { path: '/hosts', element: <UserHosts /> },
             { path: '/hosts/all', element: <AllHosts /> },
+            { path: '/hosts/add', element: <AddHost /> },
+
             // Admin only routes.
             {
                 path: '/network',

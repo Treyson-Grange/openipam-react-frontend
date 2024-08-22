@@ -67,8 +67,9 @@ const LoginForm = () => {
                         handleLogin();
                     }}
                 >
-                    <Group>
+                    <Group justify="center">
                         <TextInput
+                            flex={1}
                             label="Username"
                             placeholder="John Doe"
                             value={username}
@@ -79,6 +80,7 @@ const LoginForm = () => {
                             size="lg"
                         />
                         <TextInput
+                            flex={1}
                             type="password"
                             label="Password"
                             placeholder="Your password"
