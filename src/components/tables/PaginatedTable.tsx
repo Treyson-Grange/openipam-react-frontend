@@ -216,6 +216,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
 
+    const [reload, setReload] = useState<boolean>(false);
+
     const { data: paginatedData, loading } = usePaginatedApi(
         getFunction,
         page,
@@ -225,6 +227,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             ...Object.fromEntries(
                 Object.entries(debounce).filter(([_, v]) => v),
             ),
+            ...(reload && { reload: 'true' }),
             ...additionalUrlParams,
         },
     );
@@ -346,6 +349,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                 await updateFunction(editValues);
                 setNotification(['Edit submitted successfully', 'Success']);
                 setEditingRow(null);
+                setReload((prev) => !prev);
             }
         } catch (error) {
             setNotification([`${error}`, 'Error']);
@@ -362,12 +366,13 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     return (
         <Paper radius="lg" p="lg" m="lg" withBorder>
             <Group justify="space-between">
-                <Group justify="space-between">
+                <Group mb="lg" justify="space-between">
                     <Title>{title}</Title>
                     {loading && <Loader size={30} />}
                 </Group>
                 {maxPages !== 1 && (
                     <Pagination
+                        mb="lg"
                         total={maxPages}
                         value={page}
                         onChange={setPage}
@@ -454,7 +459,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                         (editableObj ? 1 : 0)
                                     }
                                 >
-                                    <Text size="xl">
+                                    <Text mt="xl" size="xl">
                                         {loading
                                             ? 'Loading...'
                                             : data.length === 0
