@@ -1,10 +1,10 @@
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
-import PaginatedTable from '../../components/tables/PaginatedTable';
+import UserTable from '../../components/tables/UserTable';
 
 const Users = () => {
     const api = getApiEndpointFunctions();
     return (
-        <PaginatedTable
+        <UserTable
             getFunction={api.users.get}
             title="Users"
             neededAttr={[
@@ -15,13 +15,21 @@ const Users = () => {
                 'is_staff',
                 'is_ipamadmin',
                 'is_superuser',
-                'is_active',
                 'source',
                 'last_login',
             ]}
-            defPageSize={10}
+            defPageSize={25}
+            morePageSizes={['25', '50', '100', '250']}
+            overridePageSizes={true}
             searchable={true}
             searchableFields={['username', 'email', 'full_name']}
+            sortable={true}
+            sortableFields={[
+                'is_active',
+                'is_staff',
+                'is_ipamadmin',
+                'is_superuser',
+            ]}
         />
     );
 };

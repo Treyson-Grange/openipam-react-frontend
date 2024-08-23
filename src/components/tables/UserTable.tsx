@@ -33,7 +33,7 @@ import {
 } from 'react-icons/fa6';
 import { useDebouncedValue } from '@mantine/hooks';
 
-interface BasePaginatedTableProps {
+interface BaseUserTableProps {
     /**
      * The GET function defined in /utilities/apiFunctions.ts used to get the data.
      */
@@ -110,7 +110,7 @@ interface BasePaginatedTableProps {
     additionalUrlParams?: Record<string, string>;
 }
 
-interface EditablePaginatedTableProps extends BasePaginatedTableProps {
+interface EditableUserTableProps extends BaseUserTableProps {
     /**
      * Whether the objects in the table are editable.
      *
@@ -148,43 +148,24 @@ interface EditablePaginatedTableProps extends BasePaginatedTableProps {
     editableFields?: string[];
 }
 
-interface NonEditablePaginatedTableProps extends BasePaginatedTableProps {
+interface NonEditableUserTableProps extends BaseUserTableProps {
     /**
      * Whether the objects in the table are editable. Defaults to false.
      */
     editableObj?: false;
 }
 
-type PaginatedTableProps =
-    | EditablePaginatedTableProps
-    | NonEditablePaginatedTableProps;
+type UserTableProps = EditableUserTableProps | NonEditableUserTableProps;
 
 /**
- * The PaginatedTable component is a flexible and reusable component
- * that displays paginated data in a table format. It supports sorting, actions, editing,
- * searching, page size selection, and more.
- *
- * To properly use most features in this component, you must pass in the necessary props.
- * For example, if you want to use sorting, you cannot just set sortable to true. You
- * must also state what fields are sortable in the sortableFields prop. This is because
- * the API may not support sorting on all fields.
- *
- * If you want to use searching, you must set searchable to true and pass in the fields
- * that are searchable in the searchableFields prop. See the props documentation for more.
- *
- * If you want to use actions, you must pass in the actions and actionFunctions props.
- * For more information, see the props documentation above.
- *
- * If you want to use editing, you must pass in the editFunction and editableFields props.
- * For more information, see the props documentation above.
+ * This sucks.
  */
-const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
-    const actions = (props as EditablePaginatedTableProps).actions ?? [];
+const UserTable = (props: UserTableProps): JSX.Element => {
+    const actions = (props as EditableUserTableProps).actions ?? [];
     const actionFunctions =
-        (props as EditablePaginatedTableProps).actionFunctions ?? {};
-    const editFunction = (props as EditablePaginatedTableProps).editFunction;
-    const editableFields = (props as EditablePaginatedTableProps)
-        .editableFields;
+        (props as EditableUserTableProps).actionFunctions ?? {};
+    const editFunction = (props as EditableUserTableProps).editFunction;
+    const editableFields = (props as EditableUserTableProps).editableFields;
     const {
         getFunction,
         defPageSize,
@@ -224,7 +205,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         page,
         pageSize,
         {
-            ...(orderBy ? { order_by: orderBy, direction: direction } : {}),
+            ...(orderBy ? { [orderBy]: direction } : {}),
             ...Object.fromEntries(
                 Object.entries(debounce).filter(([_, v]) => v),
             ),
@@ -265,9 +246,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
 
     const handleSort = (key: string, oldDirection: string) => {
         if (!sortable) return;
-        let newDirection = 'asc';
+        let newDirection = 'false';
         if (key === orderBy) {
-            newDirection = oldDirection === 'asc' ? 'desc' : 'asc';
+            newDirection = oldDirection === 'false' ? 'true' : 'false';
         }
         setDirection(newDirection);
         setOrderBy(key);
@@ -415,7 +396,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                     }
                                                 >
                                                     {orderBy === attr ? (
-                                                        direction === 'asc' ? (
+                                                        direction ===
+                                                        'false' ? (
                                                             <FaSortUp />
                                                         ) : (
                                                             <FaSortDown />
@@ -694,4 +676,4 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     );
 };
 
-export default PaginatedTable;
+export default UserTable;
