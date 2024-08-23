@@ -260,6 +260,20 @@ export const getApiEndpointFunctions = <
             >(HttpMethod.GET, `hosts/${mac}/`),
         }),
     },
+    /**
+     * Users API
+     */
+    users: {
+        /**
+         * Gets User objects
+         * Sortable: true
+         */
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams,
+            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+        >(HttpMethod.GET, 'users/'),
+    },
 });
 
 declare global {

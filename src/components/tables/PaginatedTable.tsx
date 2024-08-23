@@ -499,6 +499,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                 /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
                                             const isDate =
                                                 dateRegex.test(value);
+
+                                            const isBoolean =
+                                                typeof value === 'boolean';
                                             const pastOrFuture =
                                                 new Date(value) < new Date();
 
@@ -538,6 +541,20 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                             handleFormatDate(
                                                                 value,
                                                             )
+                                                        )
+                                                    ) : isBoolean ? (
+                                                        value ? (
+                                                            <ActionIcon
+                                                                disabled
+                                                            >
+                                                                <FaCheck color="green" />
+                                                            </ActionIcon>
+                                                        ) : (
+                                                            <ActionIcon
+                                                                disabled
+                                                            >
+                                                                <FaXmark color="red" />
+                                                            </ActionIcon>
                                                         )
                                                     ) : (
                                                         value

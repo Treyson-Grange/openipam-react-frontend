@@ -87,7 +87,7 @@ const adminLinks: DropdownLink[] = [
         label: 'Admin',
         dropdown: [
             { isLabel: true, label: 'Users & Groups' },
-            { label: 'Users', link: '/26' },
+            { label: 'Users', link: '/admin/users' },
             { label: 'Groups', link: '/27' },
             { label: 'Tokens', link: '/28' },
             { isLabel: true, label: 'Permissions' },
