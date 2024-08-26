@@ -14,6 +14,7 @@ const AdminProtectedRoute = React.lazy(
 const AdminTest = React.lazy(() => import('./pages/TestAdmin'));
 const UserHosts = React.lazy(() => import('./pages/hosts/UserHosts'));
 const AllHosts = React.lazy(() => import('./pages/hosts/AllHosts'));
+const HostDetail = React.lazy(() => import('./pages/hosts/HostDetail'));
 const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 const AddHost = React.lazy(() => import('./pages/hosts/AddHost'));
 const Users = React.lazy(() => import('./pages/admin/Users'));
@@ -35,6 +36,10 @@ const routes: RouteObject[] = [
 
             // Hosts related routes
             { path: '/hosts', element: <UserHosts /> },
+            {
+                path: '/hosts/:host',
+                element: <HostDetail />,
+            },
             { path: '/hosts/all', element: <AllHosts /> },
             { path: '/hosts/add', element: <AddHost /> },
 
