@@ -288,6 +288,45 @@ export interface DNSRecord {
     url: string;
 }
 
+export interface Host {
+    mac: string;
+    details: string;
+    vendor: string;
+    hostname: string;
+    expires: string;
+    description: string;
+    is_dynamic: boolean;
+    disabled_host: boolean;
+    dhcp_group: any[];
+    attributes: string[];
+    addresses: any[];
+    master_ip_address: string;
+    user_owners: string[];
+    group_owners: string[];
+    changed: string;
+    changed_by: User;
+    last_seen: string;
+    last_seen_ip: string;
+    address_type: string;
+}
+
+export interface Domain {
+    id: number;
+    changed_by: string;
+    user_perms: string[];
+    group_perms: string[];
+    records: string;
+    record_count: number;
+    name: string;
+    master: string;
+    last_check: string;
+    type: string;
+    notified_serial: number;
+    account: string;
+    description: string;
+    changed: string;
+}
+
 export interface LogEntry {
     /**
      * The ID of the job this log entry is associated with.
@@ -386,7 +425,7 @@ export interface Host {
     /**
      * If the host has a dhcp group, this will include 3 fields, 'id', 'name', and 'description'.
      */
-    dhcp_group: string[];
+    dhcp_group: any[];
     /**
      * The associated attributes of the host.
      */

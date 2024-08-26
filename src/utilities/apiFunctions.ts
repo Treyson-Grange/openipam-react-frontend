@@ -102,7 +102,6 @@ export const getApiEndpointFunctions = <
          */
         recent: requestGenerator<
             HttpMethod.GET,
-            Array<any>,
             API.RecentReport | StrictTypeChecking
         >(HttpMethod.GET, 'report/recent-stats'),
     },
@@ -117,7 +116,7 @@ export const getApiEndpointFunctions = <
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<any> | StrictTypeChecking
         >(HttpMethod.GET, 'groups/'),
     },
     /**
@@ -130,7 +129,7 @@ export const getApiEndpointFunctions = <
         myhosts: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.Host> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/mine/'),
         /**
          * Gets All Host objects
@@ -138,8 +137,32 @@ export const getApiEndpointFunctions = <
         all: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.Host> | StrictTypeChecking
         >(HttpMethod.GET, 'hosts/'),
+        /**
+         * Gets Host objects
+         * Sortable: false
+         */
+        get: requestGenerator<
+            HttpMethod.GET,
+            API.PaginationParams,
+            API.PaginatedData<API.Host> | StrictTypeChecking
+        >(HttpMethod.GET, 'hosts/'),
+        /**
+         * API endpoints for a specific Host Object
+         * @param mac
+         * @returns An object containing all endpoints for the given Host object
+         */
+        byId: (mac: string | number) => ({
+            /**
+             * Queries a Host object given a mac address
+             */
+            get: requestGenerator<
+                HttpMethod.GET,
+                API.PaginationParams,
+                API.PaginatedData<API.Host> | StrictTypeChecking
+            >(HttpMethod.GET, `hosts/${mac}/`),
+        }),
     },
     /**
      * DNS API
@@ -152,7 +175,7 @@ export const getApiEndpointFunctions = <
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.DNSRecord> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/'),
         /**
          * Useless endpoint, just wanted to show that permissions can be checked, see api.
@@ -160,7 +183,7 @@ export const getApiEndpointFunctions = <
         mine: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.DNSRecord> | StrictTypeChecking
         >(HttpMethod.GET, 'dns/mine'),
 
         /**
@@ -213,7 +236,7 @@ export const getApiEndpointFunctions = <
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.Domain> | StrictTypeChecking
         >(HttpMethod.GET, 'domains/'),
         /**
          * API endpoints for a specific Domain Object
@@ -227,39 +250,14 @@ export const getApiEndpointFunctions = <
             getRecords: requestGenerator<
                 HttpMethod.GET,
                 API.PaginationParams,
-                API.PaginatedData<API.LogEntry> | StrictTypeChecking
+                API.PaginatedData<API.Domain> | StrictTypeChecking
             >(HttpMethod.GET, `domains/${id}/records/`),
         }),
     },
     /**
      * Hosts API
      */
-    host: {
-        /**
-         * Gets Host objects
-         * Sortable: false
-         */
-        get: requestGenerator<
-            HttpMethod.GET,
-            API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
-        >(HttpMethod.GET, 'hosts/'),
-        /**
-         * API endpoints for a specific Host Object
-         * @param mac
-         * @returns An object containing all endpoints for the given Host object
-         */
-        byId: (mac: string | number) => ({
-            /**
-             * Queries a Host object given a mac address
-             */
-            get: requestGenerator<
-                HttpMethod.GET,
-                API.GenericResponse,
-                API.Host | StrictTypeChecking
-            >(HttpMethod.GET, `hosts/${mac}/`),
-        }),
-    },
+    host: {},
     /**
      * Users API
      */
@@ -271,7 +269,7 @@ export const getApiEndpointFunctions = <
         get: requestGenerator<
             HttpMethod.GET,
             API.PaginationParams,
-            API.PaginatedData<API.LogEntry> | StrictTypeChecking
+            API.PaginatedData<API.User> | StrictTypeChecking
         >(HttpMethod.GET, 'users/'),
     },
 });
