@@ -28,6 +28,8 @@ const AllHosts = () => {
                 defPageSize={10}
                 noDataMessage={'No hosts found'}
                 highlightDates={true}
+                detail="hosts"
+                detailField="mac"
             />
         </>
     );

@@ -2,17 +2,25 @@ import { useState, useEffect } from 'react';
 import { PaginatedData } from '../types/api';
 import { useApiData } from '../hooks/useApi';
 import { QueryRequest } from '../utilities/apiFunctions';
-import { Button, Paper, Title, Table, Group, Loader } from '@mantine/core';
+import {
+    Button,
+    Paper,
+    Title,
+    Table,
+    Group,
+    Loader,
+    Text,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 
-interface DetailTableProps {
+interface DetailViewProps {
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
     title: string;
     editable?: boolean;
     ModalComponent?: React.ComponentType<{ data: any; title: string }>;
 }
 
-const DetailTable = (props: DetailTableProps): JSX.Element => {
+const DetailView = (props: DetailViewProps): JSX.Element => {
     const { getFunction, title, editable, ModalComponent } = props;
     const [data, setData] = useState<any[]>([]);
     const [editing, setEditing] = useState(false);
@@ -49,8 +57,10 @@ const DetailTable = (props: DetailTableProps): JSX.Element => {
                 {loading ? (
                     <Loader />
                 ) : editing ? (
-                    ModalComponent && (
+                    ModalComponent ? (
                         <ModalComponent data={data} title={title} />
+                    ) : (
+                        <Text>No Modal Component</Text>
                     )
                 ) : (
                     <Table striped highlightOnHover>
@@ -80,4 +90,4 @@ const DetailTable = (props: DetailTableProps): JSX.Element => {
         </Paper>
     );
 };
-export default DetailTable;
+export default DetailView;

@@ -12,7 +12,6 @@ const DomainDetail = () => {
     };
     const api = getApiEndpointFunctions();
     const title = 'DNS Records for ' + domain;
-
     const handleEditFunction = (dnsName: string) => {
         return (editValues: any) => {
             return api.dns.byId(`${dnsName}`).update(editValues);
@@ -48,6 +47,8 @@ const DomainDetail = () => {
                 editableObj={true}
                 editFunction={handleEditFunction}
                 editableFields={['name', 'content', 'ttl']}
+                detail="dns"
+                detailField="id"
             />
             <AddRecordModal
                 opened={modalOpened}

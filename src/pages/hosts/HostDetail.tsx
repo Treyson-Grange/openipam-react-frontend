@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
-import DetailTable from '../../components/DetailTable';
+import DetailView from '../../components/DetailView';
 import HostDetailEditModal from '../../components/hosts/HostDetailEditModal';
 
 const HostDetail = () => {
@@ -11,7 +11,7 @@ const HostDetail = () => {
     const title = 'Host Detail for ' + host;
 
     return (
-        <DetailTable
+        <DetailView
             getFunction={api.hosts.byId(host).get}
             title={title}
             editable={true}

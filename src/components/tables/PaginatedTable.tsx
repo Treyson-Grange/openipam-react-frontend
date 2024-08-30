@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { QueryRequest } from '../../utilities/apiFunctions';
+import { useNavigate } from 'react-router-dom';
 import {
     Button,
     Paper,
@@ -30,6 +31,7 @@ import {
     FaCheck,
     FaXmark,
     FaPencil,
+    FaEye,
 } from 'react-icons/fa6';
 import { useDebouncedValue } from '@mantine/hooks';
 
@@ -100,6 +102,18 @@ interface BasePaginatedTableProps {
      * All searchable fields need to be set up in the API. They won't just work.
      */
     searchableFields?: string[];
+
+    /**
+     * IF this string exists, a detail page will be created.
+     * The detail page will be at the root + /{detailField}
+     */
+    detail?: string;
+    /**
+     * Which field is used as the key for the detail page.
+     * EG. for hosts, this would be mac because hosts/{mac} is the detail page
+     */
+    detailField?: string;
+
     /**
      * The additional URL parameters to pass to the API.
      * Pass it in like *additionalUrlParams={{ "paramName": String(value)) }}*
@@ -198,6 +212,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         sortableFields,
         searchable,
         searchableFields,
+        detail,
+        detailField,
         additionalUrlParams,
     } = props;
     const [data, setData] = useState<any[]>([]);
@@ -216,6 +232,8 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [debounce] = useDebouncedValue(searchTerms, 200);
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
+
+    const navigate = useNavigate();
 
     const [reload, setReload] = useState<boolean>(false);
 
@@ -346,7 +364,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const handleEditSubmit = async (item: any) => {
         try {
             if (editFunction) {
-                const updateFunction = editFunction(item.id);
+                const updateFunction = editFunction(item.id); //TODO: change this to take in what it should call it on/
                 await updateFunction(editValues);
                 setNotification(['Edit submitted successfully', 'Success']);
                 setEditingRow(null);
@@ -450,6 +468,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                             {editableObj && editFunction && (
                                 <Table.Th>Edit</Table.Th>
                             )}
+                            {detail && <Table.Th>Detail</Table.Th>}
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
@@ -613,6 +632,21 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                         </Tooltip>
                                                     )}
                                                 </Flex>
+                                            </Table.Td>
+                                        )}
+                                        {detail && detailField && (
+                                            <Table.Td>
+                                                <ActionIcon
+                                                    size={'lg'}
+                                                    aria-label="Detail"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/${detail}/${item[detailField]}`,
+                                                        )
+                                                    }
+                                                >
+                                                    <FaEye />
+                                                </ActionIcon>
                                             </Table.Td>
                                         )}
                                     </Table.Tr>

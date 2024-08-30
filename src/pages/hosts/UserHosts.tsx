@@ -29,6 +29,8 @@ const UserHosts = () => {
                     "You don't own any hosts. If you feel this is an error, please contact an administrator."
                 }
                 highlightDates={true}
+                detail="hosts"
+                detailField="mac"
             />
         </>
     );

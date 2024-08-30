@@ -223,6 +223,14 @@ export const getApiEndpointFunctions = <
             >(HttpMethod.PUT, `dns/${id}/`, {
                 headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
             }),
+            /**
+             * Gets a DNSRecord object given an objects ID
+             */
+            get: requestGenerator<
+                HttpMethod.GET,
+                API.PaginationParams,
+                API.PaginatedData<API.Host> | StrictTypeChecking
+            >(HttpMethod.GET, `dns/${id}/`),
         }),
     },
     /**

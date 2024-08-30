@@ -5,6 +5,7 @@ const Home = React.lazy(() => import('./pages/Home'));
 const Login = React.lazy(() => import('./pages/Login'));
 const Dns = React.lazy(() => import('./pages/domains/Domains'));
 const DomainDetail = React.lazy(() => import('./pages/domains/DomainDetail'));
+const DNSDetail = React.lazy(() => import('./pages/dns/DNSDetail'));
 const ProtectedRoute = React.lazy(
     () => import('./components/routes/UserProtectedRoute'),
 );
@@ -33,6 +34,9 @@ const routes: RouteObject[] = [
                 path: '/domains/:domain',
                 element: <DomainDetail />,
             },
+
+            // DNS Record related routes.
+            { path: '/dns/:dns', element: <DNSDetail /> },
 
             // Hosts related routes
             { path: '/hosts', element: <UserHosts /> },

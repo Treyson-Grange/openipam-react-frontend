@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { useEffect } from 'react';
+import { formatDate } from '../../utilities/format';
 
 const HostDetailEditModal = (props: HostDetailEditModalProps) => {
     const { data } = props;
@@ -24,26 +24,14 @@ const HostDetailEditModal = (props: HostDetailEditModalProps) => {
     const [renewing, setRenewing] = useState(false);
     const [assignDHCP, setAssignDHCP] = useState(false);
 
-    const form = useForm({});
-
-    const formatDate = (date: string) => {
-        const d = new Date(date);
-        const options: Intl.DateTimeFormatOptions = {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        };
-        return d.toLocaleDateString('en-US', options);
-    };
-
-    useEffect(() => {
-        form.setValues({
+    const form = useForm({
+        initialValues: {
             hostname: data[0]?.hostname,
             mac: data[0]?.mac,
             is_dynamic: data[0]?.is_dynamic == true ? 'true' : 'false',
             description: data[0]?.description,
-        });
-    }, [data]);
+        },
+    });
 
     return (
         <Stack align="stretch" justify="center">
