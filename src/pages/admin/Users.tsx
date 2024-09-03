@@ -3,6 +3,11 @@ import UserTable from '../../components/tables/UserTable';
 
 const Users = () => {
     const api = getApiEndpointFunctions();
+
+    const test = (id: any) => {
+        console.log(id);
+    };
+
     return (
         <UserTable
             getFunction={api.users.get}
@@ -30,6 +35,18 @@ const Users = () => {
                 'is_ipamadmin',
                 'is_superuser',
             ]}
+            editableObj={true}
+            actions={[
+                'Assign Groups to users',
+                'Remove Groups from users',
+                'Assign Object Permissions to users',
+                'Populate User from LDAP',
+            ]}
+            actionFunctions={{
+                AssignGroupstousers: { func: test, key: 'id' },
+                edit: { func: test, key: 'id' },
+                delete: { func: test, key: 'id' },
+            }}
         />
     );
 };

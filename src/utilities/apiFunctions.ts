@@ -276,9 +276,24 @@ export const getApiEndpointFunctions = <
          */
         get: requestGenerator<
             HttpMethod.GET,
-            API.PaginationParams,
+            null,
             API.PaginatedData<API.User> | StrictTypeChecking
         >(HttpMethod.GET, 'users/'),
+    },
+
+    /**
+     * Autocomplete API
+     * Need to pass in a "q" parameter to get results.
+     */
+    autocomplete: {
+        /**
+         * Gets Autocomplete objects
+         */
+        generalAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.User> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/ipam-autocomplete/'),
     },
 });
 

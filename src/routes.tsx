@@ -19,7 +19,9 @@ const HostDetail = React.lazy(() => import('./pages/hosts/HostDetail'));
 const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 const AddHost = React.lazy(() => import('./pages/hosts/AddHost'));
 const Users = React.lazy(() => import('./pages/admin/Users'));
-
+const AutoCompleteTest = React.lazy(
+    () => import('./components/AutoCompleteTest'),
+);
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },
     {
@@ -71,6 +73,10 @@ const routes: RouteObject[] = [
                 path: '/reports',
                 element: <AdminProtectedRoute />,
                 children: [{ path: '/reports', element: <AdminTest /> }],
+            },
+            {
+                path: '/test',
+                element: <AutoCompleteTest />,
             },
         ],
     },
