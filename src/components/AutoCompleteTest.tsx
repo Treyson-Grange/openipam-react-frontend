@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
-import { TextInput, Text, Button } from '@mantine/core';
+import { MultiSelect } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { useApiData } from '../hooks/useApi';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+
 const TextInputComponent: React.FC = () => {
     const [advancedSearch, setAdvancedSearch] = useState('');
     const [debounce] = useDebouncedValue(advancedSearch, 200);
     const api = getApiEndpointFunctions();
     const [data, setData] = useState<any[]>([]);
+    const [dataTexts, setDataTexts] = useState<any[]>([]);
+    const [dataIds, setDataIds] = useState<any[]>([]);
+    const [selected, setSelected] = useState<any[]>([]);
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAdvancedSearch(event.target.value);
-    };
     const { data: test } = useApiData(api.autocomplete.generalAutocomplete, {
         q: debounce,
     });
     useEffect(() => {
         if (test && test.results) {
             setData(test.results);
-            console.log('Data:', test.results);
+            setDataTexts(test.results.map((item: any) => item.text));
+            setDataIds(test.results.map((item: any) => item.id));
         }
     }, [test]);
 
@@ -28,21 +30,16 @@ const TextInputComponent: React.FC = () => {
     }, [debounce]);
 
     return (
-        <div>
-            <Button
-                onClick={() => {
-                    console.log(data);
-                }}
-            ></Button>
-            <TextInput
-                type="text"
-                value={advancedSearch}
-                onChange={handleInputChange}
-            />
-            <Text>You entered: {advancedSearch}</Text>
-            {test &&
-                data.map((item: any) => <Text key={item.id}>{item.id}</Text>)}
-        </div>
+        <MultiSelect
+            data={dataTexts}
+            value={selected}
+            onChange={setSelected}
+            label="Advanced Search"
+            searchable
+            searchValue={advancedSearch}
+            onSearchChange={setAdvancedSearch}
+            size="md"
+        />
     );
 };
 
