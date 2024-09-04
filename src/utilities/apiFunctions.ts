@@ -287,13 +287,53 @@ export const getApiEndpointFunctions = <
      */
     autocomplete: {
         /**
-         * Gets Autocomplete objects
+         * Gets Ipam items based on the query
          */
         generalAutocomplete: requestGenerator<
             HttpMethod.GET,
             { q: string },
-            API.PaginatedData<API.User> | StrictTypeChecking
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
         >(HttpMethod.GET, 'autocomplete/ipam-autocomplete/'),
+        /**
+         * Gets specifically User items based on the query
+         */
+        userAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/user-autocomplete/'),
+        /**
+         * Gets specifically Group items based on the query
+         */
+        groupAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/group-autocomplete/'),
+        /**
+         * Gets specifically Permission items based on the query
+         */
+        permissionAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/permissions-autocomplete/'),
+        /**
+         * Gets specifically ContentType items based on the query
+         */
+        contentTypeAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/contenttype-autocomplete/'),
+        /**
+         * Gets specifically DHCP Group items based on the query
+         */
+        dhcpGroupAutocomplete: requestGenerator<
+            HttpMethod.GET,
+            { q: string },
+            API.PaginatedData<API.AutoComplete> | StrictTypeChecking
+        >(HttpMethod.GET, 'autocomplete/dhcp-group-autocomplete/'),
     },
 });
 

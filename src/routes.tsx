@@ -20,7 +20,7 @@ const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 const AddHost = React.lazy(() => import('./pages/hosts/AddHost'));
 const Users = React.lazy(() => import('./pages/admin/Users'));
 const AutoCompleteTest = React.lazy(
-    () => import('./components/AutoCompleteTest'),
+    () => import('./components/AdvancedSearch'),
 );
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },

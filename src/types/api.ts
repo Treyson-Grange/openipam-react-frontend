@@ -288,6 +288,18 @@ export interface DNSRecord {
     url: string;
 }
 
+export interface AutoComplete {
+    /**
+     * The ID of the item. Generally follows the format, "object_type:pk"
+     * Ex: "user:A00000000" or "group:CCA-ART"
+     */
+    id: string;
+    /**
+     * The text of the item.
+     */
+    text: string;
+}
+
 export interface Host {
     mac: string;
     details: string;

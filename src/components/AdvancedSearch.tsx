@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Button, MultiSelect } from '@mantine/core';
+import { Button, MultiSelect, Group } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
-interface SelectItem {
+interface AutocompleteItem {
     value: string;
     label: string;
 }
 
-const AutoCompleteTest: React.FC = () => {
+const AdvancedSearch: React.FC = () => {
     const [advancedSearch, setAdvancedSearch] = useState('');
     const [debounce] = useDebouncedValue(advancedSearch, 200);
     const api = getApiEndpointFunctions();
-    const [data, setData] = useState<SelectItem[]>([]);
-    const [selected, setSelected] = useState<SelectItem[]>([]);
+    const [data, setData] = useState<AutocompleteItem[]>([]);
+    const [selected, setSelected] = useState<AutocompleteItem[]>([]);
 
     const { data: autoCompleteData } = useApiData(
         api.autocomplete.generalAutocomplete,
@@ -46,26 +46,37 @@ const AutoCompleteTest: React.FC = () => {
     const handleChange = (values: string[]) => {
         const selectedItems = values.map((value) =>
             data.find((item) => item.value === value),
-        ) as SelectItem[];
+        ) as AutocompleteItem[];
         setSelected(selectedItems);
     };
 
     return (
         <>
-            <MultiSelect
-                data={data}
-                value={selected.map((item) => item.value)}
-                onChange={handleChange}
-                searchable
-                searchValue={advancedSearch}
-                onSearchChange={setAdvancedSearch}
-                size="md"
-                placeholder="Advanced Search"
-                clearable
-            />
-            <Button onClick={() => console.log(selected)}>Log Selected</Button>
+            <Group justify="flex-end">
+                <MultiSelect
+                    data={data}
+                    value={selected.map((item) => item.value)}
+                    onChange={handleChange}
+                    searchable
+                    searchValue={advancedSearch}
+                    onSearchChange={setAdvancedSearch}
+                    size="md"
+                    placeholder="Advanced Search"
+                    nothingFoundMessage="No items found"
+                />
+                <Button
+                    disabled={selected.length === 0}
+                    onClick={() => setSelected([])}
+                >
+                    Clear
+                </Button>
+
+                <Button onClick={() => console.log(selected)}>
+                    Log Selected
+                </Button>
+            </Group>
         </>
     );
 };
 
-export default AutoCompleteTest;
+export default AdvancedSearch;
