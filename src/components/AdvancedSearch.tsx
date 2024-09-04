@@ -4,12 +4,18 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 
-interface AutocompleteItem {
+export interface AutocompleteItem {
     value: string;
     label: string;
 }
 
-const AdvancedSearch: React.FC = () => {
+interface AdvancedSearchProps {
+    onSelectionChange: (selectedItems: AutocompleteItem[]) => void;
+}
+
+const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
+    onSelectionChange,
+}) => {
     const [advancedSearch, setAdvancedSearch] = useState('');
     const [debounce] = useDebouncedValue(advancedSearch, 200);
     const api = getApiEndpointFunctions();
@@ -48,6 +54,7 @@ const AdvancedSearch: React.FC = () => {
             data.find((item) => item.value === value),
         ) as AutocompleteItem[];
         setSelected(selectedItems);
+        onSelectionChange(selectedItems);
     };
 
     return (
@@ -63,10 +70,14 @@ const AdvancedSearch: React.FC = () => {
                     size="md"
                     placeholder="Advanced Search"
                     nothingFoundMessage="No items found"
+                    w={400}
                 />
                 <Button
                     disabled={selected.length === 0}
-                    onClick={() => setSelected([])}
+                    onClick={() => {
+                        setSelected([]);
+                        onSelectionChange([]);
+                    }}
                 >
                     Clear
                 </Button>
