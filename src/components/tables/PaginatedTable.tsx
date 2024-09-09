@@ -3,6 +3,7 @@ import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { QueryRequest } from '../../utilities/apiFunctions';
 import { useNavigate } from 'react-router-dom';
+import AdvancedSearch from '../AdvancedSearch';
 import {
     Button,
     Paper,
@@ -71,6 +72,10 @@ interface BasePaginatedTableProps {
      * Requires `morePageSizes` to be set.
      */
     overridePageSizes?: boolean;
+    /**
+     * Whether or not Advanced Search is enabled.
+     */
+    advancedSearch?: boolean;
     /**
      * Whether the objects in the table are sortable.
      * Sortability depends on API support. In the Django API, you must alter the
@@ -206,6 +211,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         neededAttr,
         morePageSizes,
         overridePageSizes,
+        advancedSearch,
         highlightDates,
         editableObj,
         sortable,
@@ -229,6 +235,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [orderBy, setOrderBy] = useState<string>('');
     const [direction, setDirection] = useState<string>('asc');
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
+    const [advancedSearchTerms, setAdvancedSearchTerms] = useState<string>('');
     const [debounce] = useDebouncedValue(searchTerms, 200);
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
@@ -248,6 +255,9 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
             ),
             ...(reload && { reload: 'true' }),
             ...additionalUrlParams,
+            ...(advancedSearchTerms && {
+                advanced_search: advancedSearchTerms,
+            }),
         },
     );
 
@@ -383,348 +393,382 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     }, [paginatedData, pageSize, orderBy, direction]);
 
     return (
-        <Paper radius="lg" p="lg" m="lg" withBorder>
-            <Group justify="space-between">
-                <Group mb="lg" justify="space-between">
-                    <Title>{title}</Title>
-                    {loading && <Loader size={30} />}
-                </Group>
-                {maxPages !== 1 && (
-                    <Pagination
-                        mb="lg"
-                        total={maxPages}
-                        value={page}
-                        onChange={setPage}
-                    />
-                )}
-            </Group>
-            <div style={{ overflowX: 'auto', width: '100%' }}>
-                <Table>
-                    <colgroup>
-                        {editableObj && actions.length && (
-                            <col style={{ width: '5%' }} />
-                        )}
-                        {neededAttr.map((attr) => (
-                            <col
-                                key={attr}
-                                style={{ width: `${90 / neededAttr.length}%` }}
+        <>
+            {advancedSearch && (
+                <AdvancedSearch
+                    onSelectionChange={(selectedItems) => {
+                        setAdvancedSearchTerms(
+                            selectedItems.map((item) => item.value).join(','),
+                        );
+                    }}
+                />
+            )}
+            <Paper radius="lg" p="lg" m="lg" withBorder>
+                <Group justify="space-between">
+                    <Group mb="lg" justify="space-between">
+                        <Title>{title}</Title>
+                        {loading && <Loader size={30} />}
+                    </Group>
+                    <Group justify="flex-end">
+                        {maxPages !== 1 && (
+                            <Pagination
+                                mb="lg"
+                                total={maxPages}
+                                value={page}
+                                onChange={setPage}
                             />
-                        ))}
-                    </colgroup>
-                    <Table.Thead>
-                        <Table.Tr>
-                            {editableObj && actions.length !== 0 && (
-                                <Table.Th></Table.Th>
+                        )}
+                    </Group>
+                </Group>
+                <div style={{ overflowX: 'auto', width: '100%' }}>
+                    <Table>
+                        <colgroup>
+                            {editableObj && actions.length && (
+                                <col style={{ width: '5%' }} />
                             )}
                             {neededAttr.map((attr) => (
-                                <Table.Th key={attr} ta="left">
-                                    <Group gap="xs">
-                                        <Text>{handleFormatHeader(attr)}</Text>
-                                        {sortable &&
-                                            sortableFields?.includes(attr) && (
-                                                <ActionIcon
-                                                    aria-label="Sort"
-                                                    variant="subtle"
-                                                    onClick={() =>
-                                                        handleSort(
-                                                            attr,
-                                                            direction,
-                                                        )
-                                                    }
-                                                >
-                                                    {orderBy === attr ? (
-                                                        direction === 'asc' ? (
-                                                            <FaSortUp />
-                                                        ) : (
-                                                            <FaSortDown />
-                                                        )
-                                                    ) : (
-                                                        <FaSort />
-                                                    )}
-                                                </ActionIcon>
-                                            )}
-                                        {searchable &&
-                                            searchableFields?.includes(
-                                                attr,
-                                            ) && (
-                                                <TextInput
-                                                    placeholder={`Search ${handleFormatHeader(attr)}`}
-                                                    value={
-                                                        searchTerms[attr] || ''
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleSearchChange(
-                                                            attr,
-                                                            e.currentTarget
-                                                                .value,
-                                                        )
-                                                    }
-                                                    size="xs"
-                                                />
-                                            )}
-                                    </Group>
-                                </Table.Th>
+                                <col
+                                    key={attr}
+                                    style={{
+                                        width: `${90 / neededAttr.length}%`,
+                                    }}
+                                />
                             ))}
-                            {editableObj && editFunction && (
-                                <Table.Th>Edit</Table.Th>
-                            )}
-                            {detail && <Table.Th>Detail</Table.Th>}
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {data.length === 0 ? (
+                        </colgroup>
+                        <Table.Thead>
                             <Table.Tr>
-                                <Table.Td
-                                    colSpan={
-                                        neededAttr.length +
-                                        (editableObj ? 1 : 0)
-                                    }
-                                >
-                                    <Text mt="xl" size="xl">
-                                        {loading
-                                            ? 'Loading...'
-                                            : data.length === 0
-                                              ? noDataMessage
-                                              : null}
-                                    </Text>
-                                </Table.Td>
+                                {editableObj && actions.length !== 0 && (
+                                    <Table.Th></Table.Th>
+                                )}
+                                {neededAttr.map((attr) => (
+                                    <Table.Th key={attr} ta="left">
+                                        <Group gap="xs">
+                                            <Text>
+                                                {handleFormatHeader(attr)}
+                                            </Text>
+                                            {sortable &&
+                                                sortableFields?.includes(
+                                                    attr,
+                                                ) && (
+                                                    <ActionIcon
+                                                        aria-label="Sort"
+                                                        variant="subtle"
+                                                        onClick={() =>
+                                                            handleSort(
+                                                                attr,
+                                                                direction,
+                                                            )
+                                                        }
+                                                    >
+                                                        {orderBy === attr ? (
+                                                            direction ===
+                                                            'asc' ? (
+                                                                <FaSortUp />
+                                                            ) : (
+                                                                <FaSortDown />
+                                                            )
+                                                        ) : (
+                                                            <FaSort />
+                                                        )}
+                                                    </ActionIcon>
+                                                )}
+                                            {searchable &&
+                                                searchableFields?.includes(
+                                                    attr,
+                                                ) && (
+                                                    <TextInput
+                                                        placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                        value={
+                                                            searchTerms[attr] ||
+                                                            ''
+                                                        }
+                                                        onChange={(e) =>
+                                                            handleSearchChange(
+                                                                attr,
+                                                                e.currentTarget
+                                                                    .value,
+                                                            )
+                                                        }
+                                                        size="xs"
+                                                    />
+                                                )}
+                                        </Group>
+                                    </Table.Th>
+                                ))}
+                                {editableObj && editFunction && (
+                                    <Table.Th>Edit</Table.Th>
+                                )}
+                                {detail && <Table.Th>Detail</Table.Th>}
                             </Table.Tr>
-                        ) : (
-                            data.map((item: any) => {
-                                const isEditing = editingRow === item.id;
-                                return (
-                                    <Table.Tr key={item.id}>
-                                        {editableObj && actions.length > 0 && (
-                                            <Table.Td>
-                                                <Checkbox
-                                                    checked={Array.from(
-                                                        selectedObjs,
-                                                    ).some(
-                                                        (obj) =>
-                                                            obj.id === item.id,
-                                                    )}
-                                                    onChange={(event) =>
-                                                        handleCheckboxChange(
-                                                            item,
-                                                            event.currentTarget
-                                                                .checked,
-                                                        )
-                                                    }
-                                                />
-                                            </Table.Td>
-                                        )}
-                                        {neededAttr.map((attr) => {
-                                            const value = item[attr];
-                                            const dateRegex =
-                                                /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
-                                            const isDate =
-                                                dateRegex.test(value);
-
-                                            const isBoolean =
-                                                typeof value === 'boolean';
-                                            const pastOrFuture =
-                                                new Date(value) < new Date();
-
-                                            return (
-                                                <Table.Td key={attr}>
-                                                    {isEditing &&
-                                                    editableFields?.includes(
-                                                        attr,
-                                                    ) ? (
-                                                        <TextInput
-                                                            value={
-                                                                editValues[attr]
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleEditInputChange(
-                                                                    attr,
-                                                                    e
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {data.length === 0 ? (
+                                <Table.Tr>
+                                    <Table.Td
+                                        colSpan={
+                                            neededAttr.length +
+                                            (editableObj ? 1 : 0)
+                                        }
+                                    >
+                                        <Text mt="xl" size="xl">
+                                            {loading
+                                                ? 'Loading...'
+                                                : data.length === 0
+                                                  ? noDataMessage
+                                                  : null}
+                                        </Text>
+                                    </Table.Td>
+                                </Table.Tr>
+                            ) : (
+                                data.map((item: any) => {
+                                    const isEditing = editingRow === item.id;
+                                    return (
+                                        <Table.Tr key={item.id}>
+                                            {editableObj &&
+                                                actions.length > 0 && (
+                                                    <Table.Td>
+                                                        <Checkbox
+                                                            checked={Array.from(
+                                                                selectedObjs,
+                                                            ).some(
+                                                                (obj) =>
+                                                                    obj.id ===
+                                                                    item.id,
+                                                            )}
+                                                            onChange={(event) =>
+                                                                handleCheckboxChange(
+                                                                    item,
+                                                                    event
                                                                         .currentTarget
-                                                                        .value,
+                                                                        .checked,
                                                                 )
                                                             }
                                                         />
-                                                    ) : isDate ? (
-                                                        highlightDates ? (
-                                                            <Text
-                                                                c={
-                                                                    pastOrFuture
-                                                                        ? 'red'
-                                                                        : 'green'
+                                                    </Table.Td>
+                                                )}
+                                            {neededAttr.map((attr) => {
+                                                const value = item[attr];
+                                                const dateRegex =
+                                                    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
+                                                const isDate =
+                                                    dateRegex.test(value);
+
+                                                const isBoolean =
+                                                    typeof value === 'boolean';
+                                                const pastOrFuture =
+                                                    new Date(value) <
+                                                    new Date();
+
+                                                return (
+                                                    <Table.Td key={attr}>
+                                                        {isEditing &&
+                                                        editableFields?.includes(
+                                                            attr,
+                                                        ) ? (
+                                                            <TextInput
+                                                                value={
+                                                                    editValues[
+                                                                        attr
+                                                                    ]
                                                                 }
-                                                            >
-                                                                {handleFormatDate(
+                                                                onChange={(e) =>
+                                                                    handleEditInputChange(
+                                                                        attr,
+                                                                        e
+                                                                            .currentTarget
+                                                                            .value,
+                                                                    )
+                                                                }
+                                                            />
+                                                        ) : isDate ? (
+                                                            highlightDates ? (
+                                                                <Text
+                                                                    c={
+                                                                        pastOrFuture
+                                                                            ? 'red'
+                                                                            : 'green'
+                                                                    }
+                                                                >
+                                                                    {handleFormatDate(
+                                                                        value,
+                                                                    )}
+                                                                </Text>
+                                                            ) : (
+                                                                handleFormatDate(
                                                                     value,
-                                                                )}
-                                                            </Text>
-                                                        ) : (
-                                                            handleFormatDate(
-                                                                value,
+                                                                )
                                                             )
-                                                        )
-                                                    ) : isBoolean ? (
-                                                        value ? (
-                                                            <ThemeIcon color="#2e2e2e">
-                                                                <FaCheck color="green" />
-                                                            </ThemeIcon>
+                                                        ) : isBoolean ? (
+                                                            value ? (
+                                                                <ThemeIcon color="#2e2e2e">
+                                                                    <FaCheck color="green" />
+                                                                </ThemeIcon>
+                                                            ) : (
+                                                                <ThemeIcon color="#2e2e2e">
+                                                                    <FaXmark color="red" />
+                                                                </ThemeIcon>
+                                                            )
                                                         ) : (
-                                                            <ThemeIcon color="#2e2e2e">
-                                                                <FaXmark color="red" />
-                                                            </ThemeIcon>
-                                                        )
-                                                    ) : (
-                                                        value
-                                                    )}
-                                                </Table.Td>
-                                            );
-                                        })}
-                                        {editableObj && editFunction && (
-                                            <Table.Td>
-                                                <Flex justify="left">
-                                                    {isEditing ? (
-                                                        <>
-                                                            <Tooltip label="Submit Changes">
+                                                            value
+                                                        )}
+                                                    </Table.Td>
+                                                );
+                                            })}
+                                            {editableObj && editFunction && (
+                                                <Table.Td>
+                                                    <Flex justify="left">
+                                                        {isEditing ? (
+                                                            <>
+                                                                <Tooltip label="Submit Changes">
+                                                                    <ActionIcon
+                                                                        aria-label="Submit Changes"
+                                                                        size={
+                                                                            'lg'
+                                                                        }
+                                                                        mr={8}
+                                                                        color="green"
+                                                                        onClick={() =>
+                                                                            handleEditSubmit(
+                                                                                item,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FaCheck />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                                <Tooltip label="Cancel Changes">
+                                                                    <ActionIcon
+                                                                        aria-label="Cancel Changes"
+                                                                        size={
+                                                                            'lg'
+                                                                        }
+                                                                        color="red"
+                                                                        onClick={() => {
+                                                                            setEditingRow(
+                                                                                null,
+                                                                            );
+                                                                            setEditValues(
+                                                                                {},
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        <FaXmark />
+                                                                    </ActionIcon>
+                                                                </Tooltip>
+                                                            </>
+                                                        ) : (
+                                                            <Tooltip label="Edit">
                                                                 <ActionIcon
-                                                                    aria-label="Submit Changes"
-                                                                    size={'lg'}
-                                                                    mr={8}
-                                                                    color="green"
+                                                                    aria-label="Edit"
                                                                     onClick={() =>
-                                                                        handleEditSubmit(
+                                                                        handleEditClick(
                                                                             item,
                                                                         )
                                                                     }
-                                                                >
-                                                                    <FaCheck />
-                                                                </ActionIcon>
-                                                            </Tooltip>
-                                                            <Tooltip label="Cancel Changes">
-                                                                <ActionIcon
-                                                                    aria-label="Cancel Changes"
                                                                     size={'lg'}
-                                                                    color="red"
-                                                                    onClick={() => {
-                                                                        setEditingRow(
-                                                                            null,
-                                                                        );
-                                                                        setEditValues(
-                                                                            {},
-                                                                        );
-                                                                    }}
                                                                 >
-                                                                    <FaXmark />
+                                                                    <FaPencil />
                                                                 </ActionIcon>
                                                             </Tooltip>
-                                                        </>
-                                                    ) : (
-                                                        <Tooltip label="Edit">
-                                                            <ActionIcon
-                                                                aria-label="Edit"
-                                                                onClick={() =>
-                                                                    handleEditClick(
-                                                                        item,
-                                                                    )
-                                                                }
-                                                                size={'lg'}
-                                                            >
-                                                                <FaPencil />
-                                                            </ActionIcon>
-                                                        </Tooltip>
-                                                    )}
-                                                </Flex>
-                                            </Table.Td>
-                                        )}
-                                        {detail && detailField && (
-                                            <Table.Td>
-                                                <ActionIcon
-                                                    size={'lg'}
-                                                    aria-label="Detail"
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/${detail}/${item[detailField]}`,
-                                                        )
-                                                    }
-                                                >
-                                                    <FaEye />
-                                                </ActionIcon>
-                                            </Table.Td>
-                                        )}
-                                    </Table.Tr>
-                                );
-                            })
-                        )}
-                    </Table.Tbody>
-                </Table>
-            </div>
-            <Group
-                mt="md"
-                ml="sm"
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    {data.length >= +pageSizes[0] && (
-                        <Select
-                            style={{ maxWidth: '80px', textAlign: 'center' }}
-                            data={pageSizes}
-                            value={pageSize.toString()}
-                            onChange={handlePageSizeChange}
-                        />
-                    )}
-
-                    {editableObj && actions.length > 0 && (
-                        <Select
-                            data={actions}
-                            value={action}
-                            onChange={handleActionChange}
-                        />
-                    )}
+                                                        )}
+                                                    </Flex>
+                                                </Table.Td>
+                                            )}
+                                            {detail && detailField && (
+                                                <Table.Td>
+                                                    <ActionIcon
+                                                        size={'lg'}
+                                                        aria-label="Detail"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/${detail}/${item[detailField]}`,
+                                                            )
+                                                        }
+                                                    >
+                                                        <FaEye />
+                                                    </ActionIcon>
+                                                </Table.Td>
+                                            )}
+                                        </Table.Tr>
+                                    );
+                                })
+                            )}
+                        </Table.Tbody>
+                    </Table>
                 </div>
-                {notification && (
-                    <Dialog opened={notification != null} size="xl">
-                        <Notification
-                            title={notification?.[0]}
-                            icon={
-                                notification?.[1] === 'Success' ? (
-                                    <FaRegCircleCheck />
-                                ) : (
-                                    <FaRegCircleXmark />
-                                )
-                            }
-                            color={
-                                notification?.[1] === 'Success'
-                                    ? 'green'
-                                    : 'red'
-                            }
-                            onClose={() => setNotification(null)}
-                        />
-                    </Dialog>
-                )}
-                {editableObj && actions.length > 0 && (
+                <Group
+                    mt="md"
+                    ml="sm"
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button
-                            disabled={selectedObjs.size === 0}
-                            onClick={() => setSelectedObjs(new Set())}
-                            color="#8d0d20"
-                        >
-                            Clear Selection{' '}
-                            {selectedObjs.size !== 0 &&
-                                `(${selectedObjs.size})`}
-                        </Button>
-                        <Button
-                            onClick={submitChange}
-                            disabled={selectedObjs.size === 0}
-                            color="blue"
-                        >
-                            Submit
-                        </Button>
+                        {data.length >= +pageSizes[0] && (
+                            <Select
+                                style={{
+                                    maxWidth: '80px',
+                                    textAlign: 'center',
+                                }}
+                                data={pageSizes}
+                                value={pageSize.toString()}
+                                onChange={handlePageSizeChange}
+                            />
+                        )}
+
+                        {editableObj && actions.length > 0 && (
+                            <Select
+                                data={actions}
+                                value={action}
+                                onChange={handleActionChange}
+                            />
+                        )}
                     </div>
-                )}
-            </Group>
-        </Paper>
+                    {notification && (
+                        <Dialog opened={notification != null} size="xl">
+                            <Notification
+                                title={notification?.[0]}
+                                icon={
+                                    notification?.[1] === 'Success' ? (
+                                        <FaRegCircleCheck />
+                                    ) : (
+                                        <FaRegCircleXmark />
+                                    )
+                                }
+                                color={
+                                    notification?.[1] === 'Success'
+                                        ? 'green'
+                                        : 'red'
+                                }
+                                onClose={() => setNotification(null)}
+                            />
+                        </Dialog>
+                    )}
+                    {editableObj && actions.length > 0 && (
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <Button
+                                disabled={selectedObjs.size === 0}
+                                onClick={() => setSelectedObjs(new Set())}
+                                color="#8d0d20"
+                            >
+                                Clear Selection{' '}
+                                {selectedObjs.size !== 0 &&
+                                    `(${selectedObjs.size})`}
+                            </Button>
+                            <Button
+                                onClick={submitChange}
+                                disabled={selectedObjs.size === 0}
+                                color="blue"
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    )}
+                </Group>
+            </Paper>
+        </>
     );
 };
 

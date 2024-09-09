@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, MultiSelect, Group } from '@mantine/core';
+import { MultiSelect, Group, ActionIcon } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+import { FaX } from 'react-icons/fa6';
 
 export interface AutocompleteItem {
     value: string;
@@ -59,7 +60,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
 
     return (
         <>
-            <Group justify="flex-end">
+            <Group mt="lg" mr="xl" justify="flex-end">
                 <MultiSelect
                     data={data}
                     value={selected.map((item) => item.value)}
@@ -72,19 +73,17 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     nothingFoundMessage="No items found"
                     w={400}
                 />
-                <Button
+                <ActionIcon
+                    color="red"
+                    size="lg"
                     disabled={selected.length === 0}
                     onClick={() => {
                         setSelected([]);
                         onSelectionChange([]);
                     }}
                 >
-                    Clear
-                </Button>
-
-                <Button onClick={() => console.log(selected)}>
-                    Log Selected
-                </Button>
+                    <FaX />
+                </ActionIcon>
             </Group>
         </>
     );

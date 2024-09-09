@@ -25,6 +25,7 @@ const AllHosts = () => {
                     'last_seen_ip',
                 ]}
                 getFunction={api.hosts.all}
+                advancedSearch={true}
                 defPageSize={10}
                 noDataMessage={'No hosts found'}
                 highlightDates={true}
