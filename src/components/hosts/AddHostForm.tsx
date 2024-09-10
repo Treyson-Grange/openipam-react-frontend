@@ -11,13 +11,6 @@ import {
 
 const AddHostForm = () => {
     const EMPTY_CHOICE = '----';
-    const checkMacAddress = (value: string) => {
-        const macAddressRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
-        const validMac = macAddressRegex.test(value) ? true : false;
-        const isUsed = false;
-
-        return validMac && !isUsed;
-    };
 
     const form = useForm({
         initialValues: {

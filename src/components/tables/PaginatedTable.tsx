@@ -4,6 +4,7 @@ import { usePaginatedApi } from '../../hooks/useApi';
 import { QueryRequest } from '../../utilities/apiFunctions';
 import { useNavigate } from 'react-router-dom';
 import AdvancedSearch from '../AdvancedSearch';
+import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import {
     Button,
     Paper,
@@ -240,6 +241,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
     const [editingRow, setEditingRow] = useState<number | null>(null);
     const [editValues, setEditValues] = useState<Record<string, string>>({});
 
+    const api = getApiEndpointFunctions();
     const navigate = useNavigate();
 
     const [reload, setReload] = useState<boolean>(false);
@@ -396,6 +398,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         <>
             {advancedSearch && (
                 <AdvancedSearch
+                    autocompleteFunc={api.autocomplete.generalAutocomplete}
                     onSelectionChange={(selectedItems) => {
                         setAdvancedSearchTerms(
                             selectedItems.map((item) => item.value).join(','),

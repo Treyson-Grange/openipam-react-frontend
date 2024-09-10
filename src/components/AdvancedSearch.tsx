@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { MultiSelect, Group, ActionIcon } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
-import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import { FaX } from 'react-icons/fa6';
+import { QueryRequest } from '../utilities/apiFunctions';
+import { PaginatedData } from '../types/api';
 
 export interface AutocompleteItem {
     value: string;
@@ -12,23 +13,21 @@ export interface AutocompleteItem {
 
 interface AdvancedSearchProps {
     onSelectionChange: (selectedItems: AutocompleteItem[]) => void;
+    autocompleteFunc: QueryRequest<any, PaginatedData<unknown>>;
 }
 
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     onSelectionChange,
+    autocompleteFunc,
 }) => {
     const [advancedSearch, setAdvancedSearch] = useState('');
     const [debounce] = useDebouncedValue(advancedSearch, 200);
-    const api = getApiEndpointFunctions();
     const [data, setData] = useState<AutocompleteItem[]>([]);
     const [selected, setSelected] = useState<AutocompleteItem[]>([]);
 
-    const { data: autoCompleteData } = useApiData(
-        api.autocomplete.generalAutocomplete,
-        {
-            q: debounce,
-        },
-    );
+    const { data: autoCompleteData } = useApiData(autocompleteFunc, {
+        q: debounce,
+    });
 
     useEffect(() => {
         if (autoCompleteData && autoCompleteData.results) {
@@ -69,14 +68,22 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                     searchValue={advancedSearch}
                     onSearchChange={setAdvancedSearch}
                     size="md"
+                    aria-label="Advanced Search"
                     placeholder="Advanced Search"
                     nothingFoundMessage="No items found"
-                    w={400}
+                    w={300}
+                    styles={{
+                        input: {
+                            maxHeight: '5rem',
+                            overflowY: 'auto',
+                        },
+                    }}
                 />
                 <ActionIcon
                     color="red"
                     size="lg"
                     disabled={selected.length === 0}
+                    aria-label="Clear Selection"
                     onClick={() => {
                         setSelected([]);
                         onSelectionChange([]);
