@@ -1,6 +1,6 @@
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
-import { getCookie } from './getCookie';
+import { getCookie } from './cookie';
 
 /**
  * This is a hook that provides a simple interface for making requests to the

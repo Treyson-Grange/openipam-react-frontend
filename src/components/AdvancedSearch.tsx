@@ -5,6 +5,7 @@ import { useApiData } from '../hooks/useApi';
 import { FaX } from 'react-icons/fa6';
 import { QueryRequest } from '../utilities/apiFunctions';
 import { PaginatedData } from '../types/api';
+import { getCookie, setCookie, deleteCookie } from '../utilities/cookie';
 
 export interface AutocompleteItem {
     value: string;
@@ -17,22 +18,6 @@ interface AdvancedSearchProps {
 }
 
 const COOKIE_NAME = 'advanced_search_selected';
-
-const getCookie = (name: string): string | undefined => {
-    const match = document.cookie.match(
-        new RegExp('(^| )' + name + '=([^;]+)'),
-    );
-    return match ? decodeURIComponent(match[2]) : undefined;
-};
-
-const setCookie = (name: string, value: string, days: number): void => {
-    const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
-};
-
-const deleteCookie = (name: string): void => {
-    setCookie(name, '', -1);
-};
 
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     onSelectionChange,
