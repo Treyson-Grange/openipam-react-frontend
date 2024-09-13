@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PaginatedData } from '../../types/api';
 import { usePaginatedApi } from '../../hooks/useApi';
-import { QueryRequest } from '../../utilities/apiFunctions';
 import {
     Button,
     Paper,
@@ -17,8 +15,6 @@ import {
     TextInput,
     ActionIcon,
     ThemeIcon,
-    Tooltip,
-    Flex,
     Loader,
 } from '@mantine/core';
 import {
@@ -29,164 +25,58 @@ import {
     FaSortDown,
     FaCheck,
     FaXmark,
-    FaPencil,
 } from 'react-icons/fa6';
 import { useDebouncedValue } from '@mantine/hooks';
+import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
-interface BaseUserTableProps {
-    /**
-     * The GET function defined in /utilities/apiFunctions.ts used to get the data.
-     */
-    getFunction: QueryRequest<any, PaginatedData<unknown>>;
-    /**
-     * The default page size to use for the table. Defaults to 5.
-     */
-    defPageSize?: number;
-    /**
-     * The title of the table.
-     */
-    title: string;
-    /**
-     * The message to display when there is no data.
-     */
-    noDataMessage?: string;
-    /**
-     * Whether to highlight the dates in the table.
-     * Defaults to false.
-     * Green if the date is in the future, red if the date is in the past. (useful for expiration)
-     */
-    highlightDates?: boolean;
-    /**
-     * The attributes from the API to display in the table.
-     */
-    neededAttr: string[];
-    /**
-     * Additional page sizes to display in the page size dropdown.
-     */
-    morePageSizes?: string[];
-    /**
-     * Whether to override the default page sizes with the additional page sizes.
-     * Requires `morePageSizes` to be set.
-     */
-    overridePageSizes?: boolean;
-    /**
-     * Whether the objects in the table are sortable.
-     * Sortability depends on API support. In the Django API, you must alter the
-     * View or viewset. In the filter_queryset function, we will get queryparams;
-     * `order_by` and `direction` and sort the queryset accordingly.
-     *
-     * For a quick example, see openipam/api_v2/views/logs.py, lines 47-55.
-     */
-    sortable?: boolean;
-    /**
-     * The fields that are sortable.
-     * Most fields will end up being sortable if the API is set up correctly, but
-     * proceed with caution.
-     */
-    sortableFields?: string[];
-    /**
-     * Whether the objects in the table are searchable
-     * Requires `searchableFields` to be set.
-     * Searchability depends on API support. In the Django API, you must alter the
-     * View. To do so, you must obtain the query parameters for the searchable fields, and
-     * filter the queryset accordingly.
-     *
-     * For a quick example, see openipam/api_v2/views/users, lines 60-72.
-     */
-    searchable?: boolean;
-    /**
-     * The fields that are searchable.
-     * Requires `searchable` to be set.
-     * All searchable fields need to be set up in the API. They won't just work.
-     */
-    searchableFields?: string[];
-    /**
-     * The additional URL parameters to pass to the API.
-     * Pass it in like *additionalUrlParams={{ "paramName": String(value)) }}*
-     *
-     * There are no current use cases for this. But it can be used to pass in additional
-     * parameters to the get function of the API.
-     */
-    additionalUrlParams?: Record<string, string>;
-}
+type ActionFunctions = Record<
+    string,
+    { func: (params: any) => void; key: string }
+>;
 
-interface EditableUserTableProps extends BaseUserTableProps {
-    /**
-     * Whether the objects in the table are editable.
-     *
-     * DO not set this to true if you dont have at least one of the following:
-     * - 'actions' and 'actionFunctions'
-     * - 'editFunction' and 'editableFields'
-     */
-    editableObj: true;
-    /**
-     * The actions that can be performed on the objects in the table.
-     * To have actions, both `actions` and `actionFunctions` must be set.
-     */
-    actions?: string[];
-    /**
-     * The functions to call when an action is performed.
-     * To have actions, both `actions` and `actionFunctions` must be set.
-     * Please pass func and key, where the key is the attribute to pass to the function.
-     * functionName: { func: (id: number) => console.log(`Editing group ${id}`), key: 'id' },
-     *      OR
-     * functionName: { func: previouslyDefinedFunction, key: 'id' }
-     */
-    actionFunctions?: Record<
-        string,
-        { func: (params: any) => void; key: string }
-    >;
-    /**
-     * The PUT function defined in /utilities/apiFunctions.ts used to edit the data.
-     * The way you pass the function is a bit different. See the example in DomainDetail.tsx.
-     * Requires `editableObj` to be true.
-     */
-    editFunction?: (dnsName: string) => QueryRequest<any, any>;
-    /**
-     * The editable fields
-     */
-    editableFields?: string[];
-}
+const UserTable = (): JSX.Element => {
+    const api = getApiEndpointFunctions();
+    const getFunction = api.users.get;
 
-interface NonEditableUserTableProps extends BaseUserTableProps {
-    /**
-     * Whether the objects in the table are editable. Defaults to false.
-     */
-    editableObj?: false;
-}
+    const test = (id: any) => {
+        console.log(id);
+    };
 
-type UserTableProps = EditableUserTableProps | NonEditableUserTableProps;
+    const actions = [
+        'Assign Groups to users',
+        'Remove Groups from users',
+        'Assign Object Permissions to users',
+        'Populate User from LDAP',
+    ];
+    const actionFunctions: ActionFunctions = {
+        AssignGroupstousers: { func: test, key: 'id' },
+        edit: { func: test, key: 'id' },
+        delete: { func: test, key: 'id' },
+    };
 
-/**
- * This sucks.
- */
-const UserTable = (props: UserTableProps): JSX.Element => {
-    const actions = (props as EditableUserTableProps).actions ?? [];
-    const actionFunctions =
-        (props as EditableUserTableProps).actionFunctions ?? {};
-    const editFunction = (props as EditableUserTableProps).editFunction;
-    const editableFields = (props as EditableUserTableProps).editableFields;
-    const {
-        getFunction,
-        defPageSize,
-        title,
-        neededAttr,
-        morePageSizes,
-        overridePageSizes,
-        highlightDates,
-        editableObj,
-        sortable,
-        sortableFields,
-        searchable,
-        searchableFields,
-        additionalUrlParams,
-    } = props;
+    const neededAttr = [
+        'username',
+        'email',
+        'full_name',
+        'is_active',
+        'is_staff',
+        'is_ipamadmin',
+        'is_superuser',
+        'source',
+        'last_login',
+    ];
+    const sortableFields = [
+        'is_active',
+        'is_staff',
+        'is_ipamadmin',
+        'is_superuser',
+    ];
+    const searchableFields = ['username', 'email', 'full_name'];
+
     const [data, setData] = useState<any[]>([]);
-    const [noDataMessage] = useState<string | undefined>(
-        props.noDataMessage || 'No data found',
-    );
+    const [noDataMessage] = useState<string | undefined>('No users found');
     const [maxPages, setMaxPages] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(defPageSize || 5);
+    const [pageSize, setPageSize] = useState<number>(25);
     const [page, setPage] = useState<number>(1);
     const [selectedObjs, setSelectedObjs] = useState<Set<any>>(new Set());
     const [notification, setNotification] = useState<string[] | null>(null);
@@ -195,10 +85,6 @@ const UserTable = (props: UserTableProps): JSX.Element => {
     const [direction, setDirection] = useState<string>('asc');
     const [searchTerms, setSearchTerms] = useState<Record<string, string>>({});
     const [debounce] = useDebouncedValue(searchTerms, 200);
-    const [editingRow, setEditingRow] = useState<number | null>(null);
-    const [editValues, setEditValues] = useState<Record<string, string>>({});
-
-    const [reload, setReload] = useState<boolean>(false);
 
     const { data: paginatedData, loading } = usePaginatedApi(
         getFunction,
@@ -209,25 +95,10 @@ const UserTable = (props: UserTableProps): JSX.Element => {
             ...Object.fromEntries(
                 Object.entries(debounce).filter(([_, v]) => v),
             ),
-            ...(reload && { reload: 'true' }),
-            ...additionalUrlParams,
         },
     );
 
-    const pageSizes = ['5', '10', '20'];
-    if (overridePageSizes) {
-        pageSizes.length = 0;
-    }
-
-    if (morePageSizes) {
-        const uniqueSizes = new Set([...pageSizes, ...morePageSizes]);
-        pageSizes.length = 0;
-        pageSizes.push(
-            ...Array.from(uniqueSizes).sort(
-                (a, b) => parseInt(a) - parseInt(b),
-            ),
-        );
-    }
+    const pageSizes = ['25', '50', '100', '250'];
 
     const handlePageSizeChange = (value: string | null) => {
         setPage(1);
@@ -245,7 +116,6 @@ const UserTable = (props: UserTableProps): JSX.Element => {
     };
 
     const handleSort = (key: string, oldDirection: string) => {
-        if (!sortable) return;
         let newDirection = 'false';
         if (key === orderBy) {
             newDirection = oldDirection === 'false' ? 'true' : 'false';
@@ -307,37 +177,6 @@ const UserTable = (props: UserTableProps): JSX.Element => {
         }
     };
 
-    const handleEditClick = (item: any) => {
-        setEditingRow(item.id);
-        setEditValues(
-            editableFields?.reduce(
-                (acc, field) => {
-                    acc[field] = item[field] || '';
-                    return acc;
-                },
-                {} as Record<string, string>,
-            ) || {},
-        );
-    };
-
-    const handleEditInputChange = (field: string, value: string) => {
-        setEditValues((prevValues) => ({ ...prevValues, [field]: value }));
-    };
-
-    const handleEditSubmit = async (item: any) => {
-        try {
-            if (editFunction) {
-                const updateFunction = editFunction(item.id);
-                await updateFunction(editValues);
-                setNotification(['Edit submitted successfully', 'Success']);
-                setEditingRow(null);
-                setReload((prev) => !prev);
-            }
-        } catch (error) {
-            setNotification([`${error}`, 'Error']);
-        }
-    };
-
     useEffect(() => {
         if (paginatedData && paginatedData.results) {
             setData(paginatedData.results);
@@ -349,7 +188,7 @@ const UserTable = (props: UserTableProps): JSX.Element => {
         <Paper radius="lg" p="lg" m="lg" withBorder>
             <Group justify="space-between">
                 <Group mb="lg" justify="space-between">
-                    <Title>{title}</Title>
+                    <Title>Users</Title>
                     {loading && <Loader size={30} />}
                 </Group>
                 {maxPages !== 1 && (
@@ -364,9 +203,7 @@ const UserTable = (props: UserTableProps): JSX.Element => {
             <div style={{ overflowX: 'auto', width: '100%' }}>
                 <Table>
                     <colgroup>
-                        {editableObj && actions.length && (
-                            <col style={{ width: '5%' }} />
-                        )}
+                        <col style={{ width: '5%' }} />
                         {neededAttr.map((attr) => (
                             <col
                                 key={attr}
@@ -376,73 +213,52 @@ const UserTable = (props: UserTableProps): JSX.Element => {
                     </colgroup>
                     <Table.Thead>
                         <Table.Tr>
-                            {editableObj && actions.length !== 0 && (
-                                <Table.Th></Table.Th>
-                            )}
+                            <Table.Th></Table.Th>
                             {neededAttr.map((attr) => (
                                 <Table.Th key={attr} ta="left">
                                     <Group gap="xs">
                                         <Text>{handleFormatHeader(attr)}</Text>
-                                        {sortable &&
-                                            sortableFields?.includes(attr) && (
-                                                <ActionIcon
-                                                    aria-label="Sort"
-                                                    variant="subtle"
-                                                    onClick={() =>
-                                                        handleSort(
-                                                            attr,
-                                                            direction,
-                                                        )
-                                                    }
-                                                >
-                                                    {orderBy === attr ? (
-                                                        direction ===
-                                                        'false' ? (
-                                                            <FaSortUp />
-                                                        ) : (
-                                                            <FaSortDown />
-                                                        )
+                                        {sortableFields?.includes(attr) && (
+                                            <ActionIcon
+                                                aria-label="Sort"
+                                                variant="subtle"
+                                                onClick={() =>
+                                                    handleSort(attr, direction)
+                                                }
+                                            >
+                                                {orderBy === attr ? (
+                                                    direction === 'false' ? (
+                                                        <FaSortUp />
                                                     ) : (
-                                                        <FaSort />
-                                                    )}
-                                                </ActionIcon>
-                                            )}
-                                        {searchable &&
-                                            searchableFields?.includes(
-                                                attr,
-                                            ) && (
-                                                <TextInput
-                                                    placeholder={`Search ${handleFormatHeader(attr)}`}
-                                                    value={
-                                                        searchTerms[attr] || ''
-                                                    }
-                                                    onChange={(e) =>
-                                                        handleSearchChange(
-                                                            attr,
-                                                            e.currentTarget
-                                                                .value,
-                                                        )
-                                                    }
-                                                    size="xs"
-                                                />
-                                            )}
+                                                        <FaSortDown />
+                                                    )
+                                                ) : (
+                                                    <FaSort />
+                                                )}
+                                            </ActionIcon>
+                                        )}
+                                        {searchableFields?.includes(attr) && (
+                                            <TextInput
+                                                placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                value={searchTerms[attr] || ''}
+                                                onChange={(e) =>
+                                                    handleSearchChange(
+                                                        attr,
+                                                        e.currentTarget.value,
+                                                    )
+                                                }
+                                                size="xs"
+                                            />
+                                        )}
                                     </Group>
                                 </Table.Th>
                             ))}
-                            {editableObj && editFunction && (
-                                <Table.Th>Edit</Table.Th>
-                            )}
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>
                         {data.length === 0 ? (
                             <Table.Tr>
-                                <Table.Td
-                                    colSpan={
-                                        neededAttr.length +
-                                        (editableObj ? 1 : 0)
-                                    }
-                                >
+                                <Table.Td colSpan={neededAttr.length + 1}>
                                     <Text mt="xl" size="xl">
                                         {loading
                                             ? 'Loading...'
@@ -454,28 +270,24 @@ const UserTable = (props: UserTableProps): JSX.Element => {
                             </Table.Tr>
                         ) : (
                             data.map((item: any) => {
-                                const isEditing = editingRow === item.id;
                                 return (
                                     <Table.Tr key={item.id}>
-                                        {editableObj && actions.length > 0 && (
-                                            <Table.Td>
-                                                <Checkbox
-                                                    checked={Array.from(
-                                                        selectedObjs,
-                                                    ).some(
-                                                        (obj) =>
-                                                            obj.id === item.id,
-                                                    )}
-                                                    onChange={(event) =>
-                                                        handleCheckboxChange(
-                                                            item,
-                                                            event.currentTarget
-                                                                .checked,
-                                                        )
-                                                    }
-                                                />
-                                            </Table.Td>
-                                        )}
+                                        <Table.Td>
+                                            <Checkbox
+                                                checked={Array.from(
+                                                    selectedObjs,
+                                                ).some(
+                                                    (obj) => obj.id === item.id,
+                                                )}
+                                                onChange={(event) =>
+                                                    handleCheckboxChange(
+                                                        item,
+                                                        event.currentTarget
+                                                            .checked,
+                                                    )
+                                                }
+                                            />
+                                        </Table.Td>
                                         {neededAttr.map((attr) => {
                                             const value = item[attr];
                                             const dateRegex =
@@ -485,46 +297,15 @@ const UserTable = (props: UserTableProps): JSX.Element => {
 
                                             const isBoolean =
                                                 typeof value === 'boolean';
-                                            const pastOrFuture =
-                                                new Date(value) < new Date();
 
                                             return (
                                                 <Table.Td key={attr}>
-                                                    {isEditing &&
-                                                    editableFields?.includes(
-                                                        attr,
-                                                    ) ? (
-                                                        <TextInput
-                                                            value={
-                                                                editValues[attr]
-                                                            }
-                                                            onChange={(e) =>
-                                                                handleEditInputChange(
-                                                                    attr,
-                                                                    e
-                                                                        .currentTarget
-                                                                        .value,
-                                                                )
-                                                            }
-                                                        />
-                                                    ) : isDate ? (
-                                                        highlightDates ? (
-                                                            <Text
-                                                                c={
-                                                                    pastOrFuture
-                                                                        ? 'red'
-                                                                        : 'green'
-                                                                }
-                                                            >
-                                                                {handleFormatDate(
-                                                                    value,
-                                                                )}
-                                                            </Text>
-                                                        ) : (
-                                                            handleFormatDate(
+                                                    {isDate ? (
+                                                        <Text>
+                                                            {handleFormatDate(
                                                                 value,
-                                                            )
-                                                        )
+                                                            )}
+                                                        </Text>
                                                     ) : isBoolean ? (
                                                         value ? (
                                                             <ThemeIcon color="#2e2e2e">
@@ -541,62 +322,6 @@ const UserTable = (props: UserTableProps): JSX.Element => {
                                                 </Table.Td>
                                             );
                                         })}
-                                        {editableObj && editFunction && (
-                                            <Table.Td>
-                                                <Flex justify="left">
-                                                    {isEditing ? (
-                                                        <>
-                                                            <Tooltip label="Submit Changes">
-                                                                <ActionIcon
-                                                                    aria-label="Submit Changes"
-                                                                    size={'lg'}
-                                                                    mr={8}
-                                                                    color="green"
-                                                                    onClick={() =>
-                                                                        handleEditSubmit(
-                                                                            item,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <FaCheck />
-                                                                </ActionIcon>
-                                                            </Tooltip>
-                                                            <Tooltip label="Cancel Changes">
-                                                                <ActionIcon
-                                                                    aria-label="Cancel Changes"
-                                                                    size={'lg'}
-                                                                    color="red"
-                                                                    onClick={() => {
-                                                                        setEditingRow(
-                                                                            null,
-                                                                        );
-                                                                        setEditValues(
-                                                                            {},
-                                                                        );
-                                                                    }}
-                                                                >
-                                                                    <FaXmark />
-                                                                </ActionIcon>
-                                                            </Tooltip>
-                                                        </>
-                                                    ) : (
-                                                        <Tooltip label="Edit">
-                                                            <ActionIcon
-                                                                aria-label="Edit"
-                                                                onClick={() =>
-                                                                    handleEditClick(
-                                                                        item,
-                                                                    )
-                                                                }
-                                                                size={'lg'}
-                                                            >
-                                                                <FaPencil />
-                                                            </ActionIcon>
-                                                        </Tooltip>
-                                                    )}
-                                                </Flex>
-                                            </Table.Td>
-                                        )}
                                     </Table.Tr>
                                 );
                             })
@@ -622,14 +347,11 @@ const UserTable = (props: UserTableProps): JSX.Element => {
                             onChange={handlePageSizeChange}
                         />
                     )}
-
-                    {editableObj && actions.length > 0 && (
-                        <Select
-                            data={actions}
-                            value={action}
-                            onChange={handleActionChange}
-                        />
-                    )}
+                    <Select
+                        data={actions}
+                        value={action}
+                        onChange={handleActionChange}
+                    />
                 </div>
                 {notification && (
                     <Dialog opened={notification != null} size="xl">
@@ -651,26 +373,24 @@ const UserTable = (props: UserTableProps): JSX.Element => {
                         />
                     </Dialog>
                 )}
-                {editableObj && actions.length > 0 && (
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button
-                            disabled={selectedObjs.size === 0}
-                            onClick={() => setSelectedObjs(new Set())}
-                            color="#8d0d20"
-                        >
-                            Clear Selection{' '}
-                            {selectedObjs.size !== 0 &&
-                                `(${selectedObjs.size})`}
-                        </Button>
-                        <Button
-                            onClick={submitChange}
-                            disabled={selectedObjs.size === 0}
-                            color="blue"
-                        >
-                            Submit
-                        </Button>
-                    </div>
-                )}
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <Button
+                        disabled={selectedObjs.size === 0}
+                        onClick={() => setSelectedObjs(new Set())}
+                        color="#8d0d20"
+                    >
+                        Clear Selection{' '}
+                        {selectedObjs.size !== 0 && `(${selectedObjs.size})`}
+                    </Button>
+                    <Button
+                        onClick={submitChange}
+                        disabled={selectedObjs.size === 0}
+                        color="blue"
+                    >
+                        Submit
+                    </Button>
+                </div>
             </Group>
         </Paper>
     );
