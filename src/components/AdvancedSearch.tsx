@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MultiSelect, Group, ActionIcon } from '@mantine/core';
+import {
+    MultiSelect,
+    Group,
+    ActionIcon,
+    Paper,
+    Chip,
+    ThemeIcon,
+} from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
 import { FaX } from 'react-icons/fa6';
@@ -57,40 +64,64 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
         onSelectionChange(selectedItems);
     };
 
+    const handleRemove = (value: string) => {
+        const updatedSelected = selected.filter((item) => item.value !== value);
+        setSelected(updatedSelected);
+        onSelectionChange(updatedSelected);
+    };
+
     return (
         <>
-            <Group mt="lg" mr="xl" justify="flex-end">
-                <MultiSelect
-                    data={data}
-                    value={selected.map((item) => item.value)}
-                    onChange={handleChange}
-                    searchable
-                    searchValue={advancedSearch}
-                    onSearchChange={setAdvancedSearch}
-                    size="md"
-                    aria-label="Advanced Search"
-                    placeholder="Advanced Search"
-                    nothingFoundMessage="No items found"
-                    w={300}
-                    styles={{
-                        input: {
-                            maxHeight: '5rem',
-                            overflowY: 'auto',
-                        },
-                    }}
-                />
-                <ActionIcon
-                    color="red"
-                    size="lg"
-                    disabled={selected.length === 0}
-                    aria-label="Clear Selection"
-                    onClick={() => {
-                        setSelected([]);
-                        onSelectionChange([]);
-                    }}
-                >
-                    <FaX />
-                </ActionIcon>
+            <Group mt="lg" mr="xl" justify="flex-end" align="flex-start">
+                {selected && selected.length > 0 && (
+                    <Paper withBorder p="sm" radius="xl">
+                        <Group justify="space-between">
+                            {selected.map((item) => (
+                                <Chip
+                                    key={item.value}
+                                    onClick={() => handleRemove(item.value)}
+                                >
+                                    <Group>
+                                        {item.label}
+                                        <FaX />
+                                    </Group>
+                                </Chip>
+                            ))}
+                        </Group>
+                    </Paper>
+                )}
+
+                <Group justify="flex-end">
+                    <MultiSelect
+                        data={data}
+                        value={selected.map((item) => item.value)}
+                        onChange={handleChange}
+                        searchable
+                        searchValue={advancedSearch}
+                        onSearchChange={setAdvancedSearch}
+                        size="md"
+                        aria-label="Advanced Search"
+                        placeholder="Advanced Search"
+                        nothingFoundMessage="No items found"
+                        styles={() => ({
+                            pill: {
+                                display: 'none',
+                            },
+                        })}
+                    />
+                    <ActionIcon
+                        color="red"
+                        size="lg"
+                        disabled={selected.length === 0}
+                        aria-label="Clear Selection"
+                        onClick={() => {
+                            setSelected([]);
+                            onSelectionChange([]);
+                        }}
+                    >
+                        <FaX />
+                    </ActionIcon>
+                </Group>
             </Group>
         </>
     );
