@@ -5,6 +5,7 @@ import { QueryRequest } from '../../utilities/apiFunctions';
 import { useNavigate } from 'react-router-dom';
 import AdvancedSearch from '../AdvancedSearch';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
+import { formatDateLong } from '../../utilities/format';
 import {
     Button,
     Paper,
@@ -303,21 +304,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setOrderBy(key);
     };
 
-    const handleFormatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        const optionsDate: Intl.DateTimeFormatOptions = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        };
-        const optionsTime: Intl.DateTimeFormatOptions = {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        };
-        return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
-    };
-
     const handleFormatHeader = (header: string) =>
         header
             .replace(/[_-]/g, ' ')
@@ -592,12 +578,12 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                                             : 'green'
                                                                     }
                                                                 >
-                                                                    {handleFormatDate(
+                                                                    {formatDateLong(
                                                                         value,
                                                                     )}
                                                                 </Text>
                                                             ) : (
-                                                                handleFormatDate(
+                                                                formatDateLong(
                                                                     value,
                                                                 )
                                                             )

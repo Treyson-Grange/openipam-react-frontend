@@ -7,7 +7,7 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-import { formatDate } from '../../utilities/format';
+import { formatDateShort } from '../../utilities/format';
 
 const DNSDetailEditModal = (props: DNSDetailEditModalProps) => {
     const { data } = props;
@@ -29,7 +29,7 @@ const DNSDetailEditModal = (props: DNSDetailEditModalProps) => {
     return (
         <Stack align="stretch" justify="center">
             <Title>Starter Edit Modal.</Title>
-            <Text>{formatDate(Date())}</Text>
+            <Text>{formatDateShort(Date())}</Text>
             <form
                 onSubmit={form.onSubmit((values) => {
                     console.log(values);

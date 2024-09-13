@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePaginatedApi } from '../../hooks/useApi';
+import { formatDateLong } from '../../utilities/format';
 import {
     Button,
     Paper,
@@ -122,21 +123,6 @@ const UserTable = (): JSX.Element => {
         }
         setDirection(newDirection);
         setOrderBy(key);
-    };
-
-    const handleFormatDate = (dateStr: string) => {
-        const date = new Date(dateStr);
-        const optionsDate: Intl.DateTimeFormatOptions = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        };
-        const optionsTime: Intl.DateTimeFormatOptions = {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-        };
-        return `${date.toLocaleDateString('en-US', optionsDate)} ${date.toLocaleTimeString('en-US', optionsTime)}`;
     };
 
     const handleFormatHeader = (header: string) =>
@@ -302,7 +288,7 @@ const UserTable = (): JSX.Element => {
                                                 <Table.Td key={attr}>
                                                     {isDate ? (
                                                         <Text>
-                                                            {handleFormatDate(
+                                                            {formatDateLong(
                                                                 value,
                                                             )}
                                                         </Text>

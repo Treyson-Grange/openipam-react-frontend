@@ -16,7 +16,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
-import { formatDate } from '../../utilities/format';
+import { formatDateShort } from '../../utilities/format';
 
 const HostDetailEditModal = (props: HostDetailEditModalProps) => {
     const { data } = props;
@@ -75,7 +75,9 @@ const HostDetailEditModal = (props: HostDetailEditModalProps) => {
                         Expiration Date:{' '}
                     </Text>
                     {data[0]?.expires ? (
-                        <Badge size="lg">{formatDate(data[0]?.expires)}</Badge>
+                        <Badge size="lg">
+                            {formatDateShort(data[0]?.expires)}
+                        </Badge>
                     ) : (
                         'Never'
                     )}
