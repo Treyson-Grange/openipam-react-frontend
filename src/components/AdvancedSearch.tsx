@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    MultiSelect,
-    Group,
-    ActionIcon,
-    Paper,
-    Chip,
-    ThemeIcon,
-} from '@mantine/core';
+import { MultiSelect, Group, ActionIcon, Paper, Chip } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useApiData } from '../hooks/useApi';
 import { FaX } from 'react-icons/fa6';
@@ -23,6 +16,24 @@ interface AdvancedSearchProps {
     autocompleteFunc: QueryRequest<any, PaginatedData<unknown>>;
 }
 
+const COOKIE_NAME = 'advanced_search_selected';
+
+const getCookie = (name: string): string | undefined => {
+    const match = document.cookie.match(
+        new RegExp('(^| )' + name + '=([^;]+)'),
+    );
+    return match ? decodeURIComponent(match[2]) : undefined;
+};
+
+const setCookie = (name: string, value: string, days: number): void => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+};
+
+const deleteCookie = (name: string): void => {
+    setCookie(name, '', -1);
+};
+
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     onSelectionChange,
     autocompleteFunc,
@@ -30,7 +41,17 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     const [advancedSearch, setAdvancedSearch] = useState('');
     const [debounce] = useDebouncedValue(advancedSearch, 200);
     const [data, setData] = useState<AutocompleteItem[]>([]);
-    const [selected, setSelected] = useState<AutocompleteItem[]>([]);
+    const [selected, setSelected] = useState<AutocompleteItem[]>(() => {
+        const cookieValue = getCookie(COOKIE_NAME);
+        if (cookieValue) {
+            try {
+                return JSON.parse(cookieValue) as AutocompleteItem[];
+            } catch {
+                return [];
+            }
+        }
+        return [];
+    });
 
     const { data: autoCompleteData } = useApiData(autocompleteFunc, {
         q: debounce,
@@ -55,6 +76,10 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
             setData(updatedData);
         }
     }, [autoCompleteData, selected]);
+
+    useEffect(() => {
+        setCookie(COOKIE_NAME, JSON.stringify(selected), 7);
+    }, [selected]);
 
     const handleChange = (values: string[]) => {
         const selectedItems = values.map((value) =>
@@ -117,6 +142,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
                         onClick={() => {
                             setSelected([]);
                             onSelectionChange([]);
+                            deleteCookie(COOKIE_NAME);
                         }}
                     >
                         <FaX />
