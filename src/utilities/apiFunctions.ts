@@ -263,10 +263,6 @@ export const getApiEndpointFunctions = <
         }),
     },
     /**
-     * Hosts API
-     */
-    host: {},
-    /**
      * Users API
      */
     users: {

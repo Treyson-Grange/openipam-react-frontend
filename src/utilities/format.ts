@@ -5,7 +5,6 @@
  */
 
 export const formatDateShort = (date: string) => {
-    console.log('date', date);
     const d = new Date(date);
     const options: Intl.DateTimeFormatOptions = {
         year: 'numeric',
@@ -16,7 +15,7 @@ export const formatDateShort = (date: string) => {
 };
 
 /**
- *
+ * format date to long format
  * @param date (2050-09-01T17:00:00-07:00)
  * @returns formatted date (September 1, 2050 05:00 PM)
  */

@@ -10,7 +10,7 @@ export const getCookie = (name: string): string | void => {
         .map((v) => v.split('=').map((v) => v.trim()))
         .find(([k]) => k === name);
     if (cookie) return decodeURIComponent(cookie[1]);
-    else return 'asdf';
+    else return;
 };
 /**
  * Sets a cookie in `document.cookie` based on the provided name, value, and days
