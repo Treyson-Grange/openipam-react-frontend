@@ -261,11 +261,11 @@ export interface DNSRecord {
     /**
      * The IP Content of the DNS record.
      */
-    ip_content: string;
+    ip_content?: string;
     /**
      * The text content of the DNS record.
      */
-    text_content: string;
+    text_content?: string;
     /**
      * The dns type of the DNS record.
      */
@@ -466,3 +466,9 @@ export interface Interface {
     tagged: number[];
     untagged: number[];
 }
+
+export type UserResponse = {
+    username: string;
+    email: string;
+    id: number;
+};

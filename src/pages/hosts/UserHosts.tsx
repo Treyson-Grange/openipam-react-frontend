@@ -25,9 +25,7 @@ const UserHosts = () => {
                 ]}
                 getFunction={api.hosts.myhosts}
                 defPageSize={10}
-                noDataMessage={
-                    "You don't own any hosts. If you feel this is an error, please contact an administrator."
-                }
+                noDataMessage={`You don't own any hosts. If you feel this is an error, please contact an administrator.`}
                 highlightDates={true}
                 detail="hosts"
                 detailField="mac"

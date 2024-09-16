@@ -1,7 +1,7 @@
 import { API } from '../types';
 import { serializeBoolean } from '../types/apiFilters';
 import { getCookie } from './cookie';
-
+import { UserResponse } from '../types/api';
 /**
  * This is a hook that provides a simple interface for making requests to the
  * API.
@@ -36,7 +36,7 @@ export const getApiEndpointFunctions = <
         login: requestGenerator<
             HttpMethod.POST,
             { username: string; password: string },
-            API.GenericResponse | StrictTypeChecking
+            UserResponse | StrictTypeChecking
         >(HttpMethod.POST, 'login/', {
             headers: { 'X-CSRFToken': getCookie('csrftoken') ?? '' },
         }),
