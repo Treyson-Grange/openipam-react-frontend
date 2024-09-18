@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PaginatedData } from '../../types/api';
+import { formatHeader } from '../../utilities/format';
 import { usePaginatedApi } from '../../hooks/useApi';
 import { QueryRequest } from '../../utilities/apiFunctions';
 import { useNavigate } from 'react-router-dom';
@@ -304,11 +305,6 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
         setOrderBy(key);
     };
 
-    const handleFormatHeader = (header: string) =>
-        header
-            .replace(/[_-]/g, ' ')
-            .replace(/\b\w/g, (char: string) => char.toUpperCase());
-
     const handleCheckboxChange = (item: any, checked: boolean) => {
         setSelectedObjs((prevSelectedObjs) => {
             const updatedSelectedObjs = new Set(prevSelectedObjs);
@@ -432,9 +428,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                 {neededAttr.map((attr) => (
                                     <Table.Th key={attr} ta="left">
                                         <Group gap="xs">
-                                            <Text>
-                                                {handleFormatHeader(attr)}
-                                            </Text>
+                                            <Text>{formatHeader(attr)}</Text>
                                             {sortable &&
                                                 sortableFields?.includes(
                                                     attr,
@@ -466,7 +460,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                                                     attr,
                                                 ) && (
                                                     <TextInput
-                                                        placeholder={`Search ${handleFormatHeader(attr)}`}
+                                                        placeholder={`Search ${formatHeader(attr)}`}
                                                         value={
                                                             searchTerms[attr] ||
                                                             ''

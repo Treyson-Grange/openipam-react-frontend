@@ -33,3 +33,23 @@ export const formatDateLong = (date: string) => {
     };
     return `${d.toLocaleDateString('en-US', optionsDate)} ${d.toLocaleTimeString('en-US', optionsTime)}`;
 };
+
+/**
+ * Capitalize the first letter of a word
+ * @param word
+ * @returns string with first letter capitalized
+ */
+export const capitalize = (word: string): string => {
+    if (!word) return word;
+    return word.charAt(0).toUpperCase() + word.slice(1);
+};
+
+/**
+ * Remove underscores and dashes from a string and capitalize the first letter of each word
+ * @param header
+ * @returns formatted header
+ */
+export const formatHeader = (header: string) =>
+    header
+        .replace(/[_-]/g, ' ')
+        .replace(/\b\w/g, (char: string) => char.toUpperCase());
