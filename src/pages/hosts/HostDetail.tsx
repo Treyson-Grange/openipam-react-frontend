@@ -8,7 +8,7 @@ const HostDetail = () => {
         host: string | number;
     };
     const api = getApiEndpointFunctions();
-    const title = 'Host Detail for ' + host;
+    const title = 'Host Information: ' + host;
 
     return (
         <HostDetailView

@@ -398,6 +398,7 @@ const PaginatedTable = (props: PaginatedTableProps): JSX.Element => {
                         {maxPages !== 1 && (
                             <Pagination
                                 mb="lg"
+                                size="sm"
                                 total={maxPages}
                                 value={page}
                                 onChange={setPage}

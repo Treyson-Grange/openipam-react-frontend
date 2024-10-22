@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { PaginatedData } from '../../types/api';
 import { useApiData } from '../../hooks/useApi';
 import { QueryRequest } from '../../utilities/apiFunctions';
-import { formatHeader } from '../../utilities/format';
+import { formatHeader, formatDateLong } from '../../utilities/format';
 import {
     Button,
     Paper,
@@ -10,8 +10,8 @@ import {
     Group,
     Loader,
     Text,
-    Tabs,
     Stack,
+    Divider,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
@@ -22,15 +22,15 @@ interface HostDetailViewProps {
     ModalComponent?: React.ComponentType<{ data: any; title: string }>;
 }
 
-const GENERAL_TAB = [
-    'mac',
-    'vendor',
-    'is_dynamic',
-    'description',
-    'hostname',
+const GENERAL_ATTR = ['hostname', 'mac', 'vendor', 'is_dynamic', 'description'];
+const OWNER_ATTR = ['user_owners', 'group_owners'];
+const DATES_ATTR = [
+    'changed',
+    // 'changed_by', //cant use this rn, its an object
+    'expires',
     'last_seen',
+    'last_seen_ip',
 ];
-const OWNER_TAB = ['user_owners', 'group_owners'];
 
 const HostDetailView = (props: HostDetailViewProps) => {
     const { getFunction, title, editable, ModalComponent } = props;
@@ -56,9 +56,9 @@ const HostDetailView = (props: HostDetailViewProps) => {
     }, [data]);
 
     return (
-        <Paper radius="lg" p="lg" m="lg" withBorder>
+        <Paper withBorder radius="lg" p="lg" m="lg">
             <Group justify="space-between">
-                <Title>{title}</Title>
+                <Title order={1}>{title}</Title>
                 {editable && (
                     <Button onClick={() => setEditing(!editing)}>
                         {editing ? 'Cancel' : 'Edit'}
@@ -75,87 +75,110 @@ const HostDetailView = (props: HostDetailViewProps) => {
                         <Text>No Modal Component</Text>
                     )
                 ) : (
-                    <Tabs defaultValue="General" variant="pills">
-                        <Tabs.List mt="lg" mb="lg">
-                            <Tabs.Tab title="General" value="General">
-                                General
-                            </Tabs.Tab>
-                            <Tabs.Tab title="Owner" value="Owner">
-                                Owner
-                            </Tabs.Tab>
-                        </Tabs.List>
-                        <Tabs.Panel value="General">
-                            {!loading && data.length !== 0 && (
-                                <Group justify="space-between">
-                                    <Paper p="lg" withBorder radius="xl">
-                                        <Stack>
-                                            {GENERAL_TAB.map((key) => (
-                                                <Group justify="space-between">
-                                                    <Text
-                                                        ta="left"
-                                                        fw={600}
-                                                        size="xl"
-                                                        key={key}
-                                                    >
-                                                        {formatHeader(key)}:{' '}
-                                                    </Text>
-                                                    <Text ta="left" size="xl">
-                                                        {data[0][key] !==
-                                                            null &&
-                                                        data[0][key] !==
-                                                            undefined &&
-                                                        data[0][key] !== ''
-                                                            ? typeof data[0][
-                                                                  key
-                                                              ] === 'boolean'
-                                                                ? data[0][key]
-                                                                    ? 'True'
-                                                                    : 'False'
-                                                                : data[0][key]
-                                                            : 'Unknown'}
-                                                    </Text>
-                                                </Group>
-                                            ))}
-                                        </Stack>
-                                    </Paper>
-                                    <Paper
-                                        p="lg"
-                                        withBorder
-                                        radius="xl"
-                                        mt="lg"
-                                    >
-                                        <Stack>
-                                            {OWNER_TAB.map((key) => (
-                                                <Group justify="space-between">
-                                                    <Text
-                                                        ta="left"
-                                                        fw={600}
-                                                        size="xl"
-                                                        key={key}
-                                                    >
-                                                        {formatHeader(key)}:{' '}
-                                                    </Text>
-                                                    <Text ta="left" size="xl">
-                                                        {data[0][key] !==
-                                                            null &&
-                                                        data[0][key] !==
-                                                            undefined &&
-                                                        data[0][key] !== ''
+                    <>
+                        {!loading && data.length !== 0 && (
+                            <Group
+                                justify="space-between"
+                                align="flex-start"
+                                mt="lg"
+                            >
+                                <Paper p="lg" radius="xl">
+                                    <Stack>
+                                        <Title order={2}>
+                                            General Information
+                                        </Title>
+                                        <Divider />
+                                        {GENERAL_ATTR.map((key) => (
+                                            <Group justify="space-between">
+                                                <Text
+                                                    fw={600}
+                                                    size="xl"
+                                                    key={key}
+                                                >
+                                                    {formatHeader(key)}:{' '}
+                                                </Text>
+                                                <Text size="xl">
+                                                    {data[0][key] !== null &&
+                                                    data[0][key] !==
+                                                        undefined &&
+                                                    data[0][key] !== ''
+                                                        ? typeof data[0][
+                                                              key
+                                                          ] === 'boolean'
                                                             ? data[0][key]
+                                                                ? 'True'
+                                                                : 'False'
+                                                            : data[0][key]
+                                                        : 'Unknown'}
+                                                </Text>
+                                            </Group>
+                                        ))}
+                                    </Stack>
+                                </Paper>
+                                <Paper p="lg" radius="xl">
+                                    <Stack>
+                                        <Title order={2}>Owners</Title>
+                                        <Divider />
+                                        {OWNER_ATTR.map((key) => (
+                                            <Group justify="space-between">
+                                                <Text
+                                                    fw={600}
+                                                    size="xl"
+                                                    key={key}
+                                                >
+                                                    {formatHeader(key)}:{' '}
+                                                </Text>
+                                                <Text size="xl">
+                                                    {data[0][key] !== null &&
+                                                    data[0][key] !==
+                                                        undefined &&
+                                                    data[0][key] !== ''
+                                                        ? data[0][key]
+                                                        : 'Unknown'}
+                                                </Text>
+                                            </Group>
+                                        ))}
+                                    </Stack>
+                                </Paper>
+                                <Paper p="lg" radius="xl">
+                                    <Stack>
+                                        <Title order={2}>
+                                            Record Status and Activity
+                                        </Title>
+                                        <Divider />
+                                        {DATES_ATTR.map((key) => {
+                                            const value = data[0][key];
+                                            const dateRegex =
+                                                /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,6})?([+-]\d{2}:\d{2}|Z)?$/;
+                                            const isDate =
+                                                dateRegex.test(value);
+                                            return (
+                                                <Group
+                                                    key={key}
+                                                    justify="space-between"
+                                                >
+                                                    <Text fw={600} size="xl">
+                                                        {formatHeader(key)}:{' '}
+                                                    </Text>
+                                                    <Text size="xl">
+                                                        {value !== null &&
+                                                        value !== undefined &&
+                                                        value !== ''
+                                                            ? isDate
+                                                                ? formatDateLong(
+                                                                      value,
+                                                                  )
+                                                                : value
                                                             : 'Unknown'}
                                                     </Text>
                                                 </Group>
-                                            ))}
-                                        </Stack>
-                                    </Paper>
-                                </Group>
-                            )}
-                        </Tabs.Panel>
-                        <Tabs.Panel value="Owner">
-                            Owner: This string is long enough to keep itself on
-                            the same line
-                        </Tabs.Panel>
-                    </Tabs>
+                                            );
+                                        })}
+                                    </Stack>
+                                </Paper>
+                            </Group>
+                        )}
+                    </>
                 )}
             </Group>
         </Paper>
