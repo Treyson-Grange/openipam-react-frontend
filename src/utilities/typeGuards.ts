@@ -1,6 +1,7 @@
 import { UserResponse } from '../types/api';
+
 /**
- * For use in auth context to check if the response is a user object. Ts stuff.
+ * For use in auth context to check if the response is a user object.
  * @param response
  * @returns
  */

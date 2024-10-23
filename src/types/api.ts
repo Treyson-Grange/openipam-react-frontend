@@ -301,41 +301,140 @@ export interface AutoComplete {
 }
 
 export interface Host {
+    /**
+     * The MAC address of the host.
+     */
     mac: string;
+    /**
+     * Link to api endpoint for host detail.
+     */
     details: string;
+    /**
+     * The vendor of the host. (Ex: aruba)
+     */
     vendor: string;
+    /**
+     * The hostname of the host.
+     */
     hostname: string;
+    /**
+     * The expiration date of the host in ISO format.
+     */
     expires: string;
+    /**
+     * Description of the host
+     */
     description: string;
+    /**
+     * Whether the host is dynamic.
+     */
     is_dynamic: boolean;
+    /**
+     * If the host is disabled or not. Very nullable
+     */
     disabled_host: boolean;
-    dhcp_group: any[];
+    /**
+     * DHCP group of the host.
+     */
+    dhcp_group: any[]; //TODO: create a dhcp group type
+    /**
+     * The associated attributes of the host.
+     */
     attributes: string[];
-    addresses: any[];
+    /**
+     * object with list of leased, and static addresses
+     */
+    addresses: any[]; //TODO: create an address type
+    /**
+     * The master IP address of the host.
+     */
     master_ip_address: string;
+    /**
+     * The users who own the host.
+     */
     user_owners: string[];
+    /**
+     * The groups that own the host.
+     */
     group_owners: string[];
+    /**
+     * Date object of the last time the host was changed.
+     */
     changed: string;
+    /**
+     * The user object who last changed the host.
+     */
     changed_by: User;
+    /**
+     * Date object of the last time the host was seen.
+     */
     last_seen: string;
+    /**
+     * The IP address of the last time the host was seen.
+     */
     last_seen_ip: string;
+    /**
+     * Address type of the host, dynamic or other.
+     */
     address_type: string;
 }
 
 export interface Domain {
+    /**
+     * The ID of the domain.
+     */
     id: number;
+    /**
+     * How the domain was last changed.
+     */
     changed_by: string;
-    user_perms: string[];
+    /**
+     * Object with user permissions. For each user, there is a list of permissions (strings) that the user has. So its more like a dictionary of lists.
+     */
+    user_perms: string[]; // TODO: create a user_perms type. It is NOT a list of strings.
+    /**
+     * Same as user_perms, but for groups. //TODO: create a group_perms type. It is NOT a list of strings.
+     */
     group_perms: string[];
+    /**
+     * URL to the endpoint for domain records.
+     */
     records: string;
+    /**
+     * The number of records in the domain.
+     */
     record_count: number;
+    /**
+     * The name of the domain.
+     */
     name: string;
+    /**
+     * either null of "". Not sure what this is.
+     */
     master: string;
+    /**
+     * same with master, either null or "" no idea what this is.
+     */
     last_check: string;
+    /**
+     * Mainly "NATIVE" not sure what else it can be.
+     */
     type: string;
+    /**
+     * Again, no idea.
+     */
     notified_serial: number;
+    /**
+     * Again, no idea.
+     */
     account: string;
+    /**
+     * Description of the domain.
+     */
     description: string;
+    /**
+     * Date object of the last time the domain was changed.
+     */
     changed: string;
 }
 

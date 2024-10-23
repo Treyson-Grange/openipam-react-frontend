@@ -18,6 +18,9 @@ import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { formatDateShort } from '../../utilities/format';
 
+/**
+ * Modal for editing hosts.
+ */
 const HostDetailEditModal = (props: HostDetailEditModalProps) => {
     const { data } = props;
     const [editing, setEditing] = useState(false);
@@ -94,6 +97,7 @@ const HostDetailEditModal = (props: HostDetailEditModalProps) => {
                     <Select
                         label="Expires"
                         data={[
+                            //TODO: move this
                             { label: '1 Day', value: '1' },
                             { label: '7 Days', value: '7' },
                             { label: '14 Days', value: '14' },

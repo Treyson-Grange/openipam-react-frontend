@@ -8,17 +8,36 @@ import { PaginatedData } from '../types/api';
 import { getCookie, setCookie, deleteCookie } from '../utilities/cookie';
 
 export interface AutocompleteItem {
+    /**
+     * Value of the item for search
+     */
     value: string;
+    /**
+     * Label of the item to display
+     */
     label: string;
 }
 
 interface AdvancedSearchProps {
+    /**
+     * Callback to handle selection change.
+     * @param selectedItems
+     * @returns
+     */
     onSelectionChange: (selectedItems: AutocompleteItem[]) => void;
+    /**
+     * Function to call for autocomplete data. (usually api.autocomplete.generalAutocomplete)
+     */
     autocompleteFunc: QueryRequest<any, PaginatedData<unknown>>;
 }
 
 const COOKIE_NAME = 'advanced_search_selected';
 
+/**
+ * Advanced Search component allows for searching and selecting multiple items.
+ * Depending on endpoint, can search based on user, group, permissions, contentType, or all of the above.
+ * Works the same as in live openIPAM. Is included as an option in the PaginatedTable.
+ */
 const AdvancedSearch: React.FC<AdvancedSearchProps> = ({
     onSelectionChange,
     autocompleteFunc,

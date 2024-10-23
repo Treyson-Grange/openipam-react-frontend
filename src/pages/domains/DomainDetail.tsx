@@ -6,6 +6,9 @@ import { ActionIcon, Group, Card, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { FaPlus } from 'react-icons/fa';
 
+/**
+ * DomainDetail component, shows the DNS records for a domain inside a paginated table.
+ */
 const DomainDetail = () => {
     const { domain } = useParams<{ domain: string }>() as {
         domain: string | number;

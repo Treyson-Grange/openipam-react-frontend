@@ -1,6 +1,9 @@
 import PaginatedTable from '../tables/PaginatedTable';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
+/**
+ * Displays a `PaginatedTable` of the user's hosts.
+ */
 const UserHosts = () => {
     const api = getApiEndpointFunctions();
 

@@ -18,9 +18,23 @@ import logo from '../assets/openIpamLogo.png';
 import { useAuth } from '../contexts/AuthContext';
 
 interface DropdownLink {
+    /**
+     * Link to navigate to on click.
+     */
     link?: string;
+    /**
+     * Label to display.
+     */
     label: string;
+    /**
+     * If true, it will create a label, not a clickable link.
+     */
     isLabel?: boolean;
+    /**
+     * Array of dropdown links. If provided, it will create a dropdown.
+     * If you want to create a label in the dropdown, set "isLabel" to true.
+     * ex: { label: 'Users', isLabel: true }
+     */
     dropdown?: { link?: string; label: string; isLabel?: boolean }[];
 }
 /**
@@ -33,92 +47,38 @@ const links: DropdownLink[] = [
 ];
 
 /**
- * Links for admin users. A LOT of these are gonna get nuked, this is just copy paste from
- * live openipam :/
+ * Links for admin users
+ * You can add "labels" to the dropdowns by setting the "isLabel" property to true. ex: { label: 'Users', isLabel: true }
  */
 const adminLinks: DropdownLink[] = [
     { link: '/', label: 'Home' },
     {
         link: '/hosts',
         label: 'Hosts',
-        dropdown: [
-            { label: 'Attributes', link: '/asdf' },
-            { label: 'Disabled Hosts', link: '/1' },
-            { label: 'Expiration Types', link: '/2' },
-            { label: 'Guest Tickets', link: '/3' },
-            { label: 'Notifications', link: '/4' },
-            { label: 'Structured Attribute Values', link: '/5' },
-        ],
     },
     {
         link: '/domains',
         label: 'Domains',
-        dropdown: [
-            { label: 'DHCP DNS Records', link: '/6' },
-            { label: 'DNS Records', link: '/7' },
-            { label: 'DNS Types', link: '/8' },
-            { label: 'DNS Views', link: '/9' },
-            { label: 'Domains', link: '/10' },
-        ],
     },
     {
         link: '/network',
         label: 'Network',
-        dropdown: [
-            { label: 'Addresses', link: '/11' },
-            { label: 'Address Types', link: '/12' },
-            { label: 'Buildings', link: '/13' },
-            { label: 'Building To Vlans', link: '/14' },
-            { label: 'Default Pools', link: '/15' },
-            { label: 'DHCP Groups', link: '/16' },
-            { label: 'DHCP Options', link: '/17' },
-            { label: 'DHCP Option To DHCP Groups', link: '/18' },
-            { label: 'Leases', link: '/19' },
-            { label: 'Networks', link: '/20' },
-            { label: 'Network Ranges', link: '/21' },
-            { label: 'Network To Vlans', link: '/22' },
-            { label: 'Pools', link: '/23' },
-            { label: 'Shared Networks', link: '/24' },
-            { label: 'Vlans', link: '/25' },
-        ],
     },
     {
         link: '/admin',
         label: 'Admin',
-        dropdown: [
-            { isLabel: true, label: 'Users & Groups' },
-            { label: 'Users', link: '/admin/users' },
-            { label: 'Groups', link: '/27' },
-            { label: 'Tokens', link: '/28' },
-            { isLabel: true, label: 'Permissions' },
-            { label: 'Permissions', link: '/29' },
-            { label: 'User Object Permissions', link: '/30' },
-            { label: 'Group Object Permissions', link: '/31' },
-            { label: 'Tags', link: '/32' },
-            { isLabel: true, label: 'Logs' },
-            { label: 'Log Entries', link: '/33' },
-            { label: 'Host Logs', link: '/34' },
-            { label: 'Email Logs', link: '/35' },
-            { label: 'DNS Records Logs', link: '/36' },
-            { label: 'Address Logs', link: '/37' },
-            { label: 'User Logs', link: '/38' },
-        ],
+        dropdown: [{ label: 'Users', link: '/admin/users' }],
     },
     {
         link: '/reports',
         label: 'Reports',
-        dropdown: [
-            { label: 'OpenIPAM Stats', link: '/39' },
-            { label: 'Hardcoded Disabled Hosts', link: '/40' },
-            { label: 'Exposed Hosts', link: '/41' },
-            { label: 'Host With No DNS Records', link: '/42' },
-            { label: 'Broken PTR Records', link: '/43' },
-            { label: 'Expired Hosts', link: '/44' },
-            { label: 'Orphaned DNS', link: '/45' },
-        ],
     },
 ];
 
+/**
+ * Navbar component uses isAdmin to determine which links to display. User will have to re login to see changes if their perms change.
+ * @returns Navbar component
+ */
 export function Navbar() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const location = useLocation();

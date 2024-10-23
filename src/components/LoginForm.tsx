@@ -14,6 +14,10 @@ import { getApiEndpointFunctions } from '../utilities/apiFunctions';
 import { useAuth } from '../contexts/AuthContext';
 import { isUser } from '../utilities/typeGuards';
 
+/**
+ * The login form component.
+ * Note that this will never be live. It is only used for development. we will use SSO for login.
+ */
 const LoginForm = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');

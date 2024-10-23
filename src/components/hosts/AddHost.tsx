@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Group, Card, Title, ActionIcon } from '@mantine/core';
 import { FaPlus } from 'react-icons/fa';
 
+/**
+ * Component that displays a button to add a new host.
+ */
 const AddHost = () => {
     const navigate = useNavigate();
     return (

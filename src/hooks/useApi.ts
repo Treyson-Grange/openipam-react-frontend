@@ -15,6 +15,9 @@ import {
 import { PaginatedData } from '../types/api';
 import objectHash from 'object-hash';
 
+/**
+ * Determine if two query params are equal by comparing their keys and values.
+ */
 const queryParamsEqual = <T extends Record<string, string | number | boolean>>(
     a: T,
     b: T,
@@ -25,6 +28,9 @@ const queryParamsEqual = <T extends Record<string, string | number | boolean>>(
     );
 };
 
+/**
+ * A hook to memoize query parameters. This is useful for preventing unnecessary re-renders when the query parameters are the same.
+ */
 const useQueryParamsMemo = <
     T extends Record<string, string | number | boolean>,
 >(
@@ -38,6 +44,9 @@ const useQueryParamsMemo = <
     return memo;
 };
 
+/**
+ * A hook to memoize the API endpoint. This is useful for preventing unnecessary re-renders when the endpoint is the same.
+ */
 const useApiEndpointMemo = (endpoint: MemoizableRequest) => {
     const [memo, setMemo] = useState(() => endpoint);
     if (endpoint.endpoint !== memo.endpoint) {
@@ -147,7 +156,7 @@ export const useApiData = <
         };
     }, [memoizedEndpoint, memoizedQueryParams, makeRequest]);
 
-    // @ts-ignore data is always undefined when loading is true
+    // @ts-expect-error data is always undefined when loading is true
     return {
         data,
         loading,

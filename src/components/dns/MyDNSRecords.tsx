@@ -1,5 +1,9 @@
 import PaginatedTable from '../tables/PaginatedTable';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
+
+/**
+ * Component to display the DNS records that the user owns.
+ */
 const MyDNSRecords = () => {
     const api = getApiEndpointFunctions();
 

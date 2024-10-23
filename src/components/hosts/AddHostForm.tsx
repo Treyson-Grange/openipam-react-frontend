@@ -9,6 +9,10 @@ import {
     Radio,
 } from '@mantine/core';
 
+/**
+ * Form to add a new host to the network
+ * Unfinished.
+ */
 const AddHostForm = () => {
     const EMPTY_CHOICE = '----';
 

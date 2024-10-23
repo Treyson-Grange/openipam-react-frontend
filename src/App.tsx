@@ -12,7 +12,10 @@ function AppRoutes() {
     const element = useRoutes(routes);
     return <>{element}</>;
 }
-
+/**
+ * App component is the root component of the application.
+ * It wraps the entire application with MantineProvider, ConfigProvider, and AuthProvider.
+ */
 function App() {
     return (
         <>

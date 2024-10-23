@@ -34,7 +34,12 @@ type ActionFunctions = Record<
     string,
     { func: (params: any) => void; key: string }
 >;
-
+/**
+ * In alternative to the PaginatedTable, the UserTable component is specifically made for the users table.
+ * This is because the users table has some unique features that the PaginatedTable component does not support.
+ * Note that the userTable component has no input props. It is a standalone component.
+ * @returns JSX.Element
+ */
 const UserTable = (): JSX.Element => {
     const api = getApiEndpointFunctions();
     const getFunction = api.users.get;

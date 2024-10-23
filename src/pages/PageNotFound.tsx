@@ -8,6 +8,10 @@ import {
     Group,
 } from '@mantine/core';
 import { Fa1, Fa2, Fa3 } from 'react-icons/fa6';
+
+/**
+ * Ugly PageNotFound component. TODO: redesign this.
+ */
 const PageNotFound = () => {
     return (
         <>
