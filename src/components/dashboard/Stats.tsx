@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { useApiData } from '../../hooks/useApi';
 import { Paper, Title, Card, Flex, Text, Grid } from '@mantine/core';
 
+/**
+ * Component that displays IPAM stats inside a paper.
+ */
 const Stats = () => {
     const [data, setData] = useState<any>([]);
     const { data: apiData, loading, error } = useApiData(api.reports.recent);

@@ -8,7 +8,10 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 
 import { formatDateShort } from '../../utilities/format';
-
+/**
+ * Started work on the DNSDetailEditModal component. This is unused, and unfinished.
+ * Supposedly used to edit DNS records, when you are on their detail page.
+ */
 const DNSDetailEditModal = (props: DNSDetailEditModalProps) => {
     const { data } = props;
     const [editing, setEditing] = useState(false);

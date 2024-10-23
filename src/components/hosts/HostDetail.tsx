@@ -16,9 +16,21 @@ import {
 import { useForm } from '@mantine/form';
 
 interface HostDetailViewProps {
+    /**
+     * Function to get the data for the host
+     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
+    /**
+     * Title of the detail view
+     */
     title: string;
+    /**
+     * Whether the detail view is editable
+     */
     editable?: boolean;
+    /**
+     * Modal component to edit the host
+     */
     ModalComponent?: React.ComponentType<{ data: any; title: string }>;
 }
 
@@ -32,6 +44,9 @@ const DATES_ATTR = [
     'last_seen_ip',
 ];
 
+/**
+ * Detail view for host object
+ */
 const HostDetailView = (props: HostDetailViewProps) => {
     const { getFunction, title, editable, ModalComponent } = props;
     const [data, setData] = useState<any[]>([]);

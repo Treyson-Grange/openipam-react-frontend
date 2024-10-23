@@ -14,12 +14,27 @@ import {
 import { useForm } from '@mantine/form';
 
 interface DetailViewProps {
+    /**
+     * Function to get the data from the API. Must GET a singular item. (___.byId(id).get)
+     */
     getFunction: QueryRequest<any, PaginatedData<unknown>>;
+    /**
+     * Title of the detail view.
+     */
     title: string;
+    /**
+     * Whether the detail view is editable.
+     */
     editable?: boolean;
+    /**
+     * Modal component to display when editing.
+     */
     ModalComponent?: React.ComponentType<{ data: any; title: string }>;
 }
 
+/**
+ * DetailView component allows for the display of data in a table format based on the data returned from the API.
+ */
 const DetailView = (props: DetailViewProps): JSX.Element => {
     const { getFunction, title, editable, ModalComponent } = props;
     const [data, setData] = useState<any[]>([]);

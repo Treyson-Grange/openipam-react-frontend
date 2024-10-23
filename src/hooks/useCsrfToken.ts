@@ -1,13 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useConfig } from '../contexts/ConfigContext';
 import { getApiEndpointFunctions } from '../utilities/apiFunctions';
+import { setCookie } from '../utilities/cookie';
 
-const setCookie = (name: string, value: string, days = 1) => {
-    const date = new Date();
-    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
-};
-
+/**
+ * Hook to fetch and store CSRF token, providing a function to fetch a new token.
+ */
 export const useCsrfToken = () => {
     const api = getApiEndpointFunctions();
     const [csrftoken, setCsrfToken] = useState<string>('');
@@ -18,7 +16,7 @@ export const useCsrfToken = () => {
         try {
             const csrfCall = await api.auth.getCSRFToken();
             setCsrfToken(csrfCall.csrfToken);
-            setCookie('csrftoken', csrfCall.csrfToken);
+            setCookie('csrftoken', csrfCall.csrfToken, 1);
             hasFetchedToken.current = true;
         } catch (error) {
             console.error('Failed to fetch CSRF token:', error);

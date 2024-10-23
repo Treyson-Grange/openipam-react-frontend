@@ -4,6 +4,10 @@ import PaginatedTable from '../../components/tables/PaginatedTable';
 import AddHost from '../../components/hosts/AddHost';
 import { Group } from '@mantine/core';
 
+/**
+ * UserHosts page component
+ * Features users hosts in a paginated table, and HostControl for switching between all hosts and users hosts.
+ */
 const UserHosts = () => {
     const api = getApiEndpointFunctions();
     return (
@@ -25,7 +29,7 @@ const UserHosts = () => {
                 ]}
                 getFunction={api.hosts.myhosts}
                 defPageSize={10}
-                noDataMessage={`You don't own any hosts. If you feel this is an error, please contact an administrator.`}
+                noDataMessage="You don't own any hosts. If you feel this is an error, please contact an administrator."
                 highlightDates={true}
                 detail="hosts"
                 detailField="mac"

@@ -3,6 +3,9 @@ import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import HostDetailView from '../../components/hosts/HostDetail';
 import HostDetailEditModal from '../../components/hosts/HostDetailEditModal';
 
+/**
+ * Detail page component for hosts
+ */
 const HostDetail = () => {
     const { host } = useParams<{ host: string }>() as {
         host: string | number;

@@ -18,6 +18,9 @@ import {
 } from '@mantine/core';
 import { FaCircleXmark } from 'react-icons/fa6';
 
+/**
+ * Component to dynamically display a grid of domains.
+ */
 const DomainGrid = (): JSX.Element => {
     const PAGE_SIZE = 12;
     const [page, setPage] = useState(1);
@@ -32,6 +35,7 @@ const DomainGrid = (): JSX.Element => {
     });
 
     useEffect(() => {
+        console.log(data);
         if (data?.count !== undefined) {
             setMaxPages(Math.ceil(data.count / PAGE_SIZE));
         }

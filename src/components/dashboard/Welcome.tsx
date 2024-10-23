@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 import { useAuth } from '../../contexts/AuthContext';
 
+/**
+ * Displays a welcome message to the user.
+ */
 const Welcome = () => {
     const { user, logout } = useAuth();
     const api = getApiEndpointFunctions();

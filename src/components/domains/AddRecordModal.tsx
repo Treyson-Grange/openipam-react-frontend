@@ -10,11 +10,24 @@ import { useForm } from '@mantine/form';
 import { getApiEndpointFunctions } from '../../utilities/apiFunctions';
 
 type RecordModalProps = {
+    /**
+     * If the modal is opened or not
+     */
     opened: boolean;
+    /**
+     * Function to call when the modal is closed
+     */
     onClose: () => void;
+    /**
+     * Domain to add the record to
+     */
     domain: string | number;
 };
 
+/**
+ * Modal to add a new DNS record
+ * Unfinished, it's close, however not always functional.
+ */
 const AddRecordModal = (props: RecordModalProps): JSX.Element => {
     const api = getApiEndpointFunctions();
     const form = useForm({

@@ -3,6 +3,9 @@ import { SegmentedControl } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../../contexts/ConfigContext';
 
+/**
+ * Control switch to toggle between seeing all hosts and only user hosts
+ */
 const HostControl: React.FC<{ currentSelection: string }> = ({
     currentSelection,
 }) => {

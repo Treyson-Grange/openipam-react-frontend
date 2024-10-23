@@ -4,6 +4,11 @@ import HostControl from '../../components/hosts/HostControl';
 import { useConfig } from '../../contexts/ConfigContext';
 import { Group } from '@mantine/core';
 import AddHost from '../../components/hosts/AddHost';
+
+/**
+ * AllHosts page component
+ * Features all hosts in a paginated table, and HostControl for switching between all hosts and users hosts.
+ */
 const AllHosts = () => {
     const api = getApiEndpointFunctions();
     const { config } = useConfig();

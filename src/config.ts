@@ -1,12 +1,22 @@
 export interface AppConfig {
+    /**
+     * URL of the API server
+     */
     apiUrl: HostName;
-    frontendUrl: HostName;
+    /**
+     * Name of the organization
+     */
     organizationName: string;
-    // Add more configuration options here
+    // Add more configuration options here when needed.
 }
 
 type HostName = string & { readonly brand: unique symbol };
 
+/**
+ * Util function to check if a string is a valid hostname.
+ * @param url
+ * @returns whether the url is a valid hostname
+ */
 const isHostName = (url: string): url is HostName => {
     try {
         const parsedUrl = new URL(url);
@@ -22,6 +32,11 @@ const isHostName = (url: string): url is HostName => {
     }
 };
 
+/**
+ * Util function to validate a hostname.
+ * @param url
+ * @returns hostname, checking if it is a valid hostname
+ */
 const validateHostName = (url: string): HostName => {
     if (isHostName(url)) {
         return url;
@@ -30,15 +45,17 @@ const validateHostName = (url: string): HostName => {
 };
 
 const apiUrl = validateHostName(import.meta.env.VITE_API_URL as string);
-const frontendUrl = validateHostName(
-    import.meta.env.VITE_FRONTEND_URL as string,
-);
 const organizationName = import.meta.env.VITE_ORGANIZATION_NAME as string;
 // Add more configuration options here
 
 const config: AppConfig = {
+    /**
+     * URL of the API server
+     */
     apiUrl,
-    frontendUrl,
+    /**
+     * Name of the organization
+     */
     organizationName,
 };
 

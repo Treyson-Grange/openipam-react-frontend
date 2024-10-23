@@ -6,12 +6,6 @@ const Login = React.lazy(() => import('./pages/Login'));
 const Dns = React.lazy(() => import('./pages/domains/Domains'));
 const DomainDetail = React.lazy(() => import('./pages/domains/DomainDetail'));
 const DNSDetail = React.lazy(() => import('./pages/dns/DNSDetail'));
-const ProtectedRoute = React.lazy(
-    () => import('./components/routes/UserProtectedRoute'),
-);
-const AdminProtectedRoute = React.lazy(
-    () => import('./components/routes/AdminProtectedRoute'),
-);
 const AdminTest = React.lazy(() => import('./pages/TestAdmin'));
 const UserHosts = React.lazy(() => import('./pages/hosts/UserHosts'));
 const AllHosts = React.lazy(() => import('./pages/hosts/AllHosts'));
@@ -19,8 +13,14 @@ const HostDetail = React.lazy(() => import('./pages/hosts/HostDetail'));
 const PageNotFound = React.lazy(() => import('./pages/PageNotFound'));
 const AddHost = React.lazy(() => import('./pages/hosts/AddHost'));
 const Users = React.lazy(() => import('./pages/admin/Users'));
-const AdvancedSearch = React.lazy(
-    () => import('./components/tables/AdvancedSearch'),
+
+// Protected children require login to access.
+const ProtectedRoute = React.lazy(
+    () => import('./components/routes/UserProtectedRoute'),
+);
+// AdminProtected children require admin status to access.
+const AdminProtectedRoute = React.lazy(
+    () => import('./components/routes/AdminProtectedRoute'),
 );
 const routes: RouteObject[] = [
     { path: '/login', element: <Login /> },
@@ -73,11 +73,6 @@ const routes: RouteObject[] = [
                 path: '/reports',
                 element: <AdminProtectedRoute />,
                 children: [{ path: '/reports', element: <AdminTest /> }],
-            },
-            // Test route for the advanced search component.
-            {
-                path: '/test',
-                element: <AdvancedSearch />,
             },
         ],
     },

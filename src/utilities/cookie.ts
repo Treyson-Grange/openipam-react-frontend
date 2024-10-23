@@ -12,6 +12,7 @@ export const getCookie = (name: string): string | void => {
     if (cookie) return decodeURIComponent(cookie[1]);
     else return;
 };
+
 /**
  * Sets a cookie in `document.cookie` based on the provided name, value, and days
  * @param {string} name
@@ -23,6 +24,7 @@ export const setCookie = (name: string, value: string, days: number): void => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
 };
+
 /**
  * Deletes a cookie from `document.cookie` based on the provided name
  * @param name

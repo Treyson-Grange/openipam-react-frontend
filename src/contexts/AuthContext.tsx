@@ -7,19 +7,53 @@ import React, {
 } from 'react';
 
 interface User {
+    /**
+     * Username of the user. Usually an A number
+     */
     username: string;
+    /**
+     * Email of the user.
+     */
     email: string;
+    /**
+     * ID of the user.
+     */
     id: number;
+    /**
+     * Whether the user is an admin or not.
+     */
     is_ipamadmin: boolean;
+    /**
+     * List of groups the user belongs to.
+     */
     groups: string[];
+    /**
+     * first name of the user.
+     */
     first_name: string;
 }
 
 interface AuthContextType {
+    /**
+     * User object once logged in.
+     */
     user: User | null;
+    /**
+     * @returns true if the user is an admin, false otherwise.
+     */
     isAdmin: () => boolean;
+    /**
+     * Sets the user object.
+     * @param user User object to set.
+     */
     setUser: (user: User | null) => void;
+    /**
+     * @returns List of groups the user belongs to.
+     */
     getGroups: () => string[];
+    /**
+     * Logs the user out.
+     */
     logout: () => void;
 }
 
@@ -32,7 +66,9 @@ export const useAuth = () => {
     }
     return context;
 };
-
+/**
+ * AuthProvider component to wrap the application in. Provides the user object and any auth related functions.
+ */
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     children,
 }) => {
